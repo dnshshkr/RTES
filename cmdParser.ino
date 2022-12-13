@@ -102,8 +102,8 @@ void CmdParser() {
             }
             if (val > 0 )
             {
-              pulseCountTime = val;
-              EEPROM.put(addr3, pulseCountTime);
+              pulsePeriodTime = val;
+              EEPROM.put(addr3, pulsePeriodTime);
               printSetting();
             }
             else
@@ -167,8 +167,8 @@ void CmdParser() {
             }
             if (val > 0 )
             {
-              noiseRejection = val;
-              EEPROM.put(addr6, noiseRejection);
+              solenoidOnTime = val;
+              EEPROM.put(addr6, solenoidOnTime);
               printSetting();
             }
             else
@@ -214,8 +214,8 @@ void CmdParser() {
               }
               if (val > 0 && val < 256)
               {
-                solenoidOnTime = val;
-                EEPROM.put(addr10, solenoidOnTime);
+                solenoidOnPulse = val;
+                EEPROM.put(addr10, solenoidOnPulse);
                 printSetting();
               }
               else
@@ -332,13 +332,13 @@ void printSetting()
   Serial.println("RTES v4.0.2");
   Serial.print("A: Emulsion State {0,1}: "); Serial.println(emulsionTrig);
   Serial.print("B: Pulse Count Max (11): "); Serial.println(pulse_fuelToWaterRatio);
-  Serial.print("C: Pulse time for idle (10000) in ms: "); Serial.println(pulseCountTime);
+  Serial.print("C: Pulse Period in ms: "); Serial.println(pulsePeriodTime);
   Serial.print("D: Flow Rate Bias (1.14) in ml/pulse: "); Serial.println(flowRateBias);
   Serial.print("E: Solenoid Shot Bias (1.4) in ml/pulse: "); Serial.println(solShotBias);
-  Serial.print("F: Noise rejection (150) in ms: "); Serial.println(noiseRejection);
+  Serial.print("F: Solenoid On Time in ms: "); Serial.println(solenoidOnTime);
   Serial.println("G: Reset to Factory Setting");
   Serial.println("H: Enter Manual Mode");
-  Serial.println("I: Solenoid On Time (1): " + String(solenoidOnTime));
+  Serial.println("I: Solenoid On Pulse: " + String(solenoidOnPulse));
   Serial.println("$: Refresh Settings");
   Serial.println("S: Enter Settings/Exit Settings/Start RTES System");
   Serial.println("**************************************************************");

@@ -37,15 +37,21 @@ void rtesSystem2()
   //  }
   //  else
   //    currentLimitedOut(fuelTrig, 0, waterTrig);  //(fuel,sol,wat) //(1,0,1)MUST ON FUEL AND WATER PUMP
-  if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio)
+  if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio && !sprayStarted)
   {
+    prevSolOnTime = millis();
     currentLimitedOut(fuelTrig, 1, waterTrig);
-    if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnTime)
+    sprayStarted = true;
+  }
+  else if (sprayStarted)
+  {
+    if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse)
     {
       pulse_fuelToWaterRatioCount = 0;
       pulseInc++;
+      sprayStarted = false;
     }
+    if (millis() - prevSolOnTime >= solenoidOnTime)
+      currentLimitedOut(fuelTrig, 0, waterTrig);
   }
-  else
-    currentLimitedOut(fuelTrig, 0, waterTrig);
 }
