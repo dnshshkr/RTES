@@ -1,3 +1,4 @@
+#define ver "4.0.4"
 /*===============================================================================================================
   ; Title:  RTES V4.0 Serial Interface
   ; Authors: Wan Ahmad V3.08v2 V3.09 V4.0 V4.0.1 (wahmad.wazhar@gmail.com) & Syamiladnin V3.07 (syamiladnin@gmail.com) & Danish V4.0.3 (danish.shukor@outlook.com)
@@ -120,7 +121,7 @@ const int motorWater = 10;
 /*********************current amperage****************************************************************************/
 unsigned long lastExecutedMillis = 0;
 float ampMotorFuel, ampSolenoid, ampMotorWater;
-int ampA, ampB, ampC, ampCountLoop = 0;
+int ampA, ampB, ampC; //ampCountLoop = 0;
 
 /*********************variables***********************************************************************************/
 bool buzzerToggle = 0;
@@ -128,7 +129,7 @@ bool pulseIncToggle = 0;
 volatile float measuredPulsePerMin = 0;
 volatile unsigned int pulseCounter = 0;
 volatile unsigned long totalFuelPulse = 0;
-volatile uint8_t pulse_fuelToWaterRatioCount = 0;
+volatile uint8_t pulse_fuelToWaterRatioCount = 1;
 volatile int flagManual = 0;
 unsigned long buzzerPreviousTime = 0;
 volatile unsigned long measPlsPreviousTime = 0;
@@ -167,7 +168,7 @@ void setup()
   pinMode(motorFuel, OUTPUT);
   pinMode(motorWater, OUTPUT);
   pinMode(solenoidWater, OUTPUT);
- // pinMode(buzzer, OUTPUT);
+  // pinMode(buzzer, OUTPUT);
   pinMode(fuelMotorCurrentPin, INPUT);
   pinMode(solenoidCurrentPin, INPUT);
   pinMode(waterPumpCurrentPin, INPUT);

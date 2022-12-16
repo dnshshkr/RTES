@@ -11,10 +11,10 @@ void printData()
   Serial.print(ampMotorWater, 3);
   Serial.print('\t');
   Serial.print(String(totalFuelPulse) + " total pulse \t");
-  Serial.print(pulseCounter);
+  Serial.print(measuredPulsePerMin / flowRateBias / 60);
   Serial.print(" fuel pulse ");
   Serial.print('\t');
-  Serial.print(pulseCounter * flowRateBias);
+  Serial.print((measuredPulsePerMin / flowRateBias / 60) * flowRateBias);
   Serial.print(" ml fuel");
   Serial.print('\t');
   Serial.print(measuredPulsePerMin, 3);

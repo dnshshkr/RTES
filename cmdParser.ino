@@ -329,10 +329,10 @@ void CmdParser() {
 void printSetting()
 {
   Serial.println("******************************ALL SETTING*********************");
-  Serial.println("RTES v4.0.2");
+  Serial.println("RTES v" + String(ver));
   Serial.print("A: Emulsion State {0,1}: "); Serial.println(emulsionTrig);
-  Serial.print("B: Pulse Count Max (11): "); Serial.println(pulse_fuelToWaterRatio);
-  Serial.print("C: Pulse Period in ms: "); Serial.println(pulsePeriodTime);
+  Serial.print("B: Fuel Pulse Count Max (11): "); Serial.println(pulse_fuelToWaterRatio);
+  Serial.print("C: Fuel Pulse Measure Period in ms: "); Serial.println(pulsePeriodTime);
   Serial.print("D: Flow Rate Bias (1.14) in ml/pulse: "); Serial.println(flowRateBias);
   Serial.print("E: Solenoid Shot Bias (1.4) in ml/pulse: "); Serial.println(solShotBias);
   Serial.print("F: Solenoid On Time in ms: "); Serial.println(solenoidOnTime);
@@ -347,7 +347,7 @@ void printSetting()
 void printSettingManual()
 {
   Serial.println("**********************MANUAL MODE SETTING*********************");
-  Serial.println("Manual Mode RTES v4.0.2");
+  Serial.println("Manual Mode RTES v" + String(ver));
   Serial.print("T1: ON/OFF Fuel Pump: "); Serial.println(fuelTrig);
   Serial.print("T2: ON/OFF Solenoid: "); Serial.println(emulsionTrig);
   Serial.print("T3: ON/OFF Water Pump: "); Serial.println(waterTrig);

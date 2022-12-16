@@ -45,9 +45,9 @@ void rtesSystem2()
   }
   else if (sprayStarted)
   {
-    if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse)
+    if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
     {
-      pulse_fuelToWaterRatioCount = 0;
+      pulse_fuelToWaterRatioCount = 1;
       pulseInc++;
       sprayStarted = false;
     }
