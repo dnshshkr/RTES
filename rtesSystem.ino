@@ -46,3 +46,23 @@
 //    }
 //  }
 //}
+void rtesSystem()
+{
+  if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio && !sprayStarted)
+  {
+    prevSolOnTime = millis();
+    currentLimitedOut(fuelTrig, 1, waterTrig);
+    sprayStarted = true;
+  }
+  else if (sprayStarted)
+  {
+    if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
+    {
+      pulse_fuelToWaterRatioCount = 1;
+      pulseInc++;
+      sprayStarted = false;
+    }
+    if (millis() - prevSolOnTime >= solenoidOnTime)
+      currentLimitedOut(fuelTrig, 0, waterTrig);
+  }
+}
