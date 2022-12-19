@@ -10,7 +10,8 @@ void countPulse()
   //    countPulse();
   //  }
   //  last_interrupt_time = interrupt_time;
-  measuredPulsePerMin = 1 / ((1 / flowRateBias) * (millis() - measPlsPreviousTime) * (1 / 60));
+  fuelPulsePeriod = float((millis() - measPlsPreviousTime)) / 1000;
+  measuredPulsePerMin = 1.0 / ((1.0 / flowRateBias) * fuelPulsePeriod * (1.0 / 60.0));
   measPlsPreviousTime = millis();
   //pulseCounter++;
   totalFuelPulse++;

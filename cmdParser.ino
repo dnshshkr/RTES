@@ -102,8 +102,8 @@ void CmdParser() {
             }
             if (val > 0 )
             {
-              pulsePeriodTime = val;
-              EEPROM.put(addr3, pulsePeriodTime);
+              dummy = val;
+              EEPROM.put(addr3, dummy);
               printSetting();
             }
             else
@@ -331,10 +331,10 @@ void printSetting()
   Serial.println("******************************ALL SETTING*********************");
   Serial.println("RTES v" + String(ver));
   Serial.print("A: Emulsion State {0,1}: "); Serial.println(emulsionTrig);
-  Serial.print("B: Fuel Pulse Count Max (11): "); Serial.println(pulse_fuelToWaterRatio);
-  Serial.print("C: Fuel Pulse Measure Period in ms: "); Serial.println(pulsePeriodTime);
-  Serial.print("D: Flow Rate Bias (1.14) in ml/pulse: "); Serial.println(flowRateBias);
-  Serial.print("E: Solenoid Shot Bias (1.4) in ml/pulse: "); Serial.println(solShotBias);
+  Serial.print("B: Fuel Pulse Count Max (10): "); Serial.println(pulse_fuelToWaterRatio);
+  Serial.print("C: Fuel to water ratio (separated by '.'): "); Serial.println(dummy);
+  Serial.print("D: Flow Rate Bias (1.45) in ml/pulse: "); Serial.println(flowRateBias);
+  Serial.print("E: Solenoid Shot Bias (1.6) in ml/pulse: "); Serial.println(solShotBias);
   Serial.print("F: Solenoid On Time in ms: "); Serial.println(solenoidOnTime);
   Serial.println("G: Reset to Factory Setting");
   Serial.println("H: Enter Manual Mode");

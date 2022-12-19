@@ -85,7 +85,8 @@ float motorWaterAmpLimit = 5;           //set limit current motor water
 float flowRateBias = 1.45;              //flowrate mililliter per pulse //CMD
 float solShotBias = 1.4;                //solenoid mililliter per shot //CMD
 unsigned long manualTimePeriod = 5000;  //set time for manual mode
-unsigned int pulsePeriodTime = 1000;             //set period time for pulse sensor capturing data (millisecond) 10=280
+//unsigned int pulsePeriodTime = 1000;             //set period time for pulse sensor capturing data (millisecond) 10=280
+bool dummy = true;
 uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
 //int noiseRejection = 150;               //in ms //CMD
 uint8_t solenoidOnPulse = 1;
@@ -126,6 +127,7 @@ int ampA, ampB, ampC; //ampCountLoop = 0;
 //bool buzzerToggle = 0;
 //bool pulseIncToggle = 0;
 volatile float measuredPulsePerMin = 0;
+volatile float fuelPulsePeriod;
 volatile uint8_t pulseCounter = 1;
 volatile unsigned long totalFuelPulse = 0;
 volatile uint8_t pulse_fuelToWaterRatioCount = 1;
@@ -148,6 +150,7 @@ int pulseCnt = 0;
 //unsigned long opening = 0;   //valve opening period in millisecond
 //unsigned long freq = 60000;  //valve frequency in millisecond
 unsigned long prevSolOnTime;
+float denom;// = flowRateBias * pulse_fuelToWaterRatio + solShotBias * solenoidOnPulse;
 
 /*********************CmdParser***********************************************************************************/
 String sdata = "";  // Initialised to nothing.
