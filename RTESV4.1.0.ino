@@ -43,6 +43,18 @@
 
    13 Oct 22:
    Add flowrate measurement on print_data (ml/min)
+
+   Danish
+   16 Dec 22:
+   - Added duty cycle to solenoid instead of letting the solenoid to shoot water during the whole fuel pulse.
+   - Recalibrated solenoid duty cycle period to 730 ms to get 1.45 ml of water during a shot.
+   - Changed the whole pulse measurement approach. Instead of measuring how many pulse in 1 second, the system now masures how long does 1 pulse takes from its previous pulse.
+   - Recalibrated the fuel flow rate bias to 1.45 ml/pulse
+
+   19 Dec 22:
+   - Replaced fuel volume in data print to fuel pulse period.
+   - Adjusted the calculation method of fuel flow rate since its flow rate measurement approach has been changed.
+   - Changed the emulsion ratio in data print to individual fuel and water ratio during each pulse.
   ;================================================================================================================*/
 
 /*********************Set limit***********************************************************************************/
