@@ -222,7 +222,7 @@ void loop()
   /********************PRINT DATA***************************************************************************************/
   if (!SettingMode && !manualPumpState && pulseDataPrint)
   {
-    if (digitalRead(waterLevel) == 1 && flagManual == 0 && !stopEmulsion)
+    if (digitalRead(waterLevel) && !flagManual && !stopEmulsion)
       rtesSystem();
     printData();
     //Serial.print("Fuel: ");Serial.print(fuelTrig);Serial.print("\t");Serial.print("Water: ");Serial.print(waterTrig);Serial.print("\t");Serial.print("Sol: ");Serial.println(emulsionTrig);
@@ -237,7 +237,7 @@ void loop()
       printData();
 
   }
-  else if (digitalRead(waterLevel) == 1 && flagManual == 0)
+  else if (digitalRead(waterLevel) && !flagManual)
     rtesSystem();  //Only SettingMode
   //testIO();
   /***********************END*******************************************************************************************/
