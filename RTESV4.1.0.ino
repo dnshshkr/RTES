@@ -43,18 +43,6 @@
 
    13 Oct 22:
    Add flowrate measurement on print_data (ml/min)
-
-   Danish
-   16 Dec 22:
-   - Added duty cycle to solenoid instead of letting the solenoid to shoot water during the whole fuel pulse.
-   - Recalibrated solenoid duty cycle period to 730 ms to get 1.45 ml of water during a shot.
-   - Changed the whole pulse measurement approach. Instead of measuring how many pulse in 1 second, the system now masures how long does 1 pulse takes from its previous pulse.
-   - Recalibrated the fuel flow rate bias to 1.45 ml/pulse
-
-   19 Dec 22:
-   - Replaced fuel volume in data print to fuel pulse period.
-   - Adjusted the calculation method of fuel flow rate since its flow rate measurement approach has been changed.
-   - Changed the emulsion ratio in data print to individual fuel and water ratio during each pulse.
   ;================================================================================================================*/
 
 /*********************Set limit***********************************************************************************/
@@ -98,7 +86,7 @@ float flowRateBias = 1.45;              //flowrate mililliter per pulse //CMD
 float solShotBias = 1.4;                //solenoid mililliter per shot //CMD
 unsigned long manualTimePeriod = 5000;  //set time for manual mode
 //unsigned int pulsePeriodTime = 1000;             //set period time for pulse sensor capturing data (millisecond) 10=280
-bool dummy = true;
+unsigned int engineOffTimeOut = 10000;
 uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
 //int noiseRejection = 150;               //in ms //CMD
 uint8_t solenoidOnPulse = 1;
@@ -142,7 +130,7 @@ volatile float measuredPulsePerMin = 0;
 volatile float fuelPulsePeriod;
 volatile uint8_t pulseCounter = 1;
 volatile unsigned long totalFuelPulse = 0;
-volatile uint8_t pulse_fuelToWaterRatioCount = 1;
+volatile uint8_t pulse_fuelToWaterRatioCount = 0;
 volatile int flagManual = 0;
 //unsigned long buzzerPreviousTime = 0;
 volatile unsigned long measPlsPreviousTime = 0;
@@ -163,6 +151,8 @@ int pulseCnt = 0;
 //unsigned long freq = 60000;  //valve frequency in millisecond
 unsigned long prevSolOnTime;
 float denom;// = flowRateBias * pulse_fuelToWaterRatio + solShotBias * solenoidOnPulse;
+unsigned long prevMillisEngOff;
+bool engOffStatusPrintOnce;
 
 /*********************CmdParser***********************************************************************************/
 String sdata = "";  // Initialised to nothing.
@@ -219,6 +209,17 @@ void setup()
 }
 void loop()
 {
+  if (millis() - prevMillisEngOff >= 10000 && !SettingMode)
+  {
+    if (!engOffStatusPrintOnce)
+    {
+      Serial.println("Engine is off");
+      pulse_fuelToWaterRatioCount = 0;
+      engOffStatusPrintOnce = true;
+    }
+  }
+  else
+    engOffStatusPrintOnce = false;
   //  unsigned long measuredLoopTime = micros();
 
   /********************CMD Parser***************************************************************************************/
@@ -234,7 +235,7 @@ void loop()
   /********************PRINT DATA***************************************************************************************/
   if (!SettingMode && !manualPumpState && pulseDataPrint)
   {
-    if (digitalRead(waterLevel) && !flagManual && !stopEmulsion)
+    if (digitalRead(waterLevel) == 1 && flagManual == 0 && !stopEmulsion)
       rtesSystem();
     printData();
     //Serial.print("Fuel: ");Serial.print(fuelTrig);Serial.print("\t");Serial.print("Water: ");Serial.print(waterTrig);Serial.print("\t");Serial.print("Sol: ");Serial.println(emulsionTrig);
@@ -249,7 +250,7 @@ void loop()
       printData();
 
   }
-  else if (digitalRead(waterLevel) && !flagManual)
+  else if (digitalRead(waterLevel) == 1 && flagManual == 0)
     rtesSystem();  //Only SettingMode
   //testIO();
   /***********************END*******************************************************************************************/

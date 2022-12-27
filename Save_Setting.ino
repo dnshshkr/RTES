@@ -3,7 +3,7 @@ void ResetSetting()
   SaveSetting();
   EEPROM.put(addr1, 0);
   EEPROM.put(addr2, 10);
-  EEPROM.put(addr3, 1);
+  EEPROM.put(addr3, 10000);
   EEPROM.put(addr4, 1.45);
   EEPROM.put(addr5, 1.6);
   EEPROM.put(addr6, 730);
@@ -23,7 +23,7 @@ void SaveSetting()
 {
   EEPROM.put(addr1, emulsionTrig);
   EEPROM.put(addr2, pulse_fuelToWaterRatio);
-  EEPROM.put(addr3, dummy);
+  EEPROM.put(addr3, engineOffTimeOut);
   EEPROM.put(addr4, flowRateBias);
   EEPROM.put(addr5, solShotBias);
   EEPROM.put(addr6, solenoidOnTime);
@@ -45,7 +45,7 @@ void LoadSetting()
 
   EEPROM.get(addr3, read3);
   //Serial.print("C: Pulse time for idle in ms: "); Serial.println(read3);
-  dummy = read3;
+  engineOffTimeOut = read3;
 
   EEPROM.get(addr4, read4);  //Float
   //Serial.print("D: Flow Rate Bias in mm/pulse: ");  Serial.println(read4,2);

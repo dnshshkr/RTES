@@ -80,6 +80,7 @@ void CmdParser() {
             }
             if (val > 0 )
             {
+              pulse_fuelToWaterRatioCount = 0;
               pulse_fuelToWaterRatio = val;
               EEPROM.put(addr2, pulse_fuelToWaterRatio);
               printSetting();
@@ -102,8 +103,8 @@ void CmdParser() {
             }
             if (val > 0 )
             {
-              dummy = val;
-              EEPROM.put(addr3, dummy);
+              engineOffTimeOut = val;
+              EEPROM.put(addr3, engineOffTimeOut);
               printSetting();
             }
             else
@@ -328,20 +329,28 @@ void CmdParser() {
 }
 void printSetting()
 {
-  Serial.println("******************************ALL SETTING*********************");
+  Serial.println("**************************ALL SETTING**************************");
   Serial.println("RTES v" + String(ver));
   Serial.print("A: Emulsion State {0,1}: "); Serial.println(emulsionTrig);
-  Serial.print("B: Fuel Pulse Count Max (10): "); Serial.println(pulse_fuelToWaterRatio);
-  Serial.print("C: Fuel to water ratio (separated by '.'): "); Serial.println(dummy);
-  Serial.print("D: Flow Rate Bias (1.45) in ml/pulse: "); Serial.println(flowRateBias);
-  Serial.print("E: Solenoid Shot Bias (1.6) in ml/pulse: "); Serial.println(solShotBias);
-  Serial.print("F: Solenoid On Time in ms: "); Serial.println(solenoidOnTime);
+  Serial.print("B: Fuel Pulse Count Max (10): " + String(pulse_fuelToWaterRatio) + " pulse");
+  if (pulse_fuelToWaterRatio > 1)
+    Serial.println("s");
+  else
+    Serial.println();
+  Serial.println("C: Engine Off Timeout (10s): " + String(engineOffTimeOut) + " ms");
+  Serial.println("D: Fuel Flow Rate Bias (1.45): " + String(flowRateBias) + " ml/pulse");
+  Serial.println("E: Water Shot Bias (1.6): " + String(solShotBias) + " ml/pulse");
+  Serial.println("F: Solenoid On Time: " + String(solenoidOnTime) + " ms");
   Serial.println("G: Reset to Factory Setting");
   Serial.println("H: Enter Manual Mode");
-  Serial.println("I: Solenoid On Pulse: " + String(solenoidOnPulse));
+  Serial.print("I: Solenoid On Pulse: " + String(solenoidOnPulse) + " pulse");
+  if (solenoidOnPulse > 1)
+    Serial.println("s");
+  else
+    Serial.println();
   Serial.println("$: Refresh Settings");
   Serial.println("S: Enter Settings/Exit Settings/Start RTES System");
-  Serial.println("**************************************************************");
+  Serial.println("***************************************************************");
 }
 
 void printSettingManual()
