@@ -54,7 +54,6 @@ void rtesSystem()
     //currentLimitedOut(fuelTrig, 1, waterTrig);
     digitalWrite(solenoidWater, HIGH);
     digitalWrite(motorWater, HIGH);
-    //Serial.println("Water on");
     sprayStarted = true;
   }
   else if (sprayStarted)
@@ -64,19 +63,16 @@ void rtesSystem()
       digitalWrite(solenoidWater, LOW);
       digitalWrite(motorWater, LOW);
       //currentLimitedOut(fuelTrig, 0, waterTrig);
-      //Serial.println("Water off");
-    }
-    if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
-    {
-      pulse_fuelToWaterRatioCount = 1;
       pulseInc++;
       sprayStarted = false;
     }
+    if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
+      pulse_fuelToWaterRatioCount = 1;
+    //sprayStarted = false;
   }
   else
   {
     digitalWrite(solenoidWater, LOW);
     digitalWrite(motorWater, LOW);
-    //Serial.println("Water off");
   }
 }
