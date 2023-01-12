@@ -98,17 +98,17 @@ unsigned int solenoidOnTime = 100;
 #include <EEPROM.h>
 
 /*********************Pinout*************************************************************************************/
-const byte pulseFlowrate = 2;
+const int pulseFlowrate = 2;
 //const int manualButton = 3;
-const byte waterLevel = 4;
+const int waterLevel = 4;
 
-const byte fuelMotorCurrentPin = A3;
-const byte solenoidCurrentPin = A2;
-const byte waterPumpCurrentPin = A4;
+const int fuelMotorCurrentPin = A3;
+const int solenoidCurrentPin = A2;
+const int waterPumpCurrentPin = A4;
 
-const byte motorFuel = 8;
-const byte solenoidWater = 9;
-const byte motorWater = 10;
+const int motorFuel = 8;
+const int solenoidWater = 9;
+const int motorWater = 10;
 
 //const int sevenSegmentDIO = 11;
 //const int sevenSegmentCLK = 12;
@@ -121,7 +121,7 @@ const byte motorWater = 10;
 /*********************current amperage****************************************************************************/
 //unsigned long lastExecutedMillis = 0;
 float ampMotorFuel, ampSolenoid, ampMotorWater;
-int ampA, ampB, ampC; //ampCountLoop = 0;
+//int ampA, ampB, ampC; //ampCountLoop = 0;
 
 /*********************variables***********************************************************************************/
 //bool buzzerToggle = 0;
@@ -130,7 +130,7 @@ volatile float measuredPulsePerMin = 0;
 volatile float fuelPulsePeriod;
 volatile uint8_t pulseCounter = 1;
 volatile unsigned long totalFuelPulse = 0;
-volatile uint8_t pulse_fuelToWaterRatioCount = 0;
+volatile uint8_t pulse_fuelToWaterRatioCount = -1;
 volatile int flagManual = 0;
 //unsigned long buzzerPreviousTime = 0;
 volatile unsigned long measPlsPreviousTime = 0;
@@ -156,17 +156,17 @@ bool engOffStatusPrintOnce;
 
 /*********************CmdParser***********************************************************************************/
 String sdata = "";  // Initialised to nothing.
-bool SettingMode = 1;
-bool printState = 1;
+bool SettingMode = true;
+bool printState = true;
 
 /*********************CheckFuelPumpCurrent***********************************************************************************/
-int ampMotorFuelLow = 3.6;
-int ampMotorFuelHigh = 4.1;
+float ampMotorFuelLow = 3.6;
+float ampMotorFuelHigh = 4.1;
 bool stopEmulsion = 0;
 
 void setup()
 {
-  Serial.begin(250000);
+  Serial.begin(115200);
   pinMode(pulseFlowrate, INPUT_PULLUP);
   pinMode(waterLevel, INPUT_PULLUP);
   //pinMode(manualButton, INPUT_PULLUP);
@@ -200,21 +200,22 @@ void setup()
   //  currentLimitOutput(1, 0, 1);//(fuel,sol,wat)
   //  pulseInc++;
 
+  currentLimitedOut(0, 0, 0);
   printSetting();
 
   Serial.println("RTES Initialized ");
   if (manualPumpState)
     printSettingManual();
-  digitalWrite(motorWater, HIGH);
+
 }
 void loop()
 {
-  if (millis() - prevMillisEngOff >= 10000 && !SettingMode)
+  if (millis() - prevMillisEngOff >= engineOffTimeOut && !SettingMode)
   {
     if (!engOffStatusPrintOnce)
     {
       Serial.println("Engine is off");
-      pulse_fuelToWaterRatioCount = 0;
+      pulse_fuelToWaterRatioCount = 1;
       engOffStatusPrintOnce = true;
     }
   }
@@ -230,22 +231,25 @@ void loop()
   {
     //measurePulse();  //calculate flowrate
     //countPulse();
-    measureAmperage();  //read current sensor
+    measureAmperage();
   }
   /********************PRINT DATA***************************************************************************************/
   if (!SettingMode && !manualPumpState && pulseDataPrint)
   {
     if (digitalRead(waterLevel) == 1 && flagManual == 0 && !stopEmulsion)
+    {
+      measureAmperage();  //read current sensor
       rtesSystem();
+    }
     printData();
     //Serial.print("Fuel: ");Serial.print(fuelTrig);Serial.print("\t");Serial.print("Water: ");Serial.print(waterTrig);Serial.print("\t");Serial.print("Sol: ");Serial.println(emulsionTrig);
 
   }
   else if (manualPumpState)  //Stop RTES
   {
-    fuelPump(fuelTrig);
-    solPump(emulsionTrig);
-    waterPump(waterTrig);
+    //    fuelPump(fuelTrig);
+    //    solPump(emulsionTrig);
+    //    waterPump(waterTrig);
     if (manualPrintData)
       printData();
 

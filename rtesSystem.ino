@@ -48,21 +48,35 @@
 //}
 void rtesSystem()
 {
-  if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio && !sprayStarted)
+  if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio && !sprayStarted)
   {
     prevSolOnTime = millis();
-    currentLimitedOut(fuelTrig, 1, waterTrig);
+    //currentLimitedOut(fuelTrig, 1, waterTrig);
+    digitalWrite(solenoidWater, HIGH);
+    digitalWrite(motorWater, HIGH);
+    //Serial.println("Water on");
     sprayStarted = true;
   }
   else if (sprayStarted)
   {
+    if (millis() - prevSolOnTime >= solenoidOnTime)
+    {
+      digitalWrite(solenoidWater, LOW);
+      digitalWrite(motorWater, LOW);
+      //currentLimitedOut(fuelTrig, 0, waterTrig);
+      //Serial.println("Water off");
+    }
     if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
     {
       pulse_fuelToWaterRatioCount = 1;
       pulseInc++;
       sprayStarted = false;
     }
-    if (millis() - prevSolOnTime >= solenoidOnTime)
-      currentLimitedOut(fuelTrig, 0, waterTrig);
+  }
+  else
+  {
+    digitalWrite(solenoidWater, LOW);
+    digitalWrite(motorWater, LOW);
+    //Serial.println("Water off");
   }
 }

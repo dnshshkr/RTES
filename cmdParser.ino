@@ -20,7 +20,6 @@ void CmdParser() {
               printSettingManual();
               break;
             }
-
             SettingMode = !SettingMode;
             printSetting();
             if (SettingMode)
@@ -36,11 +35,8 @@ void CmdParser() {
               printSettingManual();
               break;
             }
-
             if (SettingMode)
-            {
               printSetting();
-            }
             break;
           }
         case 'A': case'a':
@@ -78,7 +74,7 @@ void CmdParser() {
               valStr = sdata.substring(1);
               val = valStr.toInt();
             }
-            if (val > 0 )
+            if (val > 0)
             {
               pulse_fuelToWaterRatioCount = 0;
               pulse_fuelToWaterRatio = val;
@@ -101,7 +97,7 @@ void CmdParser() {
               valStr = sdata.substring(1);
               val = valStr.toInt();
             }
-            if (val > 0 )
+            if (val > 0)
             {
               engineOffTimeOut = val;
               EEPROM.put(addr3, engineOffTimeOut);
@@ -183,7 +179,19 @@ void CmdParser() {
               Serial.println("Not in Setting Mode !");
               break;
             }
-            ResetSetting();
+            else
+            {
+              Serial.println("Are you sure you want to reset to factory settings? (Y/N)");
+              unsigned short current;
+              unsigned long prev = millis();
+              do
+              {
+                current = millis() - prev;
+              } while (!Serial.available() || current <= 10000);
+              char choice = Serial.read();
+              if (choice == 'Y' || choice == 'y')
+                ResetSetting();
+            }
             printSetting();
             break;
           }
@@ -341,7 +349,7 @@ void printSetting()
   Serial.println("D: Fuel Flow Rate Bias (1.45): " + String(flowRateBias) + " ml/pulse");
   Serial.println("E: Water Shot Bias (1.6): " + String(solShotBias) + " ml/pulse");
   Serial.println("F: Solenoid On Time: " + String(solenoidOnTime) + " ms");
-  Serial.println("G: Reset to Factory Setting");
+  Serial.println("G: Reset to Factory Settings");
   Serial.println("H: Enter Manual Mode");
   Serial.print("I: Solenoid On Pulse: " + String(solenoidOnPulse) + " pulse");
   if (solenoidOnPulse > 1)
