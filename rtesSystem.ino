@@ -79,28 +79,18 @@ void rtesSystem()
   //  }
 
   //METHOD 2
-  if (!SettingMode && pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio)
+  if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio)
   {
-    if (!sprayStarted)
-    {
-      prevSolOnTime = millis();
-      digitalWrite(solenoidWater, HIGH);
-      digitalWrite(motorWater, HIGH);
-      //Serial.println("water on");
-      pulseInc++;
-      sprayStarted = true;
-    }
-    if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
-    {
-      pulse_fuelToWaterRatioCount = 1;
-      sprayStarted = false;
-    }
+    prevSolOnTime = millis();
+    digitalWrite(solenoidWater, HIGH);
+    digitalWrite(motorWater, HIGH);
+    pulseInc++;
   }
-  if (!SettingMode && millis() - prevSolOnTime >= solenoidOnTime)
+  if (millis() - prevSolOnTime >= solenoidOnTime)
   {
     digitalWrite(solenoidWater, LOW);
     digitalWrite(motorWater, LOW);
-    //Serial.println("water off");
-
   }
+  if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio + solenoidOnPulse)
+    pulse_fuelToWaterRatioCount = 1;
 }
