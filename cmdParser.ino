@@ -15,6 +15,8 @@ void CmdParser() {
       {
         case 'S': case's':
           {
+            digitalWrite(solenoidWater, LOW);
+            digitalWrite(motorWater, LOW);
             if (manualPumpState)
             {
               printSettingManual();
@@ -76,7 +78,7 @@ void CmdParser() {
             }
             if (val > 0)
             {
-              pulse_fuelToWaterRatioCount = 0;
+              pulse_fuelToWaterRatioCount = 1;
               pulse_fuelToWaterRatio = val;
               EEPROM.put(addr2, pulse_fuelToWaterRatio);
               printSetting();
@@ -340,7 +342,7 @@ void printSetting()
   Serial.println("**************************ALL SETTING**************************");
   Serial.println("RTES v" + String(ver));
   Serial.print("A: Emulsion State {0,1}: "); Serial.println(emulsionTrig);
-  Serial.print("B: Fuel Pulse Count Max (10): " + String(pulse_fuelToWaterRatio) + " pulse");
+  Serial.print("B: Fuel Pulse Count Max(9): " + String(pulse_fuelToWaterRatio) + " pulse");
   if (pulse_fuelToWaterRatio > 1)
     Serial.println("s");
   else

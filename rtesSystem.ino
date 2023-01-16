@@ -48,31 +48,59 @@
 //}
 void rtesSystem()
 {
-  if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio && !sprayStarted)
+  //METHOD 1
+  //  if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio && !sprayStarted)
+  //  {
+  //    prevSolOnTime = millis();
+  //    //currentLimitedOut(fuelTrig, 1, waterTrig);
+  //    digitalWrite(solenoidWater, HIGH);
+  //    digitalWrite(motorWater, HIGH);
+  //    sprayStarted = true;
+  //  }
+  //  else if (sprayStarted)
+  //  {
+  //    if (millis() - prevSolOnTime >= solenoidOnTime)
+  //    {
+  //      digitalWrite(solenoidWater, LOW);
+  //      digitalWrite(motorWater, LOW);
+  //      //currentLimitedOut(fuelTrig, 0, waterTrig);
+  //    }
+  //    if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
+  //    {
+  //      sprayStarted = false;
+  //      pulseInc++;
+  //      pulse_fuelToWaterRatioCount = 1;
+  //    }
+  //  }
+  //  else
+  //  {
+  //    digitalWrite(solenoidWater, LOW);
+  //    digitalWrite(motorWater, LOW);
+  //  }
+
+  //METHOD 2
+  if (!SettingMode && pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio)
   {
-    prevSolOnTime = millis();
-    //currentLimitedOut(fuelTrig, 1, waterTrig);
-    digitalWrite(solenoidWater, HIGH);
-    digitalWrite(motorWater, HIGH);
-    sprayStarted = true;
-  }
-  else if (sprayStarted)
-  {
-    if (millis() - prevSolOnTime >= solenoidOnTime)
+    if (!sprayStarted)
     {
-      digitalWrite(solenoidWater, LOW);
-      digitalWrite(motorWater, LOW);
-      //currentLimitedOut(fuelTrig, 0, waterTrig);
+      prevSolOnTime = millis();
+      digitalWrite(solenoidWater, HIGH);
+      digitalWrite(motorWater, HIGH);
+      //Serial.println("water on");
       pulseInc++;
-      sprayStarted = false;
+      sprayStarted = true;
     }
     if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
+    {
       pulse_fuelToWaterRatioCount = 1;
-    //sprayStarted = false;
+      sprayStarted = false;
+    }
   }
-  else
+  if (!SettingMode && millis() - prevSolOnTime >= solenoidOnTime)
   {
     digitalWrite(solenoidWater, LOW);
     digitalWrite(motorWater, LOW);
+    //Serial.println("water off");
+
   }
 }

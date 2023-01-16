@@ -130,7 +130,7 @@ volatile float measuredPulsePerMin = 0;
 volatile float fuelPulsePeriod;
 volatile uint8_t pulseCounter = 1;
 volatile unsigned long totalFuelPulse = 0;
-volatile uint8_t pulse_fuelToWaterRatioCount = -1;
+volatile uint8_t pulse_fuelToWaterRatioCount = 0;
 volatile int flagManual = 0;
 //unsigned long buzzerPreviousTime = 0;
 volatile unsigned long measPlsPreviousTime = 0;
@@ -181,7 +181,7 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(pulseFlowrate), countPulse, FALLING);
 
   /********************The main Delay***********************************************************************************/
-  currentLimitedOut(1, 0, 1);  //(fuel,sol,wat) //MUST ON FUEL AND WATER PUMP
+  //currentLimitedOut(1, 0, 1);  //(fuel,sol,wat) //MUST ON FUEL AND WATER PUMP
   //display.setBrightness(0x0f);
   //delay(50);
   //display.showNumberHexEx(0xbbbb);
@@ -199,8 +199,9 @@ void setup()
   //  delay(100); // added this value to count pulse function
   //  currentLimitOutput(1, 0, 1);//(fuel,sol,wat)
   //  pulseInc++;
-
-  currentLimitedOut(0, 0, 0);
+  SettingMode = true;
+  digitalWrite(solenoidWater, LOW);
+  digitalWrite(motorWater, LOW);
   printSetting();
 
   Serial.println("RTES Initialized ");
