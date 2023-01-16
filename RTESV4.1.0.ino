@@ -57,6 +57,7 @@ int addr7 = 30;
 int addr8 = 35;
 int addr9 = 40;
 int addr10 = 45;
+int addr11 = 50;
 
 bool read1 = 0;
 int read2 = 0;
@@ -68,13 +69,14 @@ bool read7 = 0;
 bool read8 = 0;
 bool read9 = 0;
 int read10 = 0;
+float read11 = 0;
 bool manualPrintData = 0;
 bool manualPumpState = 0;
 bool AllState = 0;
 bool fuelTrig = true;
 bool waterTrig = true;
 bool pulseDataPrint = false;
-bool sprayStarted = false;
+volatile bool sprayedOnce = false;
 /*********************Change value accordingly********************************************************************/
 bool emulsionTrig = 1;                  // '1'=ON '0'=OFF emulsion //CMD
 int pulse_fuelToWaterRatio = 11;                   //pulse per water shot //CMD
@@ -151,6 +153,7 @@ int pulseCnt = 0;
 //unsigned long freq = 60000;  //valve frequency in millisecond
 unsigned long prevSolOnTime;
 float denom;// = flowRateBias * pulse_fuelToWaterRatio + solShotBias * solenoidOnPulse;
+float quickWaterPercentage = 10;
 unsigned long prevMillisEngOff;
 bool engOffStatusPrintOnce;
 
@@ -207,7 +210,7 @@ void setup()
   Serial.println("RTES Initialized ");
   if (manualPumpState)
     printSettingManual();
-
+  SettingMode = false;
 }
 void loop()
 {

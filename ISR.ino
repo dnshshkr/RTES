@@ -19,6 +19,11 @@ void countPulse()
   pulse_fuelToWaterRatioCount++;
   //measurePulse();
   pulseDataPrint = true;
+  if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio + solenoidOnPulse)
+  {
+    sprayedOnce = false;
+    pulse_fuelToWaterRatioCount = 1;
+  }
 }
 //void manualBtn()
 //{

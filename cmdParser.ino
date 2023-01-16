@@ -121,10 +121,12 @@ void CmdParser() {
               valStr = sdata.substring(1);
               valf = valStr.toFloat();
             }
-            if (valf > 0 )
+            if (valf > 0)
             {
               flowRateBias = valf;
               EEPROM.put(addr4, flowRateBias);
+              quickCalculateWaterPercentage();
+              calculateDenom();
               printSetting();
             }
             else
@@ -146,6 +148,8 @@ void CmdParser() {
             {
               solShotBias = valf;
               EEPROM.put(addr5, solShotBias);
+              quickCalculateWaterPercentage();
+              calculateDenom();
               printSetting();
             }
             else
@@ -227,6 +231,32 @@ void CmdParser() {
               {
                 solenoidOnPulse = val;
                 EEPROM.put(addr10, solenoidOnPulse);
+                printSetting();
+              }
+              else
+                Serial.println("Input is out of Range");
+              break;
+            }
+          }
+        case 'J': case 'j':
+          {
+            if (!SettingMode || manualPumpState)
+            {
+              Serial.println("Not in Setting Mode !");
+              break;
+            }
+            else
+            {
+              if (sdata.length() > 1)
+              {
+                valStr = sdata.substring(1);
+                valf = valStr.toFloat();
+              }
+              if (valf > 0)
+              {
+                quickWaterPercentage = valf;
+                EEPROM.put(addr11, quickWaterPercentage);
+                quickCalculateWaterPercentage();
                 printSetting();
               }
               else
@@ -343,10 +373,7 @@ void printSetting()
   Serial.println("RTES v" + String(ver));
   Serial.print("A: Emulsion State {0,1}: "); Serial.println(emulsionTrig);
   Serial.print("B: Fuel Pulse Count Max(9): " + String(pulse_fuelToWaterRatio) + " pulse");
-  if (pulse_fuelToWaterRatio > 1)
-    Serial.println("s");
-  else
-    Serial.println();
+  pulse_fuelToWaterRatio > 1 ? Serial.println("s") : Serial.println();
   Serial.println("C: Engine Off Timeout (10s): " + String(engineOffTimeOut) + " ms");
   Serial.println("D: Fuel Flow Rate Bias (1.45): " + String(flowRateBias) + " ml/pulse");
   Serial.println("E: Water Shot Bias (1.6): " + String(solShotBias) + " ml/pulse");
@@ -354,10 +381,8 @@ void printSetting()
   Serial.println("G: Reset to Factory Settings");
   Serial.println("H: Enter Manual Mode");
   Serial.print("I: Solenoid On Pulse: " + String(solenoidOnPulse) + " pulse");
-  if (solenoidOnPulse > 1)
-    Serial.println("s");
-  else
-    Serial.println();
+  solenoidOnPulse > 1 ? Serial.println("s") : Serial.println();
+  Serial.println("J: Quick set water percentage: " + String(quickWaterPercentage) + "%");
   Serial.println("$: Refresh Settings");
   Serial.println("S: Enter Settings/Exit Settings/Start RTES System");
   Serial.println("***************************************************************");

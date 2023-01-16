@@ -11,6 +11,7 @@ void ResetSetting()
   EEPROM.put(addr8, 0);
   EEPROM.put(addr9, 1);
   EEPROM.put(addr10, 1);
+  EEPROM.put(addr11, 5);
   LoadSetting();
   SettingMode = 1;
   manualPumpState = 0;
@@ -32,6 +33,7 @@ void SaveSetting()
   EEPROM.put(addr8, fuelTrig);
   EEPROM.put(addr9, waterTrig);
   EEPROM.put(addr10, solenoidOnPulse);
+  EEPROM.put(addr11, quickWaterPercentage);
 }
 
 void LoadSetting()
@@ -75,5 +77,10 @@ void LoadSetting()
 
   EEPROM.get(addr10, read10);
   solenoidOnPulse = read10;
-  denom = flowRateBias * pulse_fuelToWaterRatio + solShotBias * solenoidOnPulse;
+
+  EEPROM.get(addr11, read11);
+  quickWaterPercentage = read11;
+  quickCalculateWaterPercentage();
+
+  calculateDenom();
 }

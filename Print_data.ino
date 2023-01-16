@@ -1,9 +1,7 @@
 void printData()
 {
-  //Serial.print(digitalRead(pulseFlowrate))          ; Serial.print('\t');
-  //  Serial.print(digitalRead(manualButton))           ; Serial.print('\t');
-  //  Serial.print(digitalRead(waterLevel))             ; Serial.print('\t');
-  //    Serial.print(flagManual)                        ;Serial.print('\t');
+  float waterPercentage = ((solShotBias * (float)sprayedOnce) / denom) * 100.0;
+  float fuelPercentage = ((flowRateBias * (float)pulse_fuelToWaterRatioCount) / denom) * 100.0;
   Serial.print(ampMotorFuel, 3);
   Serial.print("A \t");
   Serial.print(ampSolenoid, 3);
@@ -29,10 +27,10 @@ void printData()
   Serial.print('\t');
   //Serial.print(((pulseInc * solShotBias) / ((pulseCounter * flowRateBias) + (pulseInc * solShotBias))) * 100);
   //Serial.print(" %");
-  denom = flowRateBias * pulse_fuelToWaterRatio + solShotBias * solenoidOnPulse;
-  Serial.print(((solShotBias * sprayStarted) / denom) * 100.0);
+  //denom = flowRateBias * (float)(pulse_fuelToWaterRatio + 1) + solShotBias * (float)solenoidOnPulse;
+  Serial.print(waterPercentage, 1);
   Serial.print(" % water\t");
-  Serial.print(((flowRateBias * pulse_fuelToWaterRatioCount) / denom) * 100.0);
+  Serial.print(fuelPercentage, 1);
   Serial.print("% fuel\t");
   //  Serial.print(measCntCurrentTime); Serial.print('\t');
   //  Serial.print(measCntPreviousTime); Serial.print('\t');

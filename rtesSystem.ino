@@ -79,18 +79,17 @@ void rtesSystem()
   //  }
 
   //METHOD 2
-  if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio)
+  if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio && !sprayedOnce)
   {
     prevSolOnTime = millis();
     digitalWrite(solenoidWater, HIGH);
     digitalWrite(motorWater, HIGH);
+    sprayedOnce = true;
     pulseInc++;
   }
-  if (millis() - prevSolOnTime >= solenoidOnTime)
+  if (sprayedOnce && millis() - prevSolOnTime >= solenoidOnTime)
   {
     digitalWrite(solenoidWater, LOW);
     digitalWrite(motorWater, LOW);
   }
-  if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio + solenoidOnPulse)
-    pulse_fuelToWaterRatioCount = 1;
 }
