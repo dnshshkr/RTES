@@ -76,7 +76,6 @@ bool AllState = 0;
 bool fuelTrig = true;
 bool waterTrig = true;
 bool pulseDataPrint = false;
-volatile bool sprayedOnce = false;
 /*********************Change value accordingly********************************************************************/
 bool emulsionTrig = 1;                  // '1'=ON '0'=OFF emulsion //CMD
 int pulse_fuelToWaterRatio = 11;                   //pulse per water shot //CMD
@@ -134,6 +133,9 @@ volatile uint8_t pulseCounter = 1;
 volatile unsigned long totalFuelPulse = 0;
 volatile uint8_t pulse_fuelToWaterRatioCount = 0;
 volatile int flagManual = 0;
+bool sprayedOnce = false;
+bool startSpray = false;
+bool sprayCompleted = true;
 //unsigned long buzzerPreviousTime = 0;
 volatile unsigned long measPlsPreviousTime = 0;
 //unsigned long measCntPreviousTime = 0;

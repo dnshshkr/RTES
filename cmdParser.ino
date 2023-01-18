@@ -81,6 +81,7 @@ void CmdParser() {
               pulse_fuelToWaterRatioCount = 1;
               pulse_fuelToWaterRatio = val;
               EEPROM.put(addr2, pulse_fuelToWaterRatio);
+              calculateDenom();
               printSetting();
             }
             else
@@ -144,7 +145,7 @@ void CmdParser() {
               valStr = sdata.substring(1);
               valf = valStr.toFloat();
             }
-            if (valf > 0 )
+            if (valf > 0)
             {
               solShotBias = valf;
               EEPROM.put(addr5, solShotBias);
@@ -156,7 +157,7 @@ void CmdParser() {
               Serial.println("Input is out of Range");
             break;
           }
-        case 'F': case'f': //Noise Rejectiion
+        case 'F': case'f':
           {
             if (!SettingMode || manualPumpState)
             {
@@ -257,6 +258,7 @@ void CmdParser() {
                 quickWaterPercentage = valf;
                 EEPROM.put(addr11, quickWaterPercentage);
                 quickCalculateWaterPercentage();
+                calculateDenom();
                 printSetting();
               }
               else

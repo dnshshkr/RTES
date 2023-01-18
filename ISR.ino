@@ -1,34 +1,14 @@
 /********************Interrupt function*******************************************************************************/
 void countPulse()
 {
-  //  static unsigned long last_interrupt_time = 0;
-  //  unsigned long interrupt_time = millis();
-  //  //Serial.println("Test");
-  //  if (interrupt_time - last_interrupt_time > noiseRejection) //Noise variable
-  //  {
-  //    pulseCounter++;
-  //    countPulse();
-  //  }
-  //  last_interrupt_time = interrupt_time;
   fuelPulsePeriod = float((millis() - measPlsPreviousTime)) / 1000;
   measuredPulsePerMin = 1.0 / ((1.0 / flowRateBias) * fuelPulsePeriod * (1.0 / 60.0));
   measPlsPreviousTime = millis();
   prevMillisEngOff = millis();
   //pulseCounter++;
-  totalFuelPulse++;
+  totalFuelPulse += 1;
   pulse_fuelToWaterRatioCount++;
-  //measurePulse();
-  pulseDataPrint = true;
-  if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio + solenoidOnPulse)
-  {
-    sprayedOnce = false;
+  if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
     pulse_fuelToWaterRatioCount = 1;
-  }
+  pulseDataPrint = true;
 }
-//void manualBtn()
-//{
-//  static unsigned long last_interrupt_time = 0;
-//  unsigned long interrupt_time = millis();
-//  if (interrupt_time - last_interrupt_time > 100) flagManual = 1;
-//  last_interrupt_time = interrupt_time;
-//}
