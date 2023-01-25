@@ -3,15 +3,14 @@ void ResetSetting()
   SaveSetting();
   EEPROM.put(addr1, 0);
   EEPROM.put(addr2, 10);
-  EEPROM.put(addr3, 10000);
+  EEPROM.put(addr3, 15000);
   EEPROM.put(addr4, 1.45);
-  EEPROM.put(addr5, 1.6);
-  EEPROM.put(addr6, 730);
+  EEPROM.put(addr5, 0.81);
+  EEPROM.put(addr6, 250);
   EEPROM.put(addr7, 1);
   EEPROM.put(addr8, 0);
   EEPROM.put(addr9, 1);
-  EEPROM.put(addr10, 1);
-  EEPROM.put(addr11, 5);
+  EEPROM.put(addr10, 10);
   LoadSetting();
   SettingMode = 1;
   manualPumpState = 0;
@@ -32,8 +31,7 @@ void SaveSetting()
   EEPROM.put(addr7, manualPumpState);
   EEPROM.put(addr8, fuelTrig);
   EEPROM.put(addr9, waterTrig);
-  EEPROM.put(addr10, solenoidOnPulse);
-  EEPROM.put(addr11, quickWaterPercentage);
+  EEPROM.put(addr10, quickWaterPercentage);
 }
 
 void LoadSetting()
@@ -72,15 +70,11 @@ void LoadSetting()
   fuelTrig = read8;
 
   EEPROM.get(addr9, read9);
-  //Serial.print("G: Manual Mode State: "); Serial.println(read7);
   waterTrig = read9;
 
   EEPROM.get(addr10, read10);
-  solenoidOnPulse = read10;
-
-  EEPROM.get(addr11, read11);
-  quickWaterPercentage = read11;
-  quickCalculateWaterPercentage();
+  quickWaterPercentage = read10;
+  calculatePulse_fuelToWaterRatio();
 
   calculateDenom();
 }
