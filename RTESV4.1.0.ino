@@ -132,25 +132,11 @@ volatile int flagManual = 0;
 bool sprayedOnce = false;
 bool startSpray = false;
 bool sprayCompleted = true;
-//unsigned long buzzerPreviousTime = 0;
 volatile unsigned long measPlsPreviousTime = 0;
-//unsigned long measCntPreviousTime = 0;
-//unsigned long rtesPreviousTime = 0;
-//unsigned long rtesPreviousTime2 = 0;
-//unsigned long manualPreviousTime = 0;
 unsigned long pulseInc = 0;
-//unsigned long rtesCurrentTime = 0;
-//unsigned long rtesCurrentTime2 = 0;
-//unsigned long measCntCurrentTime = 0;
-//unsigned long testIOPreviousTime = 0;
-//int stallVar = 0;
 int pulseCnt = 0;
-//int pulseCntFlag = 0;
-//int pulseCntDebounceFlag = 0;
-//unsigned long opening = 0;   //valve opening period in millisecond
-//unsigned long freq = 60000;  //valve frequency in millisecond
 unsigned long prevSolOnTime;
-float denom;// = flowRateBias * pulse_fuelToWaterRatio + solShotBias * solenoidOnPulse;
+float denom;
 float quickWaterPercentage = 10;
 unsigned long prevMillisEngOff;
 bool engOffStatusPrintOnce;
@@ -171,46 +157,28 @@ void setup()
   Serial.begin(115200);
   pinMode(pulseFlowrate, INPUT_PULLUP);
   pinMode(waterLevel, INPUT_PULLUP);
-  //pinMode(manualButton, INPUT_PULLUP);
   pinMode(motorFuel, OUTPUT);
   pinMode(motorWater, OUTPUT);
   pinMode(solenoidWater, OUTPUT);
-  // pinMode(buzzer, OUTPUT);
   pinMode(fuelMotorCurrentPin, INPUT);
   pinMode(solenoidCurrentPin, INPUT);
   pinMode(waterPumpCurrentPin, INPUT);
-
   attachInterrupt(digitalPinToInterrupt(pulseFlowrate), countPulse, FALLING);
-
-  /********************The main Delay***********************************************************************************/
-  //currentLimitedOut(1, 0, 1);  //(fuel,sol,wat) //MUST ON FUEL AND WATER PUMP
-  //display.setBrightness(0x0f);
-  //delay(50);
-  //display.showNumberHexEx(0xbbbb);
-
   pulseCounter = 0;
   totalFuelPulse = 0;
   pulseCnt = 0;
-
-  //LOAD SETTING
-  //SaveSetting();
-  LoadSetting();
-
-  //********Initial shot water (if needed)
-  //  currentLimitOutput(1, emulsionTrig, 1); //(fuel,sol,wat)
-  //  delay(100); // added this value to count pulse function
-  //  currentLimitOutput(1, 0, 1);//(fuel,sol,wat)
-  //  pulseInc++;
+  LoadSetting(); //load settings
   SettingMode = true;
   digitalWrite(solenoidWater, LOW);
   digitalWrite(motorWater, LOW);
   printSetting();
-
-  Serial.println("RTES Initialized ");
+  Serial.println("RTES Initialized");
   if (manualPumpState)
     printSettingManual();
   SettingMode = false;
+  Serial.println("RTES mode entered");
 }
+
 void loop()
 {
   if (millis() - prevMillisEngOff >= engineOffTimeOut && !SettingMode)
@@ -229,13 +197,8 @@ void loop()
   /********************CMD Parser***************************************************************************************/
   CmdParser();
   /********************RTES SYSTEM**************************************************************************************/
-  //digitalWrite(motorWater,HIGH);
   if (pulseDataPrint)
-  {
-    //measurePulse();  //calculate flowrate
-    //countPulse();
     measureAmperage();
-  }
   /********************PRINT DATA***************************************************************************************/
   if (!SettingMode && !manualPumpState && pulseDataPrint)
   {
@@ -245,22 +208,10 @@ void loop()
       rtesSystem();
     }
     printData();
-    //Serial.print("Fuel: ");Serial.print(fuelTrig);Serial.print("\t");Serial.print("Water: ");Serial.print(waterTrig);Serial.print("\t");Serial.print("Sol: ");Serial.println(emulsionTrig);
-
   }
-  else if (manualPumpState)  //Stop RTES
-  {
-    //    fuelPump(fuelTrig);
-    //    solPump(emulsionTrig);
-    //    waterPump(waterTrig);
-    if (manualPrintData)
+  else if (manualPumpState && manualPrintData)  //Stop RTES
       printData();
-
-  }
   else if (digitalRead(waterLevel) == 1 && flagManual == 0)
     rtesSystem();  //Only SettingMode
-  //testIO();
   /***********************END*******************************************************************************************/
-
-  //  Serial.println("      " + String(micros() - measuredLoopTime) + " microsecond per loop");
 }

@@ -19,7 +19,6 @@ void ResetSetting()
   delay(1000);
 }
 
-
 void SaveSetting()
 {
   EEPROM.put(addr1, emulsionTrig);
