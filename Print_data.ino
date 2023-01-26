@@ -14,27 +14,16 @@ void printData()
   Serial.print(measuredPulsePerMin, 3);
   Serial.print(" ml/min");
   Serial.print('\t');
-  //  Serial.print(rtesCurrentTime2)                    ;Serial.print('\t');
-  //  Serial.print(rtesPreviousTime2)                   ;Serial.print('\t');
-  //  Serial.print(rtesCurrentTime2 - rtesPreviousTime2);Serial.print('\t');
-  //    Serial.print(stallVar)                            ;Serial.print('\t');
   Serial.print(pulse_fuelToWaterRatioCount);
   Serial.print(" counter");
   Serial.print('\t');
-  // Serial.print(pulseCounter2);
   Serial.print(pulseInc);
   Serial.print(" total water pulse");
   Serial.print('\t');
-  //Serial.print(((pulseInc * solShotBias) / ((pulseCounter * flowRateBias) + (pulseInc * solShotBias))) * 100);
-  //Serial.print(" %");
-  //denom = flowRateBias * (float)(pulse_fuelToWaterRatio + 1) + solShotBias * (float)solenoidOnPulse;
   Serial.print(waterPercentage, 1);
   Serial.print(" % water\t");
   Serial.print(fuelPercentage, 1);
   Serial.print("% fuel\t");
-  //  Serial.print(measCntCurrentTime); Serial.print('\t');
-  //  Serial.print(measCntPreviousTime); Serial.print('\t');
-  //  Serial.print(measCntCurrentTime - measCntPreviousTime); Serial.print('\t');
   Serial.println(">");  //for data logger
   pulseDataPrint = false;
 }
