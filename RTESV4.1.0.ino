@@ -74,21 +74,6 @@ bool AllState = 0;
 bool fuelTrig = true;
 bool waterTrig = true;
 bool pulseDataPrint = false;
-/*********************Change value accordingly********************************************************************/
-bool emulsionTrig = 1;                  // '1'=ON '0'=OFF emulsion //CMD
-int pulse_fuelToWaterRatio = 11;                   //pulse per water shot //CMD
-//unsigned long pulseCountTime = 10000;   //milisecond to complete on pulse fuel for idle time //CMD
-float motorFuelAmpLim = 5;              //set limit current motor feul pump
-float solenoidAmpLimit = 5;             //set limit current solenoid
-float motorWaterAmpLimit = 5;           //set limit current motor water
-float flowRateBias = 1.45;              //flowrate mililliter per pulse //CMD
-float solShotBias = 1.4;                //solenoid mililliter per shot //CMD
-//unsigned int pulsePeriodTime = 1000;             //set period time for pulse sensor capturing data (millisecond) 10=280
-unsigned int engineOffTimeOut = 10000;
-uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
-//int noiseRejection = 150;               //in ms //CMD
-unsigned int solenoidOnTime = 100;
-
 
 //load EEPROM
 /*****************************************************************************************************************/
@@ -107,22 +92,12 @@ const int motorFuel = 8;
 const int solenoidWater = 9;
 const int motorWater = 10;
 
-//const int sevenSegmentDIO = 11;
-//const int sevenSegmentCLK = 12;
-//const int buzzer = 13;
-
-/*********************Seven segment display***********************************************************************/
-// #include <TM1637Display.h>
-// TM1637Display display(sevenSegmentCLK, sevenSegmentDIO);
-
 /*********************current amperage****************************************************************************/
 //unsigned long lastExecutedMillis = 0;
 float ampMotorFuel, ampSolenoid, ampMotorWater;
 //int ampA, ampB, ampC; //ampCountLoop = 0;
 
 /*********************variables***********************************************************************************/
-//bool buzzerToggle = 0;
-//bool pulseIncToggle = 0;
 volatile float measuredPulsePerMin = 0;
 volatile float fuelPulsePeriod;
 volatile uint8_t pulseCounter = 1;
@@ -141,6 +116,19 @@ float quickWaterPercentage = 10;
 unsigned long prevMillisEngOff;
 bool engOffStatusPrintOnce;
 const uint8_t solenoidOnPulse = 1;
+bool emulsionTrig = 1;                  // '1'=ON '0'=OFF emulsion //CMD
+int pulse_fuelToWaterRatio = 11;                   //pulse per water shot //CMD
+//unsigned long pulseCountTime = 10000;   //milisecond to complete on pulse fuel for idle time //CMD
+float motorFuelAmpLim = 5;              //set limit current motor feul pump
+float solenoidAmpLimit = 5;             //set limit current solenoid
+float motorWaterAmpLimit = 5;           //set limit current motor water
+float flowRateBias = 1.45;              //flowrate mililliter per pulse //CMD
+float solShotBias = 1.4;                //solenoid mililliter per shot //CMD
+//unsigned int pulsePeriodTime = 1000;             //set period time for pulse sensor capturing data (millisecond) 10=280
+unsigned int engineOffTimeOut = 10000;
+uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
+//int noiseRejection = 150;               //in ms //CMD
+unsigned int solenoidOnTime = 100;
 
 /*********************CmdParser***********************************************************************************/
 String sdata = "";  // Initialised to nothing.
