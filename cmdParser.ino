@@ -59,9 +59,7 @@ void CmdParser() {
               printSetting();
             }
             else
-            {
               Serial.println("Input is out of Range");
-            }
             break;
           }
         case 'B': case'b': //Pulse Count Max
@@ -344,8 +342,8 @@ void CmdParser() {
           Serial.println(sdata);
       } // switch
       sdata = ""; // Clear the string ready for the next command.
-    } // if \r
-  }  // available
+    }
+  }
 }
 void printSetting()
 {
