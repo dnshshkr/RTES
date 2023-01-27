@@ -5,9 +5,11 @@ void CmdParser() {
   int val;
   float valf;
 
-  if (Serial.available())
+  if (Serial.available() || (bt.available() && digitalRead(btState)))
   {
     ch = Serial.read();
+    if (digitalRead(btState))
+      ch = bt.read();
     sdata += (char)ch;
     if (ch == '\r')
     { // Command received and ready.
@@ -27,9 +29,17 @@ void CmdParser() {
             SettingMode = !SettingMode;
             printSetting();
             if (SettingMode)
+            {
               Serial.println("Setting mode entered");
+              if (digitalRead(btState))
+                bt.println("Setting mode entered");
+            }
             else
+            {
               Serial.println("RTES mode entered");
+              if (digitalRead(btState))
+                bt.println("RTES mode entered");
+            }
             break;
           }
         case '$':
@@ -47,7 +57,9 @@ void CmdParser() {
           {
             if (!SettingMode || manualPumpState)
             {
-              Serial.println("Not in Setting Mode !");
+              Serial.println("Not in settings mode!");
+              if (digitalRead(btState))
+                bt.println("Not in settings mode!");
               break;
             }
             if (sdata.length() > 1) {
@@ -61,14 +73,20 @@ void CmdParser() {
               printSetting();
             }
             else
-              Serial.println("Input is out of Range");
+            {
+              Serial.println("Input is out of range");
+              if (digitalRead(btState))
+                bt.println("Input is out of range");
+            }
             break;
           }
         case 'B': case'b': //Pulse Count Max
           {
             if (!SettingMode || manualPumpState)
             {
-              Serial.println("Not in setting mode ! ");
+              Serial.println("Not in settings mode!");
+              if (digitalRead(btState))
+                bt.println("Not in settings mode!");
               break;
             }
             if (sdata.length() > 1)
@@ -85,14 +103,20 @@ void CmdParser() {
               printSetting();
             }
             else
-              Serial.println("Input is out of Range");
+            {
+              Serial.println("Input is out of range");
+              if (digitalRead(btState))
+                bt.println("Input is out of range");
+            }
             break;
           }
         case 'C': case'c': //Pulse time for idle
           {
             if (!SettingMode || manualPumpState)
             {
-              Serial.println("Not in setting mode ! ");
+              Serial.println("Not in settings mode!");
+              if (digitalRead(btState))
+                bt.println("Not in settings mode!");
               break;
             }
             if (sdata.length() > 1)
@@ -107,14 +131,20 @@ void CmdParser() {
               printSetting();
             }
             else
-              Serial.println("Input is out of Range");
+            {
+              Serial.println("Input is out of range");
+              if (digitalRead(btState))
+                bt.println("Input is out of range");
+            }
             break;
           }
         case 'D': case'd': //Flow Rate Bias
           {
             if (!SettingMode || manualPumpState)
             {
-              Serial.println("Not in setting mode ! ");
+              Serial.println("Not in settings mode!");
+              if (digitalRead(btState))
+                bt.println("Not in settings mode!");
               break;
             }
             if (sdata.length() > 1)
@@ -131,14 +161,20 @@ void CmdParser() {
               printSetting();
             }
             else
-              Serial.println("Input is out of Range");
+            {
+              Serial.println("Input is out of range");
+              if (digitalRead(btState))
+                bt.println("Input is out of range");
+            }
             break;
           }
         case 'E': case'e': //Solenoid Shot Bias
           {
             if (!SettingMode || manualPumpState)
             {
-              Serial.println("Not in setting mode ! ");
+              Serial.println("Not in settings mode!");
+              if (digitalRead(btState))
+                bt.println("Not in settings mode!");
               break;
             }
             if (sdata.length() > 1) {
@@ -155,14 +191,20 @@ void CmdParser() {
               printSetting();
             }
             else
-              Serial.println("Input is out of Range");
+            {
+              Serial.println("Input is out of range");
+              if (digitalRead(btState))
+                bt.println("Input is out of range");
+            }
             break;
           }
         case 'F': case'f':
           {
             if (!SettingMode || manualPumpState)
             {
-              Serial.println("Not in setting mode ! ");
+              Serial.println("Not in settings mode!");
+              if (digitalRead(btState))
+                bt.println("Not in settings mode!");
               break;
             }
             if (sdata.length() > 1)
@@ -178,27 +220,39 @@ void CmdParser() {
               printSetting();
             }
             else
-              Serial.println("Input is out of Range");
+            {
+              Serial.println("Input is out of range");
+              if (digitalRead(btState))
+                bt.println("Input is out of range");
+            }
             break;
           }
         case 'G': case'g': //Reset Setting
           {
-            while (Serial.available())
+            while (Serial.available() || bt.available())
               String trash = Serial.readStringUntil('\r\n');
             if (!SettingMode || manualPumpState)
             {
-              Serial.println("Not in Setting Mode !");
+              Serial.println("Not in settings mode!");
+              if (digitalRead(btState))
+                bt.println("Not in settings mode!");
               break;
             }
             else
             {
               Serial.println("Are you sure you want to reset to factory settings? (Y/N)");
+              if (digitalRead(btState))
+                bt.println("Are you sure you want to reset to factory settings? (Y/N)");
               unsigned short current;
               unsigned long prev = millis();
-              while (!Serial.available() && current <= 10000)
+              while ((!Serial.available() || !bt.available()) && current <= 10000)
                 current = millis() - prev;
               char choice = Serial.read();
+              if (digitalRead(btState))
+                choice = bt.read();
               Serial.println(choice);
+              if (digitalRead(btState))
+                bt.println(choice);
               if (choice == 'Y' || choice == 'y')
                 ResetSetting();
             }
@@ -209,7 +263,9 @@ void CmdParser() {
           {
             if (!SettingMode || manualPumpState)
             {
-              Serial.println("Not in Setting Mode !");
+              Serial.println("Not in settings mode!");
+              if (digitalRead(btState))
+                bt.println("Not in settings mode");
               break;
             }
             manualPumpState = 1;
@@ -221,7 +277,9 @@ void CmdParser() {
           {
             if (!SettingMode || manualPumpState)
             {
-              Serial.println("Not in Setting Mode !");
+              Serial.println("Not in settings mode!");
+              if (digitalRead(btState))
+                bt.println("Not in settings mode!");
               break;
             }
             else
@@ -240,7 +298,11 @@ void CmdParser() {
                 printSetting();
               }
               else
-                Serial.println("Input is out of Range");
+              {
+                Serial.println("Input is out of range");
+                if (digitalRead(btState))
+                  bt.println("Input is out of range");
+              }
               break;
             }
           }
@@ -248,7 +310,9 @@ void CmdParser() {
           {
             if (!manualPumpState)
             {
-              Serial.println("Not in manual mode ! ");
+              Serial.println("Not in manual mode!");
+              if (digitalRead(btState))
+                bt.println("Not in manual mode!");
               break;
             }
             if (sdata.length() > 1)
@@ -341,7 +405,11 @@ void CmdParser() {
             break;
           }
         default:
-          Serial.println(sdata);
+          {
+            Serial.println(sdata);
+            if (digitalRead(btState))
+              bt.println(sdata);
+          }
       } // switch
       sdata = ""; // Clear the string ready for the next command.
     }
@@ -364,6 +432,24 @@ void printSetting()
   Serial.println("$: Refresh Settings");
   Serial.println("S: Enter Settings/Exit Settings/Start RTES System");
   Serial.println("***************************************************************");
+  if (digitalRead(btState))
+  {
+    bt.println("**************************ALL SETTING**************************");
+    bt.println("RTES v" + String(ver));
+    bt.print("A: Emulsion State {0,1}: "); bt.println(emulsionTrig);
+    bt.print("B: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
+    pulse_fuelToWaterRatio > 1 ? bt.println("s") : bt.println();
+    bt.println("C: Engine Off Timeout: " + String(engineOffTimeOut) + " ms");
+    bt.println("D: Fuel Flow Rate Bias: " + String(flowRateBias) + " ml/pulse");
+    bt.println("E: Water Shot Bias: " + String(solShotBias) + " ml/pulse");
+    bt.println("F: Solenoid On Time: " + String(solenoidOnTime) + " ms");
+    bt.println("G: Reset to Factory Settings");
+    bt.println("H: Enter Manual Mode");
+    bt.println("I: Water percentage: " + String(quickWaterPercentage) + "%");
+    bt.println("$: Refresh Settings");
+    bt.println("S: Enter Settings/Exit Settings/Start RTES System");
+    bt.println("***************************************************************");
+  }
 }
 
 void printSettingManual()
@@ -375,8 +461,22 @@ void printSettingManual()
   Serial.print("T3: ON/OFF Water Pump: "); Serial.println(waterTrig);
   Serial.println("T4: ON All Pump: ");
   Serial.println("T5: OFF All Pump: ");
-  Serial.print("T6: ON/OFF Print Data: "); if (manualPrintData) Serial.println("ON"); else Serial.println("OFF");
+  Serial.print("T6: ON/OFF Print Data: "); manualPrintData ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("T7: Return to RTES Mode");
   Serial.println("$: Refresh Settings");
   Serial.println("**************************************************************");
+  if (digitalRead(btState))
+  {
+    bt.println("**********************MANUAL MODE SETTING*********************");
+    bt.println("Manual Mode RTES v" + String(ver));
+    bt.print("T1: ON/OFF Fuel Pump: "); bt.println(fuelTrig);
+    bt.print("T2: ON/OFF Solenoid: "); bt.println(emulsionTrig);
+    bt.print("T3: ON/OFF Water Pump: "); bt.println(waterTrig);
+    bt.println("T4: ON All Pump: ");
+    bt.println("T5: OFF All Pump: ");
+    bt.print("T6: ON/OFF Print Data: "); manualPrintData ? bt.println("ON") : bt.println("OFF");
+    bt.println("T7: Return to RTES Mode");
+    bt.println("$: Refresh Settings");
+    bt.println("**************************************************************");
+  }
 }
