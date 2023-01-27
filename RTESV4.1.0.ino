@@ -82,7 +82,7 @@ bool pulseDataPrint = false;
 /*********************Pinout*************************************************************************************/
 const int pulseFlowrate = 2;
 //const int manualButton = 3;
-const int waterLevel = 4;
+//const int waterLevel = 4;
 
 const int fuelMotorCurrentPin = A3;
 const int solenoidCurrentPin = A2;
@@ -144,7 +144,7 @@ void setup()
 {
   Serial.begin(115200);
   pinMode(pulseFlowrate, INPUT_PULLUP);
-  pinMode(waterLevel, INPUT_PULLUP);
+  //pinMode(waterLevel, INPUT_PULLUP);
   pinMode(motorFuel, OUTPUT);
   pinMode(motorWater, OUTPUT);
   pinMode(solenoidWater, OUTPUT);
@@ -185,21 +185,23 @@ void loop()
   /********************CMD Parser***************************************************************************************/
   CmdParser();
   /********************RTES SYSTEM**************************************************************************************/
-  if (pulseDataPrint)
-    measureAmperage();
+  //  if (pulseDataPrint)
+  //    measureAmperage();
   /********************PRINT DATA***************************************************************************************/
   if (!SettingMode && !manualPumpState && pulseDataPrint)
   {
-    if (digitalRead(waterLevel) == 1 && flagManual == 0 && !stopEmulsion)
-    {
-      measureAmperage();  //read current sensor
+    //    if (digitalRead(waterLevel) == 1 && flagManual == 0 && !stopEmulsion)
+    //    {
+    //      measureAmperage();  //read current sensor
+    //      rtesSystem();
+    //    }
+    if (!flagManual && !stopEmulsion)
       rtesSystem();
-    }
     printData();
   }
   else if (manualPumpState && manualPrintData)  //Stop RTES
-      printData();
-  else if (digitalRead(waterLevel) == 1 && flagManual == 0)
+    printData();
+  else if (!flagManual)
     rtesSystem();  //Only SettingMode
   /***********************END*******************************************************************************************/
 }
