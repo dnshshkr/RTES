@@ -1,16 +1,16 @@
 void currentLimitedOut(int a, int b, int c)
 {
-  if (ampMotorFuel < motorFuelAmpLim && a == 1)
+  if (ampMotorFuel < motorFuelAmpLim && a)
     digitalWrite(motorFuel, HIGH);
   else
     digitalWrite(motorFuel, LOW);
 
-  if (ampSolenoid < solenoidAmpLimit && b == 1)
+  if (ampSolenoid < solenoidAmpLimit && b)
     digitalWrite(solenoidWater, HIGH);
   else
     digitalWrite(solenoidWater, LOW);
 
-  if (ampMotorWater < motorWaterAmpLimit && c == 1)
+  if (ampMotorWater < motorWaterAmpLimit && c)
     digitalWrite(motorWater, HIGH);
   else
     digitalWrite(motorWater, LOW);
@@ -18,7 +18,7 @@ void currentLimitedOut(int a, int b, int c)
 
 void fuelPump(int a)
 {
-  if (ampMotorFuel < motorFuelAmpLim && a == 1)
+  if (ampMotorFuel < motorFuelAmpLim && a)
     digitalWrite(motorFuel, HIGH);
   else
     digitalWrite(motorFuel, LOW);
@@ -26,7 +26,7 @@ void fuelPump(int a)
 
 void solPump(int b)
 {
-  if (ampMotorFuel < motorFuelAmpLim && b == 1)
+  if (ampMotorFuel < motorFuelAmpLim && b)
     digitalWrite(solenoidWater, HIGH);
   else
     digitalWrite(solenoidWater, LOW);
@@ -34,7 +34,7 @@ void solPump(int b)
 
 void waterPump(int c)
 {
-  if (ampMotorFuel < motorFuelAmpLim && c == 1)
+  if (ampMotorFuel < motorFuelAmpLim && c)
     digitalWrite(motorWater, HIGH);
   else
     digitalWrite(motorWater, LOW);
