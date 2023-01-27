@@ -9,7 +9,8 @@ void CmdParser() {
   {
     ch = Serial.read();
     sdata += (char)ch;
-    if (ch == '\r') { // Command received and ready.
+    if (ch == '\r')
+    { // Command received and ready.
       sdata.trim();
       // Process command in sdata.
       switch (sdata.charAt(0))
