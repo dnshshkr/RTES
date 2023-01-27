@@ -5,7 +5,8 @@ void CmdParser() {
   int val;
   float valf;
 
-  if (Serial.available()) {
+  if (Serial.available())
+  {
     ch = Serial.read();
     sdata += (char)ch;
     if (ch == '\r') { // Command received and ready.
