@@ -189,7 +189,7 @@ void cmdParser()
         else
         {
           Serial.println("Are you sure you want to reset to factory settings? (Y/N): ");
-          bt.println("Are you sure you want to reset to factory settings? (Y/N)"): ;
+          bt.println("Are you sure you want to reset to factory settings? (Y/N): ") ;
           unsigned short current;
           unsigned long prev, prevCD;
           uint8_t countDown = 10;
