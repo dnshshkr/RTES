@@ -7,7 +7,7 @@ void ResetSetting()
   EEPROM.put(addr4, 1.45);
   EEPROM.put(addr5, 0.81);
   EEPROM.put(addr6, 250);
-  EEPROM.put(addr7, 1);
+  EEPROM.put(addr7, 0);
   EEPROM.put(addr8, 0);
   EEPROM.put(addr9, 1);
   EEPROM.put(addr10, 10);
