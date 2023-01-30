@@ -63,12 +63,11 @@ int read2 = 0;
 unsigned long read3 = 0;
 float read4 = 0;
 float read5 = 0;
-unsigned int read6 = 0;
+int read6 = 0;
 bool read7 = 0;
 bool read8 = 0;
 bool read9 = 0;
-float read10 = 0;
-
+int read10 = 0;
 bool manualPrintData = 0;
 bool manualPumpState = 0;
 bool AllState = 0;
@@ -110,7 +109,6 @@ volatile uint8_t pulseCounter = 1;
 volatile unsigned long totalFuelPulse = 0;
 volatile uint8_t pulse_fuelToWaterRatioCount = 0;
 volatile int flagManual = 0;
-bool commandAvailable;
 bool sprayedOnce = false;
 bool sprayStarted = false;
 bool sprayCompleted = true;
@@ -139,7 +137,6 @@ String cmd;
 bool cmdAvailable;
 
 /*********************CmdParser***********************************************************************************/
-String sdata = "";  // Initialised to nothing.
 bool settingMode = true;
 bool printState = true;
 
@@ -153,7 +150,7 @@ SoftwareSerial bt(btrx, bttx);
 void setup()
 {
   Serial.begin(115200);
-  bt.begin(38400);
+  bt.begin(57600);
   pinMode(pulseFlowrate, INPUT_PULLUP);
   //pinMode(waterLevel, INPUT_PULLUP);
   pinMode(motorFuel, OUTPUT);
@@ -162,6 +159,8 @@ void setup()
   pinMode(fuelMotorCurrentPin, INPUT);
   pinMode(solenoidCurrentPin, INPUT);
   pinMode(waterPumpCurrentPin, INPUT);
+  pinMode(btrx, INPUT);
+  pinMode(bttx, OUTPUT);
   pinMode(btState, INPUT);
   attachInterrupt(digitalPinToInterrupt(pulseFlowrate), countPulse, FALLING);
   pulseCounter = 0;
@@ -180,7 +179,7 @@ void setup()
   settingMode = false;
   Serial.println("RTES mode entered");
   if (digitalRead(btState))
-    bt.println("RTES mode entered");
+    Serial.println("RTES mode entered");
 }
 
 void loop()

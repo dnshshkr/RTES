@@ -188,178 +188,24 @@ void cmdParser()
         }
         else
         {
-          Serial.print("Are you sure you want to reset to factory settings? (Y/N): ");
-          bt.print("Are you sure you want to reset to factory settings? (Y/N): ");
-          unsigned short current = 0;
-          unsigned long prev, prevCD;
-          prev = prevCD = millis();
-          uint8_t countDown = 10;
-          Serial.print(String(countDown) + (char)32);
-          bt.print(String(countDown) + (char)32);
-          do
-          {
+          Serial.println("Are you sure you want to reset to factory settings? (Y/N)");
+          bt.println("Are you sure you want to reset to factory settings? (Y/N)");
+          unsigned short current;
+          unsigned long prev = millis();
+          while ((!Serial.available() || !bt.available()) && current <= 10000)
             current = millis() - prev;
-            if (millis() - prevCD >= 1000)
-            {
-              countDown--;
-              Serial.print(String(countDown) + (char)32);
-              bt.println(String(countDown) + (char)32);
-              prevCD = millis();
-            }
-          } while ((!Serial.available() || !bt.available()) && current <= 10000);
-          Serial.println();
-          bt.println();
           char choice = Serial.read();
+          choice = bt.read();
+          Serial.println(choice);
           if (digitalRead(btState))
-            choice = bt.read();
+            bt.println(choice);
           if (choice == 'Y' || choice == 'y')
-          {
             ResetSetting();
-            while (Serial.available() || (digitalRead(btState) && bt.available()))
-              Serial.read();
-          }
         }
         printSetting();
         break;
       }
-    case 'H': case 'h':
-      {
-        if (!settingMode || manualPumpState)
-        {
-          Serial.println("Not in settings mode!");
-          bt.println("Not in settings mode");
-          break;
-        }
-        manualPumpState = 1;
-        EEPROM.put(addr7, manualPumpState);
-        printSettingManual();
-        break;
-      }
-    case 'I': case'i':
-      {
-        if (!settingMode || manualPumpState)
-        {
-          Serial.println("Not in settings mode!");
-          bt.println("Not in settings mode!");
-          break;
-        }
-        float val = valStr.toFloat();
-        if (val > 0)
-        {
-          quickWaterPercentage = val;
-          EEPROM.put(addr10, quickWaterPercentage);
-          calculatePulse_fuelToWaterRatio();
-          calculateDenom();
-          printSetting();
-        }
-        else
-        {
-          Serial.println("Input is out of range");
-          bt.println("Input is out of range");
-        }
-        break;
-      }
-    case 'T': case't': //MANUAL FUEL PUMP
-      {
-        if (!manualPumpState)
-        {
-          Serial.println("Not in manual mode!");
-          if (digitalRead(btState))
-            bt.println("Not in manual mode!");
-          break;
-        }
-        int val = valStr.toInt();
-        if (val == 1) //ON OFF FUEL
-        {
-          if (fuelTrig == 0)
-          {
-            fuelTrig = 1;
-            EEPROM.put(addr8, fuelTrig);
-          }
-          else
-          {
-            fuelTrig = 0;
-            EEPROM.put(addr8, fuelTrig);
-          }
-          printSettingManual();
-        }
-        else if (val == 2) //ON OFF SOL
-        {
-          if (emulsionTrig == 0)
-          {
-            emulsionTrig = 1;
-            EEPROM.put(addr1, emulsionTrig);
-          }
-          else
-          {
-            emulsionTrig = 0;
-            EEPROM.put(addr1, emulsionTrig);
-          }
-          printSettingManual();
-
-        }
-        else if (val == 3) //ON OFF WATERPUMP
-        {
-          if (waterTrig == 0)
-          {
-            waterTrig = 1;
-            EEPROM.put(addr9, waterTrig);
-          }
-          else
-          {
-            waterTrig = 0;
-            EEPROM.put(addr9, waterTrig);
-          }
-          printSettingManual();
-        }
-        else if (val == 4) //ON ALL
-        {
-          fuelTrig = 1;
-          emulsionTrig = 1;
-          waterTrig = 1;
-          EEPROM.put(addr1, emulsionTrig);
-          EEPROM.put(addr8, fuelTrig);
-          EEPROM.put(addr9, waterTrig);
-          printSettingManual();
-        }
-        else if (val == 5) //OFF ALL
-        {
-          fuelTrig = 0;
-          emulsionTrig = 0;
-          waterTrig = 0;
-          EEPROM.put(addr1, emulsionTrig);
-          EEPROM.put(addr8, fuelTrig);
-          EEPROM.put(addr9, waterTrig);
-
-          printSettingManual();
-        }
-        else if (val == 6)
-        {
-          manualPrintData = !manualPrintData;
-          if (!manualPrintData) printSettingManual();
-        }
-        else if (val == 7)
-        {
-          manualPumpState = 0;
-          //fuelTrig = 1;
-          //EEPROM.get(addr1,read1);
-          //emulsionTrig = read1;
-          //waterTrig = 1;
-
-          EEPROM.put(addr7, manualPumpState);
-
-          printSetting();
-        }
-        break;
-      }
-    default:
-      {
-        Serial.println("Wrong command");
-        bt.println("Wrong command");
-      }
   }
-
-
   //  byte ch;
   //  String valStr;
   //  int val;
@@ -777,7 +623,7 @@ void cmdParser()
 }
 void printSetting()
 {
-  Serial.println("*************************ALL SETTINGS*************************");
+  Serial.println("**************************ALL SETTING**************************");
   Serial.println("RTES v" + String(ver));
   Serial.print("A: Emulsion State {0,1}: "); Serial.println(emulsionTrig);
   Serial.print("B: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
@@ -791,27 +637,30 @@ void printSetting()
   Serial.println("I: Water percentage: " + String(quickWaterPercentage) + "%");
   Serial.println("$: Refresh Settings");
   Serial.println("S: Enter Settings/Exit Settings/Start RTES System");
-  Serial.println("**************************************************************");
-  bt.println("**********************ALL SETTINGS***********************");
-  bt.println("RTES v" + String(ver));
-  bt.print("A: Emulsion State {0,1}: "); bt.println(emulsionTrig);
-  bt.print("B: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
-  pulse_fuelToWaterRatio > 1 ? bt.println("s") : bt.println();
-  bt.println("C: Engine Off Timeout: " + String(engineOffTimeOut) + " ms");
-  bt.println("D: Fuel Flow Rate Bias: " + String(flowRateBias) + " ml/pulse");
-  bt.println("E: Water Shot Bias: " + String(solShotBias) + " ml/pulse");
-  bt.println("F: Solenoid On Time: " + String(solenoidOnTime) + " ms");
-  bt.println("G: Reset to Factory Settings");
-  bt.println("H: Enter Manual Mode");
-  bt.println("I: Water percentage: " + String(quickWaterPercentage) + "%");
-  bt.println("$: Refresh Settings");
-  bt.println("S: Enter Settings/Exit Settings/Start RTES System");
-  bt.println("*************************************************************");
+  Serial.println("***************************************************************");
+  if (digitalRead(btState))
+  {
+    bt.println("**************************ALL SETTING**************************");
+    bt.println("RTES v" + String(ver));
+    bt.print("A: Emulsion State {0,1}: "); bt.println(emulsionTrig);
+    bt.print("B: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
+    pulse_fuelToWaterRatio > 1 ? bt.println("s") : bt.println();
+    bt.println("C: Engine Off Timeout: " + String(engineOffTimeOut) + " ms");
+    bt.println("D: Fuel Flow Rate Bias: " + String(flowRateBias) + " ml/pulse");
+    bt.println("E: Water Shot Bias: " + String(solShotBias) + " ml/pulse");
+    bt.println("F: Solenoid On Time: " + String(solenoidOnTime) + " ms");
+    bt.println("G: Reset to Factory Settings");
+    bt.println("H: Enter Manual Mode");
+    bt.println("I: Water percentage: " + String(quickWaterPercentage) + "%");
+    bt.println("$: Refresh Settings");
+    bt.println("S: Enter Settings/Exit Settings/Start RTES System");
+    bt.println("***************************************************************");
+  }
 }
 
 void printSettingManual()
 {
-  Serial.println("*********************MANUAL MODE SETTING*********************");
+  Serial.println("**********************MANUAL MODE SETTING*********************");
   Serial.println("Manual Mode RTES v" + String(ver));
   Serial.print("T1: ON/OFF Fuel Pump: "); Serial.println(fuelTrig);
   Serial.print("T2: ON/OFF Solenoid: "); Serial.println(emulsionTrig);
@@ -821,16 +670,19 @@ void printSettingManual()
   Serial.print("T6: ON/OFF Print Data: "); manualPrintData ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("T7: Return to RTES Mode");
   Serial.println("$: Refresh Settings");
-  Serial.println("*************************************************************");
-  bt.println("******************MANUAL MODE SETTING******************");
-  bt.println("Manual Mode RTES v" + String(ver));
-  bt.print("T1: ON/OFF Fuel Pump: "); bt.println(fuelTrig);
-  bt.print("T2: ON/OFF Solenoid: "); bt.println(emulsionTrig);
-  bt.print("T3: ON/OFF Water Pump: "); bt.println(waterTrig);
-  bt.println("T4: ON All Pump: ");
-  bt.println("T5: OFF All Pump: ");
-  bt.print("T6: ON/OFF Print Data: "); manualPrintData ? bt.println("ON") : bt.println("OFF");
-  bt.println("T7: Return to RTES Mode");
-  bt.println("$: Refresh Settings");
-  bt.println("*************************************************************");
+  Serial.println("**************************************************************");
+  if (digitalRead(btState))
+  {
+    bt.println("**********************MANUAL MODE SETTING*********************");
+    bt.println("Manual Mode RTES v" + String(ver));
+    bt.print("T1: ON/OFF Fuel Pump: "); bt.println(fuelTrig);
+    bt.print("T2: ON/OFF Solenoid: "); bt.println(emulsionTrig);
+    bt.print("T3: ON/OFF Water Pump: "); bt.println(waterTrig);
+    bt.println("T4: ON All Pump: ");
+    bt.println("T5: OFF All Pump: ");
+    bt.print("T6: ON/OFF Print Data: "); manualPrintData ? bt.println("ON") : bt.println("OFF");
+    bt.println("T7: Return to RTES Mode");
+    bt.println("$: Refresh Settings");
+    bt.println("**************************************************************");
+  }
 }
