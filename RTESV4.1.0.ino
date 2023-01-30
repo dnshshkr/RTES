@@ -133,6 +133,8 @@ float solShotBias = 1.4;                //solenoid mililliter per shot //CMD
 unsigned int engineOffTimeOut = 10000;
 uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
 unsigned int solenoidOnTime = 100;
+String msg;
+bool cmdAvailable;
 
 /*********************CmdParser***********************************************************************************/
 String sdata = "";  // Initialised to nothing.
@@ -199,7 +201,24 @@ void loop()
   //  unsigned long measuredLoopTime = micros();
 
   /********************CMD Parser***************************************************************************************/
-  cmdParser();
+  if (Serial.available())
+  {
+    msg = Serial.readStringUntil('\r\n');
+    cmdAvailable = true;
+  }
+  else if (digitalRead(btState) && bt.available())
+  {
+    msg = bt.readStringUntil('\r\n');
+    cmdAvailable = true;
+  }
+  else
+    cmdAvailable = false;
+  if (cmdAvailable)
+  {
+    msg.trim();
+    cmdParser();
+  }
+
   /********************RTES SYSTEM**************************************************************************************/
   //  if (pulseDataPrint)
   //    measureAmperage();
