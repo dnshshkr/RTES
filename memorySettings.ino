@@ -1,16 +1,5 @@
-void resetSettings()
+void resetSettings() //factory reset
 {
-  //saveSettings();
-  //  emulsionTrig = 0;
-  //  pulse_fuelToWaterRatio = 3;
-  //  engineOffTimeOut=15000;
-  //  flowRateBias=1.45;
-  //  solShotBias=0.81;
-  //  solenoidOnTime=250;
-  //  manualPumpState=0;
-  //  fuelTrig=0;
-  //  waterTrig=0;
-  //  quickWaterPercentage=10;
   EEPROM.put(addr1, 10);
   EEPROM.put(addr2, 15);
   EEPROM.put(addr3, 1.45);
@@ -35,7 +24,7 @@ void saveSettings()
   EEPROM.update(addr4, solShotBias);
   EEPROM.update(addr5, solenoidOnTime);
   EEPROM.update(addr6, quickWaterPercentage);
-  EEPROM.update(addr7, manualPumpState );
+  EEPROM.update(addr7, manualPumpState);
 }
 
 void loadSettings()

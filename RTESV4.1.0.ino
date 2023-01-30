@@ -44,6 +44,8 @@
    13 Oct 22:
    Add flowrate measurement on print_data (ml/min)
   ;================================================================================================================*/
+#include<EEPROM.h>
+#include<SoftwareSerial.h>
 
 /*********************Set limit***********************************************************************************/
 //Save Initial Setting EEPROM
@@ -54,15 +56,6 @@
 #define addr5 20
 #define addr6 25
 #define addr7 30
-
-bool manualPrintData = 0;
-bool manualPumpState = 0;
-bool pulseDataPrint = false;
-
-//load EEPROM
-/*****************************************************************************************************************/
-#include<EEPROM.h>
-#include<SoftwareSerial.h>
 
 /*********************Pinout*************************************************************************************/
 const uint8_t pulseFlowrate = 2;
@@ -77,16 +70,18 @@ const uint8_t bttx = 11;
 const uint8_t btState = 5;
 
 /*********************current amperage****************************************************************************/
-float ampMotorFuel, ampSolenoid, ampMotorWater;
+//float ampMotorFuel, ampSolenoid, ampMotorWater;
 
 /*********************variables***********************************************************************************/
-volatile int flagManual = 0;
 volatile float measuredPulsePerMin = 0;
 volatile float fuelPulsePeriod;
 volatile uint8_t pulseCounter = 1;
 volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long measPlsPreviousTime = 0;
 volatile uint8_t pulse_fuelToWaterRatioCount = 0;
+bool manualPrintData = false;
+bool manualPumpState = false;
+bool pulseDataPrint = false;
 bool cmdAvailable;
 bool engOffStatusPrintOnce;
 bool sprayedOnce = false;
@@ -96,17 +91,16 @@ bool solenoidManualState = false;
 bool waterPumpManualState = false;
 const uint8_t solenoidOnPulse = 1;
 uint8_t engineOffTimeOut = 15;
-uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
-int pulseCnt = 0;
-unsigned int pulse_fuelToWaterRatio = 11;                   //pulse per water shot //CMD
+uint8_t currentSensorType = 1; //'0'=ACS713 '1'=ACS712
+unsigned int pulse_fuelToWaterRatio = 11; //pulse per water shot //CMD
 unsigned int solenoidOnTime = 250;
 float denom;
 float quickWaterPercentage = 10;
-float motorFuelAmpLim = 5.0;              //set limit current motor feul pump
-float solenoidAmpLimit = 5.0;             //set limit current solenoid
-float motorWaterAmpLimit = 5.0;           //set limit current motor water
-float flowRateBias = 1.45;              //flowrate mililliter per pulse //CMD
-float solShotBias = 1.4;                //solenoid mililliter per shot //CMD
+//float motorFuelAmpLim = 5.0 //set limit current motor feul pump
+//float solenoidAmpLimit = 5.0 //set limit current solenoid
+//float motorWaterAmpLimit = 5.0 //set limit current motor water
+float flowRateBias = 1.45; //flowrate mililliter per pulse //CMD
+float solShotBias = 1.4; //solenoid mililliter per shot //CMD
 unsigned long prevSolOnTime;
 unsigned long prevMillisEngOff;
 unsigned long pulseInc = 0;
@@ -114,11 +108,11 @@ String cmd;
 
 /*********************CmdParser***********************************************************************************/
 bool settingMode = true;
-bool printState = true;
+//bool printState = true;
 
 /*********************CheckFuelPumpCurrent***********************************************************************************/
-float ampMotorFuelLow = 3.6;
-float ampMotorFuelHigh = 4.1;
+//float ampMotorFuelLow = 3.6;
+//float ampMotorFuelHigh = 4.1;
 
 SoftwareSerial bt(btrx, bttx);
 
@@ -140,7 +134,6 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(pulseFlowrate), countPulse, FALLING);
   pulseCounter = 0;
   totalFuelPulse = 0;
-  pulseCnt = 0;
   loadSettings(); //load settings
   settingMode = true;
   digitalWrite(solenoidWater, LOW);
@@ -170,7 +163,6 @@ void loop()
   }
   else
     engOffStatusPrintOnce = false;
-  //  unsigned long measuredLoopTime = micros();
 
   /********************CMD Parser***************************************************************************************/
   if (Serial.available())
@@ -190,20 +182,12 @@ void loop()
     cmd.trim();
     cmdParser();
   }
-
-  /********************RTES SYSTEM**************************************************************************************/
-  //  if (pulseDataPrint)
-  //    measureAmperage();
-  /********************PRINT DATA***************************************************************************************/
   if (!settingMode && !manualPumpState && pulseDataPrint)
   {
-    if (!flagManual)
-      rtesSystem();
+    rtesSystem();
     printData();
   }
   else if (manualPumpState && manualPrintData)  //Stop RTES
     printData();
-  //  else if (!flagManual)
-  //    rtesSystem();  //Only settingMode
   /***********************END*******************************************************************************************/
 }
