@@ -127,7 +127,6 @@ float solShotBias = 1.4;                //solenoid mililliter per shot //CMD
 //unsigned int pulsePeriodTime = 1000;             //set period time for pulse sensor capturing data (millisecond) 10=280
 unsigned int engineOffTimeOut = 10000;
 uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
-//int noiseRejection = 150;               //in ms //CMD
 unsigned int solenoidOnTime = 100;
 
 /*********************CmdParser***********************************************************************************/
