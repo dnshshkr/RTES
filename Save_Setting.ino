@@ -16,7 +16,7 @@ void ResetSetting()
   manualPumpState = 0;
   pulse_fuelToWaterRatioCount = 1;
   Serial.println("Restored to factory settings");
-  Serial.println("Restored to factory settings");
+  bt.println("Restored to factory settings");
   delay(1000);
 }
 
