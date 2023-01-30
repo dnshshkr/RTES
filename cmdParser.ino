@@ -1,7 +1,7 @@
 void cmdParser()
 {
-  char alph = msg.charAt(0);
-  String valStr = msg.substring(1, msg.length());
+  char alph = cmd.charAt(0);
+  String valStr = cmd.substring(1, cmd.length());
   switch (alph)
   {
     case 'S': case 's':

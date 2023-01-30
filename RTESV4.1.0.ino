@@ -133,7 +133,7 @@ float solShotBias = 1.4;                //solenoid mililliter per shot //CMD
 unsigned int engineOffTimeOut = 10000;
 uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
 unsigned int solenoidOnTime = 100;
-String msg;
+String cmd;
 bool cmdAvailable;
 
 /*********************CmdParser***********************************************************************************/
@@ -203,19 +203,19 @@ void loop()
   /********************CMD Parser***************************************************************************************/
   if (Serial.available())
   {
-    msg = Serial.readStringUntil('\r\n');
+    cmd = Serial.readStringUntil('\r\n');
     cmdAvailable = true;
   }
   else if (digitalRead(btState) && bt.available())
   {
-    msg = bt.readStringUntil('\r\n');
+    cmd = bt.readStringUntil('\r\n');
     cmdAvailable = true;
   }
   else
     cmdAvailable = false;
   if (cmdAvailable)
   {
-    msg.trim();
+    cmd.trim();
     cmdParser();
   }
 
