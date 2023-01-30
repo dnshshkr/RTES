@@ -112,7 +112,7 @@ volatile uint8_t pulse_fuelToWaterRatioCount = 0;
 volatile int flagManual = 0;
 bool commandAvailable;
 bool sprayedOnce = false;
-bool startSpray = false;
+bool sprayStarted = false;
 bool sprayCompleted = true;
 volatile unsigned long measPlsPreviousTime = 0;
 unsigned long pulseInc = 0;
@@ -134,13 +134,19 @@ float solShotBias = 1.4;                //solenoid mililliter per shot //CMD
 //unsigned int pulsePeriodTime = 1000;             //set period time for pulse sensor capturing data (millisecond) 10=280
 unsigned int engineOffTimeOut = 10000;
 uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
+<<<<<<< HEAD
 //int noiseRejection = 150;               //in ms //CMD
 unsigned int solenoidOnTime = 250;
 //String msg;
+=======
+unsigned int solenoidOnTime = 100;
+String cmd;
+bool cmdAvailable;
+>>>>>>> f5c65674dbcda8c9871a03813f36a73905d00236
 
 /*********************CmdParser***********************************************************************************/
 String sdata = "";  // Initialised to nothing.
-bool SettingMode = true;
+bool settingMode = true;
 bool printState = true;
 
 /*********************CheckFuelPumpCurrent***********************************************************************************/
@@ -168,7 +174,7 @@ void setup()
   totalFuelPulse = 0;
   pulseCnt = 0;
   LoadSetting(); //load settings
-  SettingMode = true;
+  settingMode = true;
   digitalWrite(solenoidWater, LOW);
   digitalWrite(motorWater, LOW);
   printSetting();
@@ -177,7 +183,7 @@ void setup()
     bt.println("RTES Initialized");
   if (manualPumpState)
     printSettingManual();
-  SettingMode = false;
+  settingMode = false;
   Serial.println("RTES mode entered");
   if (digitalRead(btState))
     bt.println("RTES mode entered");
@@ -185,7 +191,7 @@ void setup()
 
 void loop()
 {
-  if (millis() - prevMillisEngOff >= engineOffTimeOut && !SettingMode)
+  if (millis() - prevMillisEngOff >= engineOffTimeOut && !settingMode)
   {
     if (!engOffStatusPrintOnce)
     {
@@ -201,17 +207,38 @@ void loop()
   //  unsigned long measuredLoopTime = micros();
 
   /********************CMD Parser***************************************************************************************/
+<<<<<<< HEAD
   //  if (Serial.available())
   //    msg = Serial.readStringUntil('\r\n');
   //  else if (digitalRead(btState) && bt.available())
   //    msg = bt.readStringUntil('\r\n');
   //  parseValue(msg);
   CmdParser();
+=======
+  if (Serial.available())
+  {
+    cmd = Serial.readStringUntil('\r\n');
+    cmdAvailable = true;
+  }
+  else if (digitalRead(btState) && bt.available())
+  {
+    cmd = bt.readStringUntil('\r\n');
+    cmdAvailable = true;
+  }
+  else
+    cmdAvailable = false;
+  if (cmdAvailable)
+  {
+    cmd.trim();
+    cmdParser();
+  }
+
+>>>>>>> f5c65674dbcda8c9871a03813f36a73905d00236
   /********************RTES SYSTEM**************************************************************************************/
   //  if (pulseDataPrint)
   //    measureAmperage();
   /********************PRINT DATA***************************************************************************************/
-  if (!SettingMode && !manualPumpState && pulseDataPrint)
+  if (!settingMode && !manualPumpState && pulseDataPrint)
   {
     //    if (digitalRead(waterLevel) == 1 && flagManual == 0 && !stopEmulsion)
     //    {
@@ -225,6 +252,6 @@ void loop()
   else if (manualPumpState && manualPrintData)  //Stop RTES
     printData();
   else if (!flagManual)
-    rtesSystem();  //Only SettingMode
+    rtesSystem();  //Only settingMode
   /***********************END*******************************************************************************************/
 }
