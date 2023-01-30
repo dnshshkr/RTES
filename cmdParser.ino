@@ -106,7 +106,7 @@ void cmdParser()
         }
         break;
       }
-    case 'D': case'd':
+    case 'D': case 'd':
       {
         if (!settingMode || manualPumpState)
         {
@@ -130,7 +130,7 @@ void cmdParser()
         }
         break;
       }
-    case 'E': case'e':
+    case 'E': case 'e':
       {
         if (!settingMode || manualPumpState)
         {
@@ -188,17 +188,30 @@ void cmdParser()
         }
         else
         {
-          Serial.println("Are you sure you want to reset to factory settings? (Y/N)");
-          bt.println("Are you sure you want to reset to factory settings? (Y/N)");
+          Serial.println("Are you sure you want to reset to factory settings? (Y/N): ");
+          bt.println("Are you sure you want to reset to factory settings? (Y/N)"): ;
           unsigned short current;
-          unsigned long prev = millis();
-          while ((!Serial.available() || !bt.available()) && current <= 10000)
+          unsigned long prev, prevCD;
+          uint8_t countDown = 10;
+          Serial.print(String(countDown) + (char)32);
+          bt.print(String(countDown) + (char)32);
+          prev, prevCD = millis();
+          do
+          {
             current = millis() - prev;
+            if (millis() - prevCD >= 1000)
+            {
+              countDown--;
+              Serial.print(String(countDown) + (char)32);
+              bt.print(String(countDown) + (char)32);
+              prevCD = millis();
+            }
+          } while ((!Serial.available() || !bt.available()) && current <= 10000);
           char choice = Serial.read();
-          choice = bt.read();
-          Serial.println(choice);
-          if (digitalRead(btState))
-            bt.println(choice);
+          if (digitalRead(btState) && bt.available())
+            choice = bt.read();
+          Serial.println();
+          bt.println();
           if (choice == 'Y' || choice == 'y')
             resetSettings();
         }
