@@ -38,34 +38,12 @@ void cmdParser()
           printSetting();
         break;
       }
-    //    case 'A': case 'a':
-    //      {
-    //        int val = valStr.toInt();
-    //        if (!settingMode || manualPumpState)
-    //        {
-    //          Serial.println("Not in settings mode!");
-    //          bt.println("Not in settings mode!");
-    //          break;
-    //        }
-    //        if (val == 0 || val == 1)
-    //        {
-    //          emulsionTrig = val;
-    //          EEPROM.put(addr1, emulsionTrig);
-    //          printSetting();
-    //        }
-    //        else
-    //        {
-    //          Serial.println("Input is out of range");
-    //          bt.println("Input is out of range");
-    //        }
-    //        break;
-    //      }
     case 'A': case 'a':
       {
         if (!settingMode || manualPumpState)
         {
-          Serial.println("Not in settings mode!");
-          bt.println("Not in settings mode!");
+          Serial.println("Not in settings mode");
+          bt.println("Not in settings mode");
           break;
         }
         int val = valStr.toInt();
@@ -88,8 +66,8 @@ void cmdParser()
       {
         if (!settingMode || manualPumpState)
         {
-          Serial.println("Not in settings mode!");
-          bt.println("Not in settings mode!");
+          Serial.println("Not in settings mode");
+          bt.println("Not in settings mode");
           break;
         }
         int val = valStr.toInt();
@@ -110,12 +88,12 @@ void cmdParser()
       {
         if (!settingMode || manualPumpState)
         {
-          Serial.println("Not in settings mode!");
-          bt.println("Not in settings mode!");
+          Serial.println("Not in settings mode");
+          bt.println("Not in settings mode");
           break;
         }
         float val = valStr.toFloat();
-        if (val > 0)
+        if (val >= 0)
         {
           flowRateBias = val;
           EEPROM.put(addr3, flowRateBias);
@@ -134,8 +112,8 @@ void cmdParser()
       {
         if (!settingMode || manualPumpState)
         {
-          Serial.println("Not in settings mode!");
-          bt.println("Not in settings mode!");
+          Serial.println("Not in settings mode");
+          bt.println("Not in settings mode");
           break;
         }
         float val = valStr.toFloat();
@@ -159,8 +137,8 @@ void cmdParser()
       {
         if (!settingMode || manualPumpState)
         {
-          Serial.println("Not in settings mode!");
-          bt.println("Not in settings mode!");
+          Serial.println("Not in settings mode");
+          bt.println("Not in settings mode");
           break;
         }
         int val = valStr.toInt();
@@ -182,21 +160,8 @@ void cmdParser()
       {
         if (!settingMode || manualPumpState)
         {
-          Serial.println("Not in settings mode!");
+          Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
-          break;
-        }
-        manualPumpState = 1;
-        EEPROM.put(addr6, manualPumpState);
-        printSettingManual();
-        break;
-      }
-    case 'G': case 'g':
-      {
-        if (!settingMode || manualPumpState)
-        {
-          Serial.println("Not in settings mode!");
-          bt.println("Not in settings mode!");
           break;
         }
         float val = valStr.toFloat();
@@ -215,12 +180,25 @@ void cmdParser()
         }
         break;
       }
+    case 'G': case 'g':
+      {
+        if (!settingMode || manualPumpState)
+        {
+          Serial.println("Not in settings mode");
+          bt.println("Not in settings mode");
+          break;
+        }
+        manualPumpState = 1;
+        EEPROM.put(addr6, manualPumpState);
+        printSettingManual();
+        break;
+      }
     case 'R': case 'r':
       {
         if (!settingMode || manualPumpState)
         {
-          Serial.println("Not in settings mode!");
-          bt.println("Not in settings mode!");
+          Serial.println("Not in settings mode");
+          bt.println("Not in settings mode");
           break;
         }
         else
@@ -313,7 +291,6 @@ void cmdParser()
         {
           manualPumpState = 0;
           EEPROM.put(addr7, manualPumpState);
-
           printSetting();
         }
         break;
@@ -330,13 +307,13 @@ void printSetting()
   Serial.println("**************************ALL SETTING**************************");
   Serial.println("RTES v" + String(ver));
   Serial.print("A: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
-  pulse_fuelToWaterRatio > 1 ? Serial.println("s") : Serial.println();
+  (pulse_fuelToWaterRatio == 0 || pulse_fuelToWaterRatio > 1) ? Serial.println("s") : Serial.println();
   Serial.println("B: Engine Off Timeout: " + String(engineOffTimeOut) + " s");
   Serial.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " ml/pulse");
   Serial.println("D: Water Shot Bias: " + String(solShotBias) + " ml/pulse");
   Serial.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
-  Serial.println("F: Enter Manual Mode");
-  Serial.println("G: Water percentage: " + String(quickWaterPercentage) + "%");
+  Serial.println("F: Water percentage: " + String(quickWaterPercentage) + "%");
+  Serial.println("G: Enter Manual Mode");
   Serial.println("$: Refresh Settings");
   Serial.println("R: Reset to Factory Settings");
   Serial.println("S: Enter Settings/Exit Settings/Start RTES System");
@@ -346,13 +323,13 @@ void printSetting()
     bt.println("**************************ALL SETTING**************************");
     bt.println("RTES v" + String(ver));
     bt.print("A: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
-    pulse_fuelToWaterRatio > 1 ? bt.println("s") : bt.println();
-    bt.println("B: Engine Off Timeout: " + String(engineOffTimeOut) + " ms");
+    (pulse_fuelToWaterRatio == 0 || pulse_fuelToWaterRatio > 1) ? bt.println("s") : bt.println();
+    bt.println("B: Engine Off Timeout: " + String(engineOffTimeOut) + " s");
     bt.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " ml/pulse");
     bt.println("D: Water Shot Bias: " + String(solShotBias) + " ml/pulse");
     bt.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
-    bt.println("F: Enter Manual Mode");
-    bt.println("G: Water percentage: " + String(quickWaterPercentage) + "%");
+    bt.println("F: Water percentage: " + String(quickWaterPercentage) + "%");
+    bt.println("G: Enter Manual Mode");
     bt.println("$: Refresh Settings");
     bt.println("R: Reset to Factory Settings");
     bt.println("S: Enter Settings/Exit Settings/Start RTES System");

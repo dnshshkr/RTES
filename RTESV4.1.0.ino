@@ -147,14 +147,12 @@ void setup()
   digitalWrite(motorWater, LOW);
   printSetting();
   Serial.println("RTES Initialized");
-  if (digitalRead(btState))
-    bt.println("RTES Initialized");
+  bt.println("RTES Initialized");
   if (manualPumpState)
     printSettingManual();
   settingMode = false;
   Serial.println("RTES mode entered");
-  if (digitalRead(btState))
-    Serial.println("RTES mode entered");
+  bt.println("RTES mode entered");
 }
 
 void loop()
@@ -163,7 +161,7 @@ void loop()
   {
     if (!engOffStatusPrintOnce)
     {
-      Serial.println("Engine is off");
+      Serial.println("*Engine is off*");
       if (digitalRead(btState))
         bt.println("Engine is off");
       //pulse_fuelToWaterRatioCount = 1;
