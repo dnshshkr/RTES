@@ -47,16 +47,16 @@
 
 /*********************Set limit***********************************************************************************/
 //Save Initial Setting EEPROM
-int addr1 = 0;
-int addr2 = 5;
-int addr3 = 10;
-int addr4 = 15;
-int addr5 = 20;
-int addr6 = 25;
-int addr7 = 30;
-int addr8 = 35;
-int addr9 = 40;
-int addr10 = 45;
+#define addr1 0
+#define addr2 5
+#define addr3 10
+#define addr4 15
+#define addr5 20
+#define addr6 25
+#define addr7 30
+#define addr8 35
+#define addr9 40
+#define addr10 45
 
 bool manualPrintData = 0;
 bool manualPumpState = 0;
@@ -214,18 +214,13 @@ void loop()
   /********************PRINT DATA***************************************************************************************/
   if (!settingMode && !manualPumpState && pulseDataPrint)
   {
-    //    if (digitalRead(waterLevel) == 1 && flagManual == 0 && !stopEmulsion)
-    //    {
-    //      measureAmperage();  //read current sensor
-    //      rtesSystem();
-    //    }
     if (!flagManual && !stopEmulsion)
       rtesSystem();
     printData();
   }
   else if (manualPumpState && manualPrintData)  //Stop RTES
     printData();
-  else if (!flagManual)
-    rtesSystem();  //Only settingMode
+  //  else if (!flagManual)
+  //    rtesSystem();  //Only settingMode
   /***********************END*******************************************************************************************/
 }

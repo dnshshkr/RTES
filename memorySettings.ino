@@ -1,6 +1,16 @@
 void resetSettings()
 {
-  saveSettings();
+  //saveSettings();
+  //  emulsionTrig = 0;
+  //  pulse_fuelToWaterRatio = 3;
+  //  engineOffTimeOut=15000;
+  //  flowRateBias=1.45;
+  //  solShotBias=0.81;
+  //  solenoidOnTime=250;
+  //  manualPumpState=0;
+  //  fuelTrig=0;
+  //  waterTrig=0;
+  //  quickWaterPercentage=10;
   EEPROM.put(addr1, 0);
   EEPROM.put(addr2, 10);
   EEPROM.put(addr3, 15000);
@@ -10,7 +20,7 @@ void resetSettings()
   EEPROM.put(addr7, 0);
   EEPROM.put(addr8, 0);
   EEPROM.put(addr9, 1);
-  EEPROM.put(addr10, 10);
+  EEPROM.put(addr10, 10.0);
   loadSettings();
   settingMode = 1;
   manualPumpState = 0;
@@ -22,16 +32,16 @@ void resetSettings()
 
 void saveSettings()
 {
-  EEPROM.put(addr1, emulsionTrig);
-  EEPROM.put(addr2, pulse_fuelToWaterRatio);
-  EEPROM.put(addr3, engineOffTimeOut);
-  EEPROM.put(addr4, flowRateBias);
-  EEPROM.put(addr5, solShotBias);
-  EEPROM.put(addr6, solenoidOnTime);
-  EEPROM.put(addr7, manualPumpState);
-  EEPROM.put(addr8, fuelTrig);
-  EEPROM.put(addr9, waterTrig);
-  EEPROM.put(addr10, quickWaterPercentage);
+  EEPROM.update(addr1, emulsionTrig);
+  EEPROM.update(addr2, pulse_fuelToWaterRatio);
+  EEPROM.update(addr3, engineOffTimeOut);
+  EEPROM.update(addr4, flowRateBias);
+  EEPROM.update(addr5, solShotBias);
+  EEPROM.update(addr6, solenoidOnTime);
+  EEPROM.update(addr7, manualPumpState);
+  EEPROM.update(addr8, fuelTrig);
+  EEPROM.update(addr9, waterTrig);
+  EEPROM.update(addr10, quickWaterPercentage);
 }
 
 void loadSettings()
