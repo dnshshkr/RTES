@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 void cmdParser()
 {
   char alph = cmd.charAt(0);
@@ -5,6 +6,43 @@ void cmdParser()
   switch (alph)
   {
     case 'S': case 's':
+=======
+<<<<<<< HEAD
+void CmdParser() {
+  byte ch;
+  String valStr;
+  int val;
+  float valf;
+  if (Serial.available())
+  {
+    ch = Serial.read();
+    commandAvailable = true;
+  }
+  else if (digitalRead(btState) && bt.available())
+  {
+    ch = bt.read();
+    commandAvailable = true;
+  }
+  else
+    commandAvailable = false;
+  if (commandAvailable)
+  {
+    sdata += (char)ch;
+    if (ch == '\r')
+    { // Command received and ready.
+      sdata.trim();
+      // Process command in sdata.
+      switch (sdata.charAt(0))
+=======
+void cmdParser()
+{
+  char alph = cmd.charAt(0);
+  String valStr = cmd.substring(1, cmd.length());
+  switch (alph)
+  {
+    case 'S': case 's':
+>>>>>>> f5c65674dbcda8c9871a03813f36a73905d00236
+>>>>>>> 64beca9718143fc62df52baf08cd8a6ce53bd730
       {
         digitalWrite(solenoidWater, LOW);
         digitalWrite(motorWater, LOW);

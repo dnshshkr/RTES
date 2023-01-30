@@ -134,9 +134,21 @@ float solShotBias = 1.4;                //solenoid mililliter per shot //CMD
 //unsigned int pulsePeriodTime = 1000;             //set period time for pulse sensor capturing data (millisecond) 10=280
 unsigned int engineOffTimeOut = 10000;
 uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
+<<<<<<< HEAD
 unsigned int solenoidOnTime = 100;
 String cmd;
 bool cmdAvailable;
+=======
+<<<<<<< HEAD
+//int noiseRejection = 150;               //in ms //CMD
+unsigned int solenoidOnTime = 250;
+//String msg;
+=======
+unsigned int solenoidOnTime = 100;
+String cmd;
+bool cmdAvailable;
+>>>>>>> f5c65674dbcda8c9871a03813f36a73905d00236
+>>>>>>> 64beca9718143fc62df52baf08cd8a6ce53bd730
 
 /*********************CmdParser***********************************************************************************/
 String sdata = "";  // Initialised to nothing.
@@ -201,6 +213,17 @@ void loop()
   //  unsigned long measuredLoopTime = micros();
 
   /********************CMD Parser***************************************************************************************/
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+  //  if (Serial.available())
+  //    msg = Serial.readStringUntil('\r\n');
+  //  else if (digitalRead(btState) && bt.available())
+  //    msg = bt.readStringUntil('\r\n');
+  //  parseValue(msg);
+  CmdParser();
+=======
+>>>>>>> 64beca9718143fc62df52baf08cd8a6ce53bd730
   if (Serial.available())
   {
     cmd = Serial.readStringUntil('\r\n');
@@ -219,6 +242,10 @@ void loop()
     cmdParser();
   }
 
+<<<<<<< HEAD
+=======
+>>>>>>> f5c65674dbcda8c9871a03813f36a73905d00236
+>>>>>>> 64beca9718143fc62df52baf08cd8a6ce53bd730
   /********************RTES SYSTEM**************************************************************************************/
   //  if (pulseDataPrint)
   //    measureAmperage();
