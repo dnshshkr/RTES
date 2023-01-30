@@ -206,21 +206,6 @@ void cmdParser()
               bt.println(String(countDown) + (char)32);
               prevCD = millis();
             }
-<<<<<<< HEAD
-            SettingMode = !SettingMode;
-            printSetting();
-            if (SettingMode)
-            {
-              Serial.println("Setting mode entered");
-              bt.println("Setting mode entered");
-            }
-            else
-            {
-              Serial.println("RTES mode entered");
-              bt.println("RTES mode entered");
-            }
-            break;
-=======
           } while ((!Serial.available() || !bt.available()) && current <= 10000);
           Serial.println();
           bt.println();
@@ -232,7 +217,6 @@ void cmdParser()
             ResetSetting();
             while (Serial.available() || (digitalRead(btState) && bt.available()))
               Serial.read();
->>>>>>> f5c65674dbcda8c9871a03813f36a73905d00236
           }
         }
         printSetting();
@@ -294,33 +278,8 @@ void cmdParser()
           }
           else
           {
-<<<<<<< HEAD
-            if (!SettingMode || manualPumpState)
-            {
-              Serial.println("Not in settings mode!");
-              bt.println("Not in settings mode!");
-              break;
-            }
-            if (sdata.length() > 1) {
-              valStr = sdata.substring(1);
-              val = valStr.toInt();
-            }
-            if (val == 0 || val == 1)
-            {
-              emulsionTrig = val;
-              EEPROM.put(addr1, emulsionTrig);
-              printSetting();
-            }
-            else
-            {
-              Serial.println("Input is out of range");
-              bt.println("Input is out of range");
-            }
-            break;
-=======
             fuelTrig = 0;
             EEPROM.put(addr8, fuelTrig);
->>>>>>> f5c65674dbcda8c9871a03813f36a73905d00236
           }
           printSettingManual();
         }
@@ -328,283 +287,23 @@ void cmdParser()
         {
           if (emulsionTrig == 0)
           {
-<<<<<<< HEAD
-            if (!SettingMode || manualPumpState)
-            {
-              Serial.println("Not in settings mode!");
-              bt.println("Not in settings mode!");
-              break;
-            }
-            if (sdata.length() > 1)
-            {
-              valStr = sdata.substring(1);
-              val = valStr.toInt();
-            }
-            if (val > 0)
-            {
-              pulse_fuelToWaterRatioCount = 1;
-              pulse_fuelToWaterRatio = val;
-              EEPROM.put(addr2, pulse_fuelToWaterRatio);
-              calculateDenom();
-              printSetting();
-            }
-            else
-            {
-              Serial.println("Input is out of range");
-              bt.println("Input is out of range");
-            }
-            break;
-=======
             emulsionTrig = 1;
             EEPROM.put(addr1, emulsionTrig);
->>>>>>> f5c65674dbcda8c9871a03813f36a73905d00236
           }
           else
           {
-<<<<<<< HEAD
-            if (!SettingMode || manualPumpState)
-            {
-              Serial.println("Not in settings mode!");
-              bt.println("Not in settings mode!");
-              break;
-            }
-            if (sdata.length() > 1)
-            {
-              valStr = sdata.substring(1);
-              val = valStr.toInt();
-            }
-            if (val > 0)
-            {
-              engineOffTimeOut = val;
-              EEPROM.put(addr3, engineOffTimeOut);
-              printSetting();
-            }
-            else
-            {
-              Serial.println("Input is out of range");
-              bt.println("Input is out of range");
-            }
-            break;
-          }
-        case 'D': case'd': //Flow Rate Bias
-          {
-            if (!SettingMode || manualPumpState)
-            {
-              Serial.println("Not in settings mode!");
-              bt.println("Not in settings mode!");
-              break;
-            }
-            if (sdata.length() > 1)
-            {
-              valStr = sdata.substring(1);
-              valf = valStr.toFloat();
-            }
-            if (valf > 0)
-            {
-              flowRateBias = valf;
-              EEPROM.put(addr4, flowRateBias);
-              calculatePulse_fuelToWaterRatio();
-              calculateDenom();
-              printSetting();
-            }
-            else
-            {
-              Serial.println("Input is out of range");
-              bt.println("Input is out of range");
-            }
-            break;
-          }
-        case 'E': case'e': //Solenoid Shot Bias
-          {
-            if (!SettingMode || manualPumpState)
-            {
-              Serial.println("Not in settings mode!");
-              bt.println("Not in settings mode!");
-              break;
-            }
-            if (sdata.length() > 1) {
-              valStr = sdata.substring(1);
-              valf = valStr.toFloat();
-            }
-            if (valf > 0)
-            {
-              solShotBias = valf;
-              EEPROM.put(addr5, solShotBias);
-              calculateSolenoidOnTime();
-              calculatePulse_fuelToWaterRatio();
-              calculateDenom();
-              printSetting();
-            }
-            else
-            {
-              Serial.println("Input is out of range");
-              bt.println("Input is out of range");
-            }
-            break;
-          }
-        case 'F': case'f':
-          {
-            if (!SettingMode || manualPumpState)
-            {
-              Serial.println("Not in settings mode!");
-              bt.println("Not in settings mode!");
-              break;
-            }
-            if (sdata.length() > 1)
-            {
-              valStr = sdata.substring(1);
-              val = valStr.toInt();
-            }
-            if (val > 0 )
-            {
-              solenoidOnTime = val;
-              EEPROM.put(addr6, solenoidOnTime);
-              calculatePulse_fuelToWaterRatio();
-              printSetting();
-            }
-            else
-            {
-              Serial.println("Input is out of range");
-              bt.println("Input is out of range");
-            }
-            break;
-          }
-        case 'G': case'g': //Reset Setting
-          {
-            while (Serial.available() || bt.available())
-            {
-              String trash = Serial.readStringUntil('\r\n');
-              String trash2 = bt.readStringUntil('\r\n');
-            }
-            if (!SettingMode || manualPumpState)
-            {
-              Serial.println("Not in settings mode!");
-              bt.println("Not in settings mode!");
-              break;
-            }
-            else
-            {
-              Serial.println("Are you sure you want to reset to factory settings? (Y/N)");
-              bt.println("Are you sure you want to reset to factory settings? (Y/N)");
-              unsigned short current;
-              unsigned long prev = millis();
-              while (current <= 10000)
-              {
-                current = millis() - prev;
-                Serial.println(current);
-                if (Serial.available())
-                {
-                  Serial.println("bodo");
-                  break;
-                }
-                if (bt.available())
-                {
-                  Serial.println("bangang");
-                  break;
-                }
-              }
-              char choice = Serial.read();
-              if (digitalRead(btState))
-                choice = bt.read();
-              Serial.println(choice);
-              if (digitalRead(btState))
-                bt.println(choice);
-              if (choice == 'Y' || choice == 'y')
-                ResetSetting();
-            }
-            printSetting();
-            break;
-          }
-        case 'H': case'h': //Manual Mode
-          {
-            if (!SettingMode || manualPumpState)
-            {
-              Serial.println("Not in settings mode!");
-              bt.println("Not in settings mode");
-              break;
-            }
-            manualPumpState = 1;
-            EEPROM.put(addr7, manualPumpState);
-            printSettingManual();
-            break;
-          }
-        case 'I': case 'i':
-          {
-            if (!SettingMode || manualPumpState)
-            {
-              Serial.println("Not in settings mode!");
-              bt.println("Not in settings mode!");
-              break;
-            }
-            else
-            {
-              if (sdata.length() > 1)
-              {
-                valStr = sdata.substring(1);
-                valf = valStr.toFloat();
-              }
-              if (valf > 0)
-              {
-                quickWaterPercentage = valf;
-                EEPROM.put(addr10, quickWaterPercentage);
-                calculatePulse_fuelToWaterRatio();
-                calculateDenom();
-                printSetting();
-              }
-              else
-              {
-                Serial.println("Input is out of range");
-                bt.println("Input is out of range");
-              }
-              break;
-            }
-          }
-        case 'T': case't': //MANUAL FUEL PUMP
-          {
-            if (!manualPumpState)
-            {
-              Serial.println("Not in manual mode!");
-              if (digitalRead(btState))
-                bt.println("Not in manual mode!");
-              break;
-            }
-            if (sdata.length() > 1)
-            {
-              valStr = sdata.substring(1);
-              val = valStr.toInt();
-            }
-            if (val == 1) //ON OFF FUEL
-            {
-              if (fuelTrig == 0)
-              {
-                fuelTrig = 1;
-                EEPROM.put(addr8, fuelTrig);
-              }
-              else
-              {
-                fuelTrig = 0;
-                EEPROM.put(addr8, fuelTrig);
-              }
-              printSettingManual();
-=======
             emulsionTrig = 0;
             EEPROM.put(addr1, emulsionTrig);
           }
           printSettingManual();
->>>>>>> f5c65674dbcda8c9871a03813f36a73905d00236
 
         }
         else if (val == 3) //ON OFF WATERPUMP
         {
           if (waterTrig == 0)
           {
-<<<<<<< HEAD
-            Serial.println(sdata);
-            bt.println(sdata);
-=======
             waterTrig = 1;
             EEPROM.put(addr9, waterTrig);
->>>>>>> f5c65674dbcda8c9871a03813f36a73905d00236
           }
           else
           {
