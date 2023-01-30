@@ -200,7 +200,7 @@ void cmdParser()
           if (digitalRead(btState))
             bt.println(choice);
           if (choice == 'Y' || choice == 'y')
-            ResetSetting();
+            resetSettings();
         }
         printSetting();
         break;
@@ -460,7 +460,7 @@ void cmdParser()
   //              if (digitalRead(btState))
   //                bt.println(choice);
   //              if (choice == 'Y' || choice == 'y')
-  //                ResetSetting();
+  //                resetSettings();
   //            }
   //            printSetting();
   //            break;

@@ -1,6 +1,6 @@
-void ResetSetting()
+void resetSettings()
 {
-  SaveSetting();
+  saveSettings();
   EEPROM.put(addr1, 0);
   EEPROM.put(addr2, 10);
   EEPROM.put(addr3, 15000);
@@ -11,7 +11,7 @@ void ResetSetting()
   EEPROM.put(addr8, 0);
   EEPROM.put(addr9, 1);
   EEPROM.put(addr10, 10);
-  LoadSetting();
+  loadSettings();
   settingMode = 1;
   manualPumpState = 0;
   pulse_fuelToWaterRatioCount = 1;
@@ -20,7 +20,7 @@ void ResetSetting()
   delay(1000);
 }
 
-void SaveSetting()
+void saveSettings()
 {
   EEPROM.put(addr1, emulsionTrig);
   EEPROM.put(addr2, pulse_fuelToWaterRatio);
@@ -34,7 +34,7 @@ void SaveSetting()
   EEPROM.put(addr10, quickWaterPercentage);
 }
 
-void LoadSetting()
+void loadSettings()
 {
   EEPROM.get(addr1, read1);
   //Serial.print("A: Emulsion State: "); Serial.println(read1);

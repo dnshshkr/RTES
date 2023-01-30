@@ -166,7 +166,7 @@ void setup()
   pulseCounter = 0;
   totalFuelPulse = 0;
   pulseCnt = 0;
-  LoadSetting(); //load settings
+  loadSettings(); //load settings
   settingMode = true;
   digitalWrite(solenoidWater, LOW);
   digitalWrite(motorWater, LOW);
