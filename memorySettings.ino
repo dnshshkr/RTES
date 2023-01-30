@@ -36,44 +36,35 @@ void saveSettings()
 
 void loadSettings()
 {
-  EEPROM.get(addr1, read1);
+  EEPROM.get(addr1, emulsionTrig);
   //Serial.print("A: Emulsion State: "); Serial.println(read1);
-  emulsionTrig = read1;
 
-  EEPROM.get(addr2, read2);
+  EEPROM.get(addr2, pulse_fuelToWaterRatio);
   //Serial.print("B: Pulse Count Max: "); Serial.println(read2);
-  pulse_fuelToWaterRatio = read2;
 
-  EEPROM.get(addr3, read3);
+  EEPROM.get(addr3, engineOffTimeOut);
   //Serial.print("C: Pulse time for idle in ms: "); Serial.println(read3);
-  engineOffTimeOut = read3;
 
-  EEPROM.get(addr4, read4);  //Float
+  EEPROM.get(addr4, flowRateBias);  //Float
   //Serial.print("D: Flow Rate Bias in mm/pulse: ");  Serial.println(read4,2);
-  flowRateBias = read4;
 
-  EEPROM.get(addr5, read5);  //Float
+  EEPROM.get(addr5, solShotBias);  //Float
   //Serial.print("E: Solenoid Shot Bias in mm/pulse: "); Serial.println(read5,2);
-  solShotBias = read5;
 
-  EEPROM.get(addr6, read6);
+  EEPROM.get(addr6, solenoidOnTime);
   //Serial.print("F: Solenoid On Time ms: "); Serial.println(read6);
-  solenoidOnTime = read6;
 
-  EEPROM.get(addr7, read7);
+  EEPROM.get(addr7, manualPumpState);
   //Serial.print("G: Manual Mode State: "); Serial.println(read7);
-  manualPumpState = read7;
-  if (manualPumpState) settingMode = 1;
+  if (manualPumpState)
+    settingMode = 1;
 
-  EEPROM.get(addr8, read8);
+  EEPROM.get(addr8, fuelTrig);
   //Serial.print("G: Manual Mode State: "); Serial.println(read7);
-  fuelTrig = read8;
 
-  EEPROM.get(addr9, read9);
-  waterTrig = read9;
+  EEPROM.get(addr9, waterTrig);
 
-  EEPROM.get(addr10, read10);
-  quickWaterPercentage = read10;
+  EEPROM.get(addr10, quickWaterPercentage);
   calculatePulse_fuelToWaterRatio();
   calculateSolenoidOnTime();
   calculateDenom();

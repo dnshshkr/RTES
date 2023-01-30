@@ -58,16 +58,6 @@ int addr8 = 35;
 int addr9 = 40;
 int addr10 = 45;
 
-bool read1 = 0;
-int read2 = 0;
-unsigned long read3 = 0;
-float read4 = 0;
-float read5 = 0;
-int read6 = 0;
-bool read7 = 0;
-bool read8 = 0;
-bool read9 = 0;
-int read10 = 0;
 bool manualPrintData = 0;
 bool manualPumpState = 0;
 bool AllState = 0;
