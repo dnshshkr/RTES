@@ -16,8 +16,7 @@ void ResetSetting()
   manualPumpState = 0;
   pulse_fuelToWaterRatioCount = 1;
   Serial.println("Restored to factory settings");
-  if (digitalRead(btState))
-    Serial.println("Restored to factory settings");
+  Serial.println("Restored to factory settings");
   delay(1000);
 }
 
@@ -76,6 +75,6 @@ void LoadSetting()
   EEPROM.get(addr10, read10);
   quickWaterPercentage = read10;
   calculatePulse_fuelToWaterRatio();
-
+  calculateSolenoidOnTime();
   calculateDenom();
 }
