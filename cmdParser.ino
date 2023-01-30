@@ -1,4 +1,4 @@
-void CmdParser() {
+void cmdParser() {
 
   byte ch;
   String valStr;
