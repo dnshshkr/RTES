@@ -136,6 +136,7 @@ unsigned int engineOffTimeOut = 10000;
 uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
 //int noiseRejection = 150;               //in ms //CMD
 unsigned int solenoidOnTime = 250;
+//String msg;
 
 /*********************CmdParser***********************************************************************************/
 String sdata = "";  // Initialised to nothing.
@@ -200,6 +201,11 @@ void loop()
   //  unsigned long measuredLoopTime = micros();
 
   /********************CMD Parser***************************************************************************************/
+  //  if (Serial.available())
+  //    msg = Serial.readStringUntil('\r\n');
+  //  else if (digitalRead(btState) && bt.available())
+  //    msg = bt.readStringUntil('\r\n');
+  //  parseValue(msg);
   CmdParser();
   /********************RTES SYSTEM**************************************************************************************/
   //  if (pulseDataPrint)
