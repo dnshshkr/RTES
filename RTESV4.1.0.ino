@@ -77,20 +77,25 @@ bool pulseDataPrint = false;
 
 //load EEPROM
 /*****************************************************************************************************************/
-#include <EEPROM.h>
+#include<EEPROM.h>
+#include<SoftwareSerial.h>
 
 /*********************Pinout*************************************************************************************/
-const int pulseFlowrate = 2;
+const uint8_t pulseFlowrate = 2;
 //const int manualButton = 3;
-const int waterLevel = 4;
+//const int waterLevel = 4;
 
-const int fuelMotorCurrentPin = A3;
-const int solenoidCurrentPin = A2;
-const int waterPumpCurrentPin = A4;
+const uint8_t fuelMotorCurrentPin = A3;
+const uint8_t solenoidCurrentPin = A2;
+const uint8_t waterPumpCurrentPin = A4;
 
-const int motorFuel = 8;
-const int solenoidWater = 9;
-const int motorWater = 10;
+const uint8_t motorFuel = 8;
+const uint8_t solenoidWater = 9;
+const uint8_t motorWater = 10;
+
+const uint8_t btrx = 12;
+const uint8_t bttx = 11;
+const uint8_t btState = 5;
 
 /*********************current amperage****************************************************************************/
 //unsigned long lastExecutedMillis = 0;
@@ -139,17 +144,23 @@ float ampMotorFuelLow = 3.6;
 float ampMotorFuelHigh = 4.1;
 bool stopEmulsion = 0;
 
+SoftwareSerial bt(btrx, bttx);
+
 void setup()
 {
   Serial.begin(115200);
+  bt.begin(57600);
   pinMode(pulseFlowrate, INPUT_PULLUP);
-  pinMode(waterLevel, INPUT_PULLUP);
+  //pinMode(waterLevel, INPUT_PULLUP);
   pinMode(motorFuel, OUTPUT);
   pinMode(motorWater, OUTPUT);
   pinMode(solenoidWater, OUTPUT);
   pinMode(fuelMotorCurrentPin, INPUT);
   pinMode(solenoidCurrentPin, INPUT);
   pinMode(waterPumpCurrentPin, INPUT);
+  pinMode(btrx, INPUT);
+  pinMode(bttx, OUTPUT);
+  pinMode(btState, INPUT);
   attachInterrupt(digitalPinToInterrupt(pulseFlowrate), countPulse, FALLING);
   pulseCounter = 0;
   totalFuelPulse = 0;
@@ -160,10 +171,14 @@ void setup()
   digitalWrite(motorWater, LOW);
   printSetting();
   Serial.println("RTES Initialized");
+  if (digitalRead(btState))
+    bt.println("RTES Initialized");
   if (manualPumpState)
     printSettingManual();
   SettingMode = false;
   Serial.println("RTES mode entered");
+  if (digitalRead(btState))
+    Serial.println("RTES mode entered");
 }
 
 void loop()
@@ -173,6 +188,8 @@ void loop()
     if (!engOffStatusPrintOnce)
     {
       Serial.println("Engine is off");
+      if (digitalRead(btState))
+        bt.println("Engine is off");
       //pulse_fuelToWaterRatioCount = 1;
       engOffStatusPrintOnce = true;
     }
@@ -184,21 +201,23 @@ void loop()
   /********************CMD Parser***************************************************************************************/
   CmdParser();
   /********************RTES SYSTEM**************************************************************************************/
-  if (pulseDataPrint)
-    measureAmperage();
+  //  if (pulseDataPrint)
+  //    measureAmperage();
   /********************PRINT DATA***************************************************************************************/
   if (!SettingMode && !manualPumpState && pulseDataPrint)
   {
-    if (digitalRead(waterLevel) == 1 && flagManual == 0 && !stopEmulsion)
-    {
-      measureAmperage();  //read current sensor
+    //    if (digitalRead(waterLevel) == 1 && flagManual == 0 && !stopEmulsion)
+    //    {
+    //      measureAmperage();  //read current sensor
+    //      rtesSystem();
+    //    }
+    if (!flagManual && !stopEmulsion)
       rtesSystem();
-    }
     printData();
   }
   else if (manualPumpState && manualPrintData)  //Stop RTES
-      printData();
-  else if (digitalRead(waterLevel) == 1 && flagManual == 0)
+    printData();
+  else if (!flagManual)
     rtesSystem();  //Only SettingMode
   /***********************END*******************************************************************************************/
 }
