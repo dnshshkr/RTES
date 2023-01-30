@@ -54,15 +54,9 @@
 #define addr5 20
 #define addr6 25
 #define addr7 30
-#define addr8 35
-#define addr9 40
-#define addr10 45
 
 bool manualPrintData = 0;
 bool manualPumpState = 0;
-bool AllState = 0;
-bool fuelTrig = true;
-bool waterTrig = true;
 bool pulseDataPrint = false;
 
 //load EEPROM
@@ -72,59 +66,51 @@ bool pulseDataPrint = false;
 
 /*********************Pinout*************************************************************************************/
 const uint8_t pulseFlowrate = 2;
-//const int manualButton = 3;
-//const int waterLevel = 4;
-
 const uint8_t fuelMotorCurrentPin = A3;
 const uint8_t solenoidCurrentPin = A2;
 const uint8_t waterPumpCurrentPin = A4;
-
 const uint8_t motorFuel = 8;
 const uint8_t solenoidWater = 9;
 const uint8_t motorWater = 10;
-
 const uint8_t btrx = 12;
 const uint8_t bttx = 11;
 const uint8_t btState = 5;
 
 /*********************current amperage****************************************************************************/
-//unsigned long lastExecutedMillis = 0;
 float ampMotorFuel, ampSolenoid, ampMotorWater;
-//int ampA, ampB, ampC; //ampCountLoop = 0;
 
 /*********************variables***********************************************************************************/
+volatile int flagManual = 0;
 volatile float measuredPulsePerMin = 0;
 volatile float fuelPulsePeriod;
 volatile uint8_t pulseCounter = 1;
 volatile unsigned long totalFuelPulse = 0;
+volatile unsigned long measPlsPreviousTime = 0;
 volatile uint8_t pulse_fuelToWaterRatioCount = 0;
-volatile int flagManual = 0;
+bool cmdAvailable;
+bool engOffStatusPrintOnce;
 bool sprayedOnce = false;
 bool sprayStarted = false;
 bool sprayCompleted = true;
-volatile unsigned long measPlsPreviousTime = 0;
-unsigned long pulseInc = 0;
+bool solenoidManualState = false;
+bool waterPumpManualState = false;
+const uint8_t solenoidOnPulse = 1;
+uint8_t engineOffTimeOut = 15;
+uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
 int pulseCnt = 0;
-unsigned long prevSolOnTime;
+unsigned int pulse_fuelToWaterRatio = 11;                   //pulse per water shot //CMD
+unsigned int solenoidOnTime = 250;
 float denom;
 float quickWaterPercentage = 10;
-unsigned long prevMillisEngOff;
-bool engOffStatusPrintOnce;
-const uint8_t solenoidOnPulse = 1;
-bool emulsionTrig = 1;                  // '1'=ON '0'=OFF emulsion //CMD
-int pulse_fuelToWaterRatio = 11;                   //pulse per water shot //CMD
-//unsigned long pulseCountTime = 10000;   //milisecond to complete on pulse fuel for idle time //CMD
-float motorFuelAmpLim = 5;              //set limit current motor feul pump
-float solenoidAmpLimit = 5;             //set limit current solenoid
-float motorWaterAmpLimit = 5;           //set limit current motor water
+float motorFuelAmpLim = 5.0;              //set limit current motor feul pump
+float solenoidAmpLimit = 5.0;             //set limit current solenoid
+float motorWaterAmpLimit = 5.0;           //set limit current motor water
 float flowRateBias = 1.45;              //flowrate mililliter per pulse //CMD
 float solShotBias = 1.4;                //solenoid mililliter per shot //CMD
-//unsigned int pulsePeriodTime = 1000;             //set period time for pulse sensor capturing data (millisecond) 10=280
-unsigned int engineOffTimeOut = 10000;
-uint8_t currentSensorType = 1;              //'0'=ACS713 '1'=ACS712
-unsigned int solenoidOnTime = 250;
+unsigned long prevSolOnTime;
+unsigned long prevMillisEngOff;
+unsigned long pulseInc = 0;
 String cmd;
-bool cmdAvailable;
 
 /*********************CmdParser***********************************************************************************/
 bool settingMode = true;
@@ -133,7 +119,6 @@ bool printState = true;
 /*********************CheckFuelPumpCurrent***********************************************************************************/
 float ampMotorFuelLow = 3.6;
 float ampMotorFuelHigh = 4.1;
-bool stopEmulsion = 0;
 
 SoftwareSerial bt(btrx, bttx);
 
@@ -174,7 +159,7 @@ void setup()
 
 void loop()
 {
-  if (millis() - prevMillisEngOff >= engineOffTimeOut && !settingMode)
+  if (millis() - prevMillisEngOff >= engineOffTimeOut * 1000 && !settingMode)
   {
     if (!engOffStatusPrintOnce)
     {
@@ -214,7 +199,7 @@ void loop()
   /********************PRINT DATA***************************************************************************************/
   if (!settingMode && !manualPumpState && pulseDataPrint)
   {
-    if (!flagManual && !stopEmulsion)
+    if (!flagManual)
       rtesSystem();
     printData();
   }
