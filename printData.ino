@@ -23,7 +23,7 @@ void printData()
   Serial.print(waterPercentage, 1);
   Serial.print(" % water\t");
   Serial.print(fuelPercentage, 1);
-  Serial.print("% fuel");
+  Serial.println("% fuel");
   //Serial.println(">");  //for data logger
   bt.print(String(totalFuelPulse) + " total fuel pulse \t");
   bt.print(String(fuelPulsePeriod) + " s\t");
