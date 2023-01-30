@@ -110,7 +110,7 @@ volatile unsigned long totalFuelPulse = 0;
 volatile uint8_t pulse_fuelToWaterRatioCount = 0;
 volatile int flagManual = 0;
 bool sprayedOnce = false;
-bool startSpray = false;
+bool sprayStarted = false;
 bool sprayCompleted = true;
 volatile unsigned long measPlsPreviousTime = 0;
 unsigned long pulseInc = 0;
@@ -138,7 +138,7 @@ bool cmdAvailable;
 
 /*********************CmdParser***********************************************************************************/
 String sdata = "";  // Initialised to nothing.
-bool SettingMode = true;
+bool settingMode = true;
 bool printState = true;
 
 /*********************CheckFuelPumpCurrent***********************************************************************************/
@@ -168,7 +168,7 @@ void setup()
   totalFuelPulse = 0;
   pulseCnt = 0;
   LoadSetting(); //load settings
-  SettingMode = true;
+  settingMode = true;
   digitalWrite(solenoidWater, LOW);
   digitalWrite(motorWater, LOW);
   printSetting();
@@ -177,7 +177,7 @@ void setup()
     bt.println("RTES Initialized");
   if (manualPumpState)
     printSettingManual();
-  SettingMode = false;
+  settingMode = false;
   Serial.println("RTES mode entered");
   if (digitalRead(btState))
     Serial.println("RTES mode entered");
@@ -185,7 +185,7 @@ void setup()
 
 void loop()
 {
-  if (millis() - prevMillisEngOff >= engineOffTimeOut && !SettingMode)
+  if (millis() - prevMillisEngOff >= engineOffTimeOut && !settingMode)
   {
     if (!engOffStatusPrintOnce)
     {
@@ -223,7 +223,7 @@ void loop()
   //  if (pulseDataPrint)
   //    measureAmperage();
   /********************PRINT DATA***************************************************************************************/
-  if (!SettingMode && !manualPumpState && pulseDataPrint)
+  if (!settingMode && !manualPumpState && pulseDataPrint)
   {
     //    if (digitalRead(waterLevel) == 1 && flagManual == 0 && !stopEmulsion)
     //    {
@@ -237,6 +237,6 @@ void loop()
   else if (manualPumpState && manualPrintData)  //Stop RTES
     printData();
   else if (!flagManual)
-    rtesSystem();  //Only SettingMode
+    rtesSystem();  //Only settingMode
   /***********************END*******************************************************************************************/
 }

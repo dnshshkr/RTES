@@ -13,9 +13,9 @@ void cmdParser()
           printSettingManual();
           break;
         }
-        SettingMode = !SettingMode;
+        settingMode = !settingMode;
         printSetting();
-        if (SettingMode)
+        if (settingMode)
         {
           Serial.println("Setting mode entered");
           bt.println("Setting mode entered");
@@ -34,14 +34,14 @@ void cmdParser()
           printSettingManual();
           break;
         }
-        if (SettingMode)
+        if (settingMode)
           printSetting();
         break;
       }
     case 'A': case 'a':
       {
         int val = valStr.toInt();
-        if (!SettingMode || manualPumpState)
+        if (!settingMode || manualPumpState)
         {
           Serial.println("Not in settings mode!");
           bt.println("Not in settings mode!");
@@ -62,7 +62,7 @@ void cmdParser()
       }
     case 'B': case 'b':
       {
-        if (!SettingMode || manualPumpState)
+        if (!settingMode || manualPumpState)
         {
           Serial.println("Not in settings mode!");
           bt.println("Not in settings mode!");
@@ -86,7 +86,7 @@ void cmdParser()
       }
     case 'C': case 'c':
       {
-        if (!SettingMode || manualPumpState)
+        if (!settingMode || manualPumpState)
         {
           Serial.println("Not in settings mode!");
           bt.println("Not in settings mode!");
@@ -108,7 +108,7 @@ void cmdParser()
       }
     case 'D': case'd':
       {
-        if (!SettingMode || manualPumpState)
+        if (!settingMode || manualPumpState)
         {
           Serial.println("Not in settings mode!");
           bt.println("Not in settings mode!");
@@ -132,7 +132,7 @@ void cmdParser()
       }
     case 'E': case'e':
       {
-        if (!SettingMode || manualPumpState)
+        if (!settingMode || manualPumpState)
         {
           Serial.println("Not in settings mode!");
           bt.println("Not in settings mode!");
@@ -157,7 +157,7 @@ void cmdParser()
       }
     case 'F': case 'f':
       {
-        if (!SettingMode || manualPumpState)
+        if (!settingMode || manualPumpState)
         {
           Serial.println("Not in settings mode!");
           bt.println("Not in settings mode!");
@@ -180,7 +180,7 @@ void cmdParser()
       }
     case 'G': case 'g':
       {
-        if (!SettingMode || manualPumpState)
+        if (!settingMode || manualPumpState)
         {
           Serial.println("Not in settings mode!");
           bt.println("Not in settings mode!");
@@ -224,7 +224,7 @@ void cmdParser()
       }
     case 'H': case 'h':
       {
-        if (!SettingMode || manualPumpState)
+        if (!settingMode || manualPumpState)
         {
           Serial.println("Not in settings mode!");
           bt.println("Not in settings mode");
@@ -237,7 +237,7 @@ void cmdParser()
       }
     case 'I': case'i':
       {
-        if (!SettingMode || manualPumpState)
+        if (!settingMode || manualPumpState)
         {
           Serial.println("Not in settings mode!");
           bt.println("Not in settings mode!");
@@ -386,9 +386,9 @@ void cmdParser()
   //              printSettingManual();
   //              break;
   //            }
-  //            SettingMode = !SettingMode;
+  //            settingMode = !settingMode;
   //            printSetting();
-  //            if (SettingMode)
+  //            if (settingMode)
   //            {
   //              Serial.println("Setting mode entered");
   //              if (digitalRead(btState))
@@ -409,13 +409,13 @@ void cmdParser()
   //              printSettingManual();
   //              break;
   //            }
-  //            if (SettingMode)
+  //            if (settingMode)
   //              printSetting();
   //            break;
   //          }
   //        case 'A': case'a':
   //          {
-  //            if (!SettingMode || manualPumpState)
+  //            if (!settingMode || manualPumpState)
   //            {
   //              Serial.println("Not in settings mode!");
   //              if (digitalRead(btState))
@@ -442,7 +442,7 @@ void cmdParser()
   //          }
   //        case 'B': case'b': //Pulse Count Max
   //          {
-  //            if (!SettingMode || manualPumpState)
+  //            if (!settingMode || manualPumpState)
   //            {
   //              Serial.println("Not in settings mode!");
   //              if (digitalRead(btState))
@@ -472,7 +472,7 @@ void cmdParser()
   //          }
   //        case 'C': case'c': //Pulse time for idle
   //          {
-  //            if (!SettingMode || manualPumpState)
+  //            if (!settingMode || manualPumpState)
   //            {
   //              Serial.println("Not in settings mode!");
   //              if (digitalRead(btState))
@@ -500,7 +500,7 @@ void cmdParser()
   //          }
   //        case 'D': case'd': //Flow Rate Bias
   //          {
-  //            if (!SettingMode || manualPumpState)
+  //            if (!settingMode || manualPumpState)
   //            {
   //              Serial.println("Not in settings mode!");
   //              if (digitalRead(btState))
@@ -530,7 +530,7 @@ void cmdParser()
   //          }
   //        case 'E': case'e': //Solenoid Shot Bias
   //          {
-  //            if (!SettingMode || manualPumpState)
+  //            if (!settingMode || manualPumpState)
   //            {
   //              Serial.println("Not in settings mode!");
   //              if (digitalRead(btState))
@@ -560,7 +560,7 @@ void cmdParser()
   //          }
   //        case 'F': case'f':
   //          {
-  //            if (!SettingMode || manualPumpState)
+  //            if (!settingMode || manualPumpState)
   //            {
   //              Serial.println("Not in settings mode!");
   //              if (digitalRead(btState))
@@ -591,7 +591,7 @@ void cmdParser()
   //          {
   //            while (Serial.available() || bt.available())
   //              String trash = Serial.readStringUntil('\r\n');
-  //            if (!SettingMode || manualPumpState)
+  //            if (!settingMode || manualPumpState)
   //            {
   //              Serial.println("Not in settings mode!");
   //              if (digitalRead(btState))
@@ -621,7 +621,7 @@ void cmdParser()
   //          }
   //        case 'H': case'h': //Manual Mode
   //          {
-  //            if (!SettingMode || manualPumpState)
+  //            if (!settingMode || manualPumpState)
   //            {
   //              Serial.println("Not in settings mode!");
   //              if (digitalRead(btState))
@@ -635,7 +635,7 @@ void cmdParser()
   //          }
   //        case 'I': case 'i':
   //          {
-  //            if (!SettingMode || manualPumpState)
+  //            if (!settingMode || manualPumpState)
   //            {
   //              Serial.println("Not in settings mode!");
   //              if (digitalRead(btState))

@@ -34,22 +34,22 @@ void rtesSystem()
   if (pulse_fuelToWaterRatioCount >= 1 && pulse_fuelToWaterRatioCount <= pulse_fuelToWaterRatio)
   {
     sprayedOnce = false;
-    startSpray = false;
+    sprayStarted = false;
     sprayCompleted = true;
     digitalWrite(solenoidWater, LOW);
     digitalWrite(motorWater, LOW);
   }
   if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio)
-    startSpray = true;
+    sprayStarted = true;
   else if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse)
     sprayedOnce = true;
-  if (startSpray && !sprayedOnce && sprayCompleted)
+  if (sprayStarted && !sprayedOnce && sprayCompleted)
   {
     prevSolOnTime = millis();
     digitalWrite(solenoidWater, HIGH);
     digitalWrite(motorWater, HIGH);
     sprayedOnce = true;
-    startSpray = false;
+    sprayStarted = false;
     sprayCompleted = false;
     pulseInc++;
   }

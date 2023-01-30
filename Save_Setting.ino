@@ -12,7 +12,7 @@ void ResetSetting()
   EEPROM.put(addr9, 1);
   EEPROM.put(addr10, 10);
   LoadSetting();
-  SettingMode = 1;
+  settingMode = 1;
   manualPumpState = 0;
   pulse_fuelToWaterRatioCount = 1;
   Serial.println("Restored to factory settings");
@@ -64,7 +64,7 @@ void LoadSetting()
   EEPROM.get(addr7, read7);
   //Serial.print("G: Manual Mode State: "); Serial.println(read7);
   manualPumpState = read7;
-  if (manualPumpState) SettingMode = 1;
+  if (manualPumpState) settingMode = 1;
 
   EEPROM.get(addr8, read8);
   //Serial.print("G: Manual Mode State: "); Serial.println(read7);
