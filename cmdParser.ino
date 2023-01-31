@@ -182,18 +182,11 @@ void cmdParser()
       }
     case 'G': case 'g':
       {
-        if (!settingMode || manualPumpState)
-        {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
-          break;
-        }
         totalFuelPulse = 0;
         pulse_fuelToWaterRatioCount = 0;
         Serial.println("Counter has been reset");
         bt.println("Counter has been reset");
         delay(1000);
-        printManualSettings();
         break;
       }
     case 'M': case 'm':
@@ -238,7 +231,7 @@ void cmdParser()
               }
               prev = millis();
             }
-          } while ((!Serial.available() || (digitalRead(btState) && !bt.available())) && countDown >= 0);
+          } while (!Serial.available() && (digitalRead(btState) && !bt.available()) && countDown >= 0);
           char choice = Serial.read();
           if (digitalRead(btState) && bt.available())
             choice = bt.read();
@@ -339,7 +332,7 @@ void printSetting()
   Serial.println("***************************************************************");
   if (digitalRead(btState))
   {
-    bt.println("**************************ALL SETTING**************************");
+    bt.println("***ALL SETTINGS***");
     bt.println("RTES v" + String(ver));
     bt.print("A: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
     (pulse_fuelToWaterRatio == 0 || pulse_fuelToWaterRatio > 1) ? bt.println("s") : bt.println();
@@ -353,13 +346,13 @@ void printSetting()
     bt.println("$: Refresh Settings");
     bt.println("R: Reset to Factory Settings");
     bt.println("S: Enter Settings/Exit Settings/Start RTES System");
-    bt.println("***************************************************************");
+    bt.println("******************");
   }
 }
 
 void printManualSettings()
 {
-  Serial.println("**********************MANUAL MODE SETTING*********************");
+  Serial.println("**********************MANUAL MODE SETTINGS*********************");
   Serial.println("Manual Mode RTES v" + String(ver));
   Serial.print("T1: ON/OFF Solenoid: "); solenoidManualState ? Serial.println("ON") : Serial.println("OFF");
   Serial.print("T2: ON/OFF Water Pump: "); waterPumpManualState ? Serial.println("ON") : Serial.println("OFF");
@@ -371,7 +364,7 @@ void printManualSettings()
   Serial.println("**************************************************************");
   if (digitalRead(btState))
   {
-    bt.println("**********************MANUAL MODE SETTING*********************");
+    bt.println("***MANUAL MODE SETTING***");
     bt.println("Manual Mode RTES v" + String(ver));
     bt.print("T1: ON/OFF Solenoid: "); solenoidManualState ? bt.println("ON") : bt.println("OFF");
     bt.print("T2: ON/OFF Water Pump: "); waterPumpManualState ? bt.println("ON") : bt.println("OFF");
@@ -380,6 +373,6 @@ void printManualSettings()
     bt.print("T5: ON/OFF Print Data: "); manualPrintData ? bt.println("ON") : bt.println("OFF");
     bt.println("T6: Return to RTES Mode");
     bt.println("$: Refresh Settings");
-    bt.println("**************************************************************");
+    bt.println("*************************");
   }
 }
