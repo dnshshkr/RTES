@@ -61,7 +61,7 @@
 #define addr6 13 //4 bytes
 #define addr7 17 //1 byte
 #define addr8 18 //4 bytes - admin pin
-uint32_t pwd_default = 990826;
+uint32_t pwd_default;
 
 /*
    | pinouts
@@ -102,7 +102,7 @@ bool sprayStarted = false;
 bool sprayCompleted = true;
 bool solenoidManualState = false;
 bool waterPumpManualState = false;
-bool toggleAllState;
+bool toggleAllState = false;
 const uint8_t solenoidOnPulse = 1;
 uint8_t engineOffTimeOut = 15;
 uint8_t currentSensorType = 1; //'0'=ACS713 '1'=ACS712
@@ -127,6 +127,7 @@ SoftwareSerial bt(btrx, bttx);
 
 void setup()
 {
+  EEPROM.get(addr8, pwd_default);
   Serial.begin(57600);
   bt.begin(38400);
   pinMode(flowrateSensor, INPUT_PULLUP);
@@ -136,6 +137,7 @@ void setup()
   pinMode(fuelMotorCurrentPin, INPUT);
   pinMode(solenoidCurrentPin, INPUT);
   pinMode(waterPumpCurrentPin, INPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
   //  pinMode(btrx, INPUT);
   //  pinMode(bttx, OUTPUT);
   pinMode(btState, INPUT);
@@ -151,6 +153,7 @@ void setup()
     adminSettings();
   Serial.println("RTES mode entered");
   bt.println("RTES mode entered");
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void loop()
@@ -181,11 +184,9 @@ void loop()
   }
   else
     cmdAvailable = false;
+  cmd.trim();
   if (cmdAvailable)
-  {
-    cmd.trim();
     cmdParser();
-  }
   if (!settingMode && !adminState)
   {
     rtesSystem();
@@ -198,9 +199,10 @@ void loop()
 }
 void flushSerial()
 {
-  if (Serial.available() || (digitalRead(btState) && bt.available()))
+  do
   {
     Serial.read();
     bt.read();
-  }
+    delay(1);
+  } while (Serial.available() || bt.available()); \
 }

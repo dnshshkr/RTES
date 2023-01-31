@@ -2,7 +2,6 @@ void cmdParser()
 {
   char alph = cmd.charAt(0);
   String valStr = cmd.substring(1, cmd.length());
-  Serial.println(cmd);
   switch (alph)
   {
     case 'S': case 's':
@@ -13,7 +12,7 @@ void cmdParser()
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
-          printSettings();
+          adminSettings();
           break;
         }
         settingMode = !settingMode;
@@ -206,7 +205,7 @@ void cmdParser()
         uint32_t pwd = Serial.parseInt();
         if (digitalRead(btState))
           pwd = bt.parseInt();
-        Serial.println(pwd);
+        flushSerial();
         if (!wait)
         {
           printSettings();
@@ -214,7 +213,8 @@ void cmdParser()
         }
         else if (wait && pwd != pwd_default)
         {
-          Serial.println("Your password is incorrect");
+          Serial.println("Password incorrect");
+          bt.println("Password incorrect");
           delay(1000);
           adminState = false;
           printSettings();
@@ -300,6 +300,46 @@ void cmdParser()
             adminSettings();
         }
         else if (val == 6)
+        {
+          Serial.println("Enter current admin password");
+          bt.println("Enter current admin password");
+          while (!Serial.available() && !bt.available()) {}
+          uint32_t pwd = Serial.parseInt();
+          if (digitalRead(btState))
+            pwd = bt.parseInt();
+          flushSerial();
+          if (pwd != pwd_default)
+          {
+            Serial.println("Password incorrect");
+            bt.println("Password incorrect");
+            delay(1000);
+            adminSettings();
+          }
+          else
+          {
+newpassword:
+            Serial.println("Enter a new password (6 digits)");
+            bt.println("Enter a new password (6 digits)");
+            flushSerial();
+            while (!Serial.available() && !bt.available()) {}
+            String pwdStr = Serial.readStringUntil('\r\n');
+            pwdStr.trim();
+            if (pwdStr.length() < 6)
+            {
+              Serial.println("Invalid password length (must be 6 digits)");
+              bt.println("Invalid password length (must be 6 digits)");
+              delay(1000);
+              goto newpassword;
+            }
+            EEPROM.put(addr8, pwdStr.toInt());
+            EEPROM.get(addr8, pwd_default);
+            Serial.println("Your new password has been set");
+            bt.println("Your new password has been set");
+            delay(1000);
+            adminSettings();
+          }
+        }
+        else if (val == 7)
         {
           adminState = 0;
           EEPROM.put(addr7, adminState);

@@ -64,27 +64,28 @@ bool timeoutUI()
 }
 void adminSettings()
 {
-  Serial.println("**********************MANUAL MODE SETTINGS*********************");
+  Serial.println("***************************ADMIN MODE*************************");
   Serial.println("Manual Mode RTES v" + String(ver));
   Serial.print("T1: ON/OFF Solenoid: "); solenoidManualState ? Serial.println("ON") : Serial.println("OFF");
   Serial.print("T2: ON/OFF Water Pump: "); waterPumpManualState ? Serial.println("ON") : Serial.println("OFF");
   Serial.print("T3: ON All: "); toggleAllState ? Serial.println("ON") : Serial.println();
-  Serial.print("T4: OFF All: "); toggleAllState ? Serial.println("OFF") : Serial.println();
+  Serial.print("T4: OFF All: "); !toggleAllState ? Serial.println("OFF") : Serial.println();
   Serial.print("T5: ON/OFF Print Data: "); manualPrintData ? Serial.println("ON") : Serial.println("OFF");
-  Serial.println("T6: Return to RTES Mode");
+  Serial.println("T6: Change admin password");
+  Serial.println("T7: Return to RTES Mode");
   Serial.println("$: Refresh Settings");
   Serial.println("**************************************************************");
   if (digitalRead(btState))
   {
-    bt.println("***MANUAL MODE SETTING***");
+    bt.println("***ADMIN MODE***");
     bt.println("Manual Mode RTES v" + String(ver));
     bt.print("T1: ON/OFF Solenoid: "); solenoidManualState ? bt.println("ON") : bt.println("OFF");
     bt.print("T2: ON/OFF Water Pump: "); waterPumpManualState ? bt.println("ON") : bt.println("OFF");
     bt.println("T3: ON All"); toggleAllState ? bt.println("ON") : bt.println();
-    bt.println("T4: OFF All"); toggleAllState ? bt.println("OFF") : bt.println();
+    bt.println("T4: OFF All"); !toggleAllState ? bt.println("OFF") : bt.println();
     bt.print("T5: ON/OFF Print Data: "); manualPrintData ? bt.println("ON") : bt.println("OFF");
     bt.println("T6: Return to RTES Mode");
     bt.println("$: Refresh Settings");
-    bt.println("*************************");
+    bt.println("****************");
   }
 }
