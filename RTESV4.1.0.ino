@@ -146,9 +146,6 @@ void setup()
   settingMode = false;
   Serial.println("RTES mode entered");
   bt.println("RTES mode entered");
-  pinMode(4, OUTPUT);
-  digitalWrite(4, LOW);
-  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop()
