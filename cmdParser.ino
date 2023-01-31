@@ -46,12 +46,12 @@ void cmdParser()
           bt.println("Not in settings mode");
           break;
         }
-        int val = valStr.toInt();
+        float val = valStr.toFloat();
         if (val > 0)
         {
-          pulse_fuelToWaterRatioCount = 1;
-          pulse_fuelToWaterRatio = val;
-          EEPROM.put(addr1, pulse_fuelToWaterRatio);
+          quickWaterPercentage = val;
+          EEPROM.put(addr7, quickWaterPercentage);
+          calculatePulse_fuelToWaterRatio();
           calculateDenom();
           printSetting();
         }
@@ -73,6 +73,30 @@ void cmdParser()
         int val = valStr.toInt();
         if (val > 0)
         {
+          pulse_fuelToWaterRatioCount = 1;
+          pulse_fuelToWaterRatio = val;
+          EEPROM.put(addr1, pulse_fuelToWaterRatio);
+          calculateDenom();
+          printSetting();
+        }
+        else
+        {
+          Serial.println("Input is out of range");
+          bt.println("Input is out of range");
+        }
+        break;
+      }
+    case 'C': case 'c':
+      {
+        if (!settingMode || manualPumpState)
+        {
+          Serial.println("Not in settings mode");
+          bt.println("Not in settings mode");
+          break;
+        }
+        int val = valStr.toInt();
+        if (val > 0)
+        {
           engineOffTimeOut = val;
           EEPROM.put(addr2, engineOffTimeOut);
           printSetting();
@@ -84,7 +108,7 @@ void cmdParser()
         }
         break;
       }
-    case 'C': case 'c':
+    case 'D': case 'd':
       {
         if (!settingMode || manualPumpState)
         {
@@ -108,7 +132,7 @@ void cmdParser()
         }
         break;
       }
-    case 'D': case 'd':
+    case 'E': case 'e':
       {
         if (!settingMode || manualPumpState)
         {
@@ -133,7 +157,7 @@ void cmdParser()
         }
         break;
       }
-    case 'E': case 'e':
+    case 'F': case 'f':
       {
         if (!settingMode || manualPumpState)
         {
@@ -147,30 +171,6 @@ void cmdParser()
           solenoidOnTime = val;
           EEPROM.put(addr5, solenoidOnTime);
           calculatePulse_fuelToWaterRatio();
-          printSetting();
-        }
-        else
-        {
-          Serial.println("Input is out of range");
-          bt.println("Input is out of range");
-        }
-        break;
-      }
-    case 'F': case 'f':
-      {
-        if (!settingMode || manualPumpState)
-        {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
-          break;
-        }
-        float val = valStr.toFloat();
-        if (val > 0)
-        {
-          quickWaterPercentage = val;
-          EEPROM.put(addr7, quickWaterPercentage);
-          calculatePulse_fuelToWaterRatio();
-          calculateDenom();
           printSetting();
         }
         else

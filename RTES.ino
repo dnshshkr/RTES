@@ -45,14 +45,14 @@
    Add flowrate measurement on print_data (ml/min)
   ;================================================================================================================*/
 /*
- * | packages inclusion
- */
+   | packages inclusion
+*/
 #include<EEPROM.h>
 #include<SoftwareSerial.h>
 
 /*
- * | EEPROM memory address
- */
+   | EEPROM memory address
+*/
 #define addr1 0 //2 bytes
 #define addr2 2 //1 byte
 #define addr3 3 //4 bytes
@@ -61,8 +61,10 @@
 #define addr6 13 //4 bytes
 #define addr7 17 //1 byte
 
-/*********************Pinouts*************************************************************************************/
-const uint8_t pulseFlowrate = 2;
+/*
+   | pinouts
+*/
+const uint8_t flowrateSensor = 2;
 const uint8_t fuelMotorCurrentPin = A3;
 const uint8_t solenoidCurrentPin = A2;
 const uint8_t waterPumpCurrentPin = A4;
@@ -73,16 +75,21 @@ const uint8_t btrx = 12;
 const uint8_t bttx = 11;
 const uint8_t btState = 5;
 
-/*********************current amperage****************************************************************************/
+/*
+   | current amperage - not in use
+*/
 //float ampMotorFuel, ampSolenoid, ampMotorWater;
 
-/*********************variables***********************************************************************************/
-volatile float measuredPulsePerMin = 0;
+/*
+   | variables
+*/
+volatile float measuredPulsePerMin;
 volatile float fuelPulsePeriod;
 volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;
 volatile unsigned long prevMillisEngOff = 0;
 volatile uint8_t pulse_fuelToWaterRatioCount = 0;
+bool settingMode = true;
 bool manualPrintData = false;
 bool manualPumpState = false;
 bool pulseDataPrint = false;
@@ -104,15 +111,11 @@ float quickWaterPercentage = 10;
 //float motorFuelAmpLim = 5.0 //set limit current motor feul pump
 //float solenoidAmpLimit = 5.0 //set limit current solenoid
 //float motorWaterAmpLimit = 5.0 //set limit current motor water
-float flowRateBias = 1.45; //flowrate mililliter per pulse //CMD
-float solShotBias = 1.4; //solenoid mililliter per shot //CMD
+float flowRateBias = 1.45; //flowrate mL per pulse //CMD
+float solShotBias = 1.4; //solenoid mL per shot //CMD
 unsigned long prevSolOnTime;
 unsigned long totalWaterPulse = 0;
 String cmd;
-
-/*********************CmdParser***********************************************************************************/
-bool settingMode = true;
-//bool printState = true;
 
 /*********************CheckFuelPumpCurrent***********************************************************************************/
 //float ampMotorFuelLow = 3.6;
@@ -124,7 +127,7 @@ void setup()
 {
   Serial.begin(115200);
   bt.begin(38400);
-  pinMode(pulseFlowrate, INPUT_PULLUP);
+  pinMode(flowrateSensor, INPUT_PULLUP);
   pinMode(motorFuel, OUTPUT);
   pinMode(motorWater, OUTPUT);
   pinMode(solenoidWater, OUTPUT);
@@ -134,7 +137,7 @@ void setup()
   //  pinMode(btrx, INPUT);
   //  pinMode(bttx, OUTPUT);
   pinMode(btState, INPUT);
-  attachInterrupt(digitalPinToInterrupt(pulseFlowrate), countPulse, FALLING);
+  attachInterrupt(digitalPinToInterrupt(flowrateSensor), countPulse, FALLING);
   loadSettings(); //load settings
   settingMode = false;
   digitalWrite(solenoidWater, LOW);
