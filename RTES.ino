@@ -127,7 +127,7 @@ SoftwareSerial bt(btrx, bttx);
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(57600);
   bt.begin(38400);
   pinMode(flowrateSensor, INPUT_PULLUP);
   pinMode(motorFuel, OUTPUT);
@@ -195,4 +195,12 @@ void loop()
   else if (adminState && manualPrintData)//Stop RTES
     printData();
   /***********************END*******************************************************************************************/
+}
+void flushSerial()
+{
+  if (Serial.available() || (digitalRead(btState) && bt.available()))
+  {
+    Serial.read();
+    bt.read();
+  }
 }
