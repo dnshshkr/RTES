@@ -38,6 +38,7 @@ void rtesSystem()
     sprayCompleted = true;
     digitalWrite(solenoidWater, LOW);
     digitalWrite(motorWater, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
   }
   if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio)
     sprayStarted = true;
@@ -48,6 +49,7 @@ void rtesSystem()
     prevSolOnTime = millis();
     digitalWrite(solenoidWater, HIGH);
     digitalWrite(motorWater, HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
     sprayedOnce = true;
     sprayStarted = false;
     sprayCompleted = false;
@@ -57,6 +59,7 @@ void rtesSystem()
   {
     digitalWrite(solenoidWater, LOW);
     digitalWrite(motorWater, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
     sprayCompleted = true;
   }
 }

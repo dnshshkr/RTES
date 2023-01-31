@@ -57,7 +57,7 @@
 #define addr6 25
 #define addr7 30
 
-/*********************Pinout*************************************************************************************/
+/*********************Pinouts*************************************************************************************/
 const uint8_t pulseFlowrate = 2;
 const uint8_t fuelMotorCurrentPin = A3;
 const uint8_t solenoidCurrentPin = A2;
@@ -89,6 +89,7 @@ bool sprayStarted = false;
 bool sprayCompleted = true;
 bool solenoidManualState = false;
 bool waterPumpManualState = false;
+bool toggleAllState;
 const uint8_t solenoidOnPulse = 1;
 uint8_t engineOffTimeOut = 15;
 uint8_t currentSensorType = 1; //'0'=ACS713 '1'=ACS712
@@ -127,8 +128,8 @@ void setup()
   pinMode(fuelMotorCurrentPin, INPUT);
   pinMode(solenoidCurrentPin, INPUT);
   pinMode(waterPumpCurrentPin, INPUT);
-  pinMode(btrx, INPUT);
-  pinMode(bttx, OUTPUT);
+  //  pinMode(btrx, INPUT);
+  //  pinMode(bttx, OUTPUT);
   pinMode(btState, INPUT);
   attachInterrupt(digitalPinToInterrupt(pulseFlowrate), countPulse, FALLING);
   pulseCounter = 0;
@@ -145,6 +146,9 @@ void setup()
   settingMode = false;
   Serial.println("RTES mode entered");
   bt.println("RTES mode entered");
+  pinMode(4, OUTPUT);
+  digitalWrite(4, LOW);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop()
@@ -155,7 +159,7 @@ void loop()
     {
       Serial.println("*Engine is off*");
       if (digitalRead(btState))
-        bt.println("Engine is off");
+        bt.println("*Engine is off*");
       //pulse_fuelToWaterRatioCount = 1;
       engOffStatusPrintOnce = true;
     }
@@ -181,10 +185,11 @@ void loop()
     cmd.trim();
     cmdParser();
   }
-  if (!settingMode && !manualPumpState && pulseDataPrint)
+  if (!settingMode && !manualPumpState)
   {
     rtesSystem();
-    printData();
+    if (pulseDataPrint)
+      printData();
   }
   else if (manualPumpState && manualPrintData)//Stop RTES
     printData();
