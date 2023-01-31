@@ -119,9 +119,8 @@ SoftwareSerial bt(btrx, bttx);
 void setup()
 {
   Serial.begin(115200);
-  bt.begin(57600);
+  bt.begin(38400);
   pinMode(pulseFlowrate, INPUT_PULLUP);
-  //pinMode(waterLevel, INPUT_PULLUP);
   pinMode(motorFuel, OUTPUT);
   pinMode(motorWater, OUTPUT);
   pinMode(solenoidWater, OUTPUT);
@@ -187,7 +186,7 @@ void loop()
     rtesSystem();
     printData();
   }
-  else if (manualPumpState && manualPrintData)  //Stop RTES
+  else if (manualPumpState && manualPrintData)//Stop RTES
     printData();
   /***********************END*******************************************************************************************/
 }

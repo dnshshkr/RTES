@@ -188,6 +188,17 @@ void cmdParser()
           bt.println("Not in settings mode");
           break;
         }
+        totalFuelPulse = 0;
+        break;
+      }
+    case 'M': case 'm':
+      {
+        if (!settingMode || manualPumpState)
+        {
+          Serial.println("Not in settings mode");
+          bt.println("Not in settings mode");
+          break;
+        }
         manualPumpState = 1;
         EEPROM.put(addr6, manualPumpState);
         printSettingManual();
@@ -222,7 +233,7 @@ void cmdParser()
               }
               prev = millis();
             }
-          } while ((!Serial.available() || !bt.available()) && countDown >= 0);
+          } while ((!Serial.available() || (digitalRead(btState) && !bt.available())) && countDown >= 0);
           char choice = Serial.read();
           if (digitalRead(btState) && bt.available())
             choice = bt.read();
@@ -313,7 +324,8 @@ void printSetting()
   Serial.println("D: Water Shot Bias: " + String(solShotBias) + " ml/pulse");
   Serial.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
   Serial.println("F: Water percentage: " + String(quickWaterPercentage) + "%");
-  Serial.println("G: Enter Manual Mode");
+  Serial.println("G: Reset total fuel pulse counter");
+  Serial.println("M: Enter Manual Mode");
   Serial.println("$: Refresh Settings");
   Serial.println("R: Reset to Factory Settings");
   Serial.println("S: Enter Settings/Exit Settings/Start RTES System");
@@ -329,7 +341,8 @@ void printSetting()
     bt.println("D: Water Shot Bias: " + String(solShotBias) + " ml/pulse");
     bt.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
     bt.println("F: Water percentage: " + String(quickWaterPercentage) + "%");
-    bt.println("G: Enter Manual Mode");
+    bt.println("G: Reset total fuel pulse counter");
+    bt.println("M: Enter Manual Mode");
     bt.println("$: Refresh Settings");
     bt.println("R: Reset to Factory Settings");
     bt.println("S: Enter Settings/Exit Settings/Start RTES System");
@@ -353,11 +366,11 @@ void printSettingManual()
   {
     bt.println("**********************MANUAL MODE SETTING*********************");
     bt.println("Manual Mode RTES v" + String(ver));
-    bt.print("T1: ON/OFF Solenoid: "); solenoidManualState ? Serial.println("ON") : Serial.println("OFF");
-    bt.print("T2: ON/OFF Water Pump: "); waterPumpManualState ? Serial.println("ON") : Serial.println("OFF");
+    bt.print("T1: ON/OFF Solenoid: "); solenoidManualState ? bt.println("ON") : bt.println("OFF");
+    bt.print("T2: ON/OFF Water Pump: "); waterPumpManualState ? bt.println("ON") : bt.println("OFF");
     bt.println("T3: ON All: ");
     bt.println("T4: OFF All: ");
-    bt.print("T5: ON/OFF Print Data: "); manualPrintData ? Serial.println("ON") : Serial.println("OFF");
+    bt.print("T5: ON/OFF Print Data: "); manualPrintData ? bt.println("ON") : bt.println("OFF");
     bt.println("T6: Return to RTES Mode");
     bt.println("$: Refresh Settings");
     bt.println("**************************************************************");

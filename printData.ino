@@ -2,6 +2,7 @@ void printData()
 {
   float waterPercentage = ((solShotBias * (float)sprayedOnce) / denom) * 100.0;
   float fuelPercentage = ((flowRateBias * (float)pulse_fuelToWaterRatioCount) / denom) * 100.0;
+
   Serial.print(String(totalFuelPulse) + " total fuel pulse \t");
   Serial.print(String(fuelPulsePeriod) + " s\t");
   Serial.print(measuredPulsePerMin, 3);
@@ -12,7 +13,7 @@ void printData()
   Serial.print(" % water\t");
   Serial.print(fuelPercentage, 1);
   Serial.println("% fuel");
-  
+
   bt.print(String(totalFuelPulse) + " total fuel pulse \t");
   bt.print(String(fuelPulsePeriod) + " s\t");
   bt.print(measuredPulsePerMin, 3);
