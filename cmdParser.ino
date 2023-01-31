@@ -185,6 +185,7 @@ void cmdParser()
     case 'G': case 'g':
       {
         totalFuelPulse = 0;
+        totalWaterPulse = 0;
         pulse_fuelToWaterRatioCount = 0;
         Serial.println("Counter has been reset");
         bt.println("Counter has been reset");
