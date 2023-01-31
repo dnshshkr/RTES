@@ -1,4 +1,4 @@
-void rtesSystem()
+void RTES()
 {
   //  METHOD 1
   //    if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio && !sprayStarted)
