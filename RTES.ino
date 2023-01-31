@@ -128,7 +128,7 @@ SoftwareSerial bt(btrx, bttx);
 void setup()
 {
   EEPROM.get(addr8, pwd_default);
-  Serial.begin(57600);
+  Serial.begin(38400);
   bt.begin(38400);
   pinMode(flowrateSensor, INPUT_PULLUP);
   pinMode(motorFuel, OUTPUT);
