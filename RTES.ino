@@ -93,7 +93,7 @@ volatile unsigned long prevMillisEngOff = 0;
 volatile uint8_t pulse_fuelToWaterRatioCount = 0;
 bool settingMode = true;
 bool manualPrintData = false;
-bool adminState = false;
+bool adminState;
 bool pulseDataPrint = false;
 bool cmdAvailable;
 bool engOffStatusPrintOnce;
@@ -104,17 +104,17 @@ bool solenoidManualState = false;
 bool waterPumpManualState = false;
 bool toggleAllState = false;
 const uint8_t solenoidOnPulse = 1;
-uint8_t engineOffTimeOut = 15;
+uint8_t engineOffTimeOut;
 uint8_t currentSensorType = 1; //'0'=ACS713 '1'=ACS712
-unsigned int pulse_fuelToWaterRatio = 11; //pulse per water shot //CMD
-unsigned int solenoidOnTime = 250;
+unsigned int pulse_fuelToWaterRatio; //pulse per water shot //CMD
+unsigned int solenoidOnTime;
 float denom;
-float quickWaterPercentage = 10;
+float quickWaterPercentage;
 //float motorFuelAmpLim = 5.0 //set limit current motor feul pump
 //float solenoidAmpLimit = 5.0 //set limit current solenoid
 //float motorWaterAmpLimit = 5.0 //set limit current motor water
-float flowRateBias = 1.45; //flowrate mL per pulse //CMD
-float solShotBias = 1.4; //solenoid mL per shot //CMD
+float flowRateBias; //flowrate mL per pulse //CMD
+float solShotBias; //solenoid mL per shot //CMD
 unsigned long prevSolOnTime;
 unsigned long totalWaterPulse = 0;
 String cmd;
