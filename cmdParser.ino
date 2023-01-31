@@ -189,6 +189,9 @@ void cmdParser()
           break;
         }
         totalFuelPulse = 0;
+        pulse_fuelToWaterRatioCount = 0;
+        Serial.println("Counter has been reset");
+        bt.println("Counter has been reset");
         break;
       }
     case 'M': case 'm':
