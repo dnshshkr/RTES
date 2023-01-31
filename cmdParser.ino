@@ -10,7 +10,7 @@ void cmdParser()
         digitalWrite(motorWater, LOW);
         if (manualPumpState)
         {
-          printSettingManual();
+          printManualSettings();
           break;
         }
         settingMode = !settingMode;
@@ -31,7 +31,7 @@ void cmdParser()
       {
         if (manualPumpState)
         {
-          printSettingManual();
+          printManualSettings();
           break;
         }
         if (settingMode)
@@ -192,6 +192,8 @@ void cmdParser()
         pulse_fuelToWaterRatioCount = 0;
         Serial.println("Counter has been reset");
         bt.println("Counter has been reset");
+        delay(1000);
+        printManualSettings();
         break;
       }
     case 'M': case 'm':
@@ -204,7 +206,7 @@ void cmdParser()
         }
         manualPumpState = 1;
         EEPROM.put(addr6, manualPumpState);
-        printSettingManual();
+        printManualSettings();
         break;
       }
     case 'R': case 'r':
@@ -271,13 +273,13 @@ void cmdParser()
         {
           solenoidManualState = !solenoidManualState;
           digitalWrite(solenoidWater, solenoidManualState);
-          printSettingManual();
+          printManualSettings();
         }
         else if (val == 2) //on off water pump
         {
           waterPumpManualState = !waterPumpManualState;
           digitalWrite(motorWater, waterPumpManualState);
-          printSettingManual();
+          printManualSettings();
         }
         else if (val == 3)
         {
@@ -286,7 +288,7 @@ void cmdParser()
           digitalWrite(solenoidWater, solenoidManualState);
           digitalWrite(motorWater, waterPumpManualState);
           toggleAllState = true;
-          printSettingManual();
+          printManualSettings();
         }
         else if (val == 4)
         {
@@ -295,13 +297,13 @@ void cmdParser()
           digitalWrite(solenoidWater, solenoidManualState);
           digitalWrite(motorWater, waterPumpManualState);
           toggleAllState = false;
-          printSettingManual();
+          printManualSettings();
         }
         else if (val == 5) //OFF ALL
         {
           manualPrintData = !manualPrintData;
           if (!manualPrintData)
-            printSettingManual();
+            printManualSettings();
         }
         else if (val == 6)
         {
@@ -355,7 +357,7 @@ void printSetting()
   }
 }
 
-void printSettingManual()
+void printManualSettings()
 {
   Serial.println("**********************MANUAL MODE SETTING*********************");
   Serial.println("Manual Mode RTES v" + String(ver));

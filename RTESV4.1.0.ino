@@ -142,7 +142,7 @@ void setup()
   Serial.println("RTES Initialized");
   bt.println("RTES Initialized");
   if (manualPumpState)
-    printSettingManual();
+    printManualSettings();
   Serial.println("RTES mode entered");
   bt.println("RTES mode entered");
 }
