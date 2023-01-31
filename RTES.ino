@@ -60,6 +60,8 @@
 #define addr5 11 //2 bytes
 #define addr6 13 //4 bytes
 #define addr7 17 //1 byte
+#define addr8 18 //4 bytes - admin pin
+uint32_t pwd_default = 990826;
 
 /*
    | pinouts
@@ -91,7 +93,7 @@ volatile unsigned long prevMillisEngOff = 0;
 volatile uint8_t pulse_fuelToWaterRatioCount = 0;
 bool settingMode = true;
 bool manualPrintData = false;
-bool manualPumpState = false;
+bool adminState = false;
 bool pulseDataPrint = false;
 bool cmdAvailable;
 bool engOffStatusPrintOnce;
@@ -142,11 +144,11 @@ void setup()
   settingMode = false;
   digitalWrite(solenoidWater, LOW);
   digitalWrite(motorWater, LOW);
-  printSetting();
+  printSettings();
   Serial.println("RTES Initialized");
   bt.println("RTES Initialized");
-  if (manualPumpState)
-    printManualSettings();
+  if (adminState)
+    adminSettings();
   Serial.println("RTES mode entered");
   bt.println("RTES mode entered");
 }
@@ -184,13 +186,13 @@ void loop()
     cmd.trim();
     cmdParser();
   }
-  if (!settingMode && !manualPumpState)
+  if (!settingMode && !adminState)
   {
     rtesSystem();
     if (pulseDataPrint)
       printData();
   }
-  else if (manualPumpState && manualPrintData)//Stop RTES
+  else if (adminState && manualPrintData)//Stop RTES
     printData();
   /***********************END*******************************************************************************************/
 }

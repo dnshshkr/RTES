@@ -9,7 +9,7 @@ void resetSettings() //factory reset
   EEPROM.put(addr7, 0);
   loadSettings();
   settingMode = 1;
-  manualPumpState = 0;
+  adminState = 0;
   pulse_fuelToWaterRatioCount = 1;
   Serial.println("Restored to factory settings");
   bt.println("Restored to factory settings");
@@ -24,7 +24,7 @@ void saveSettings()
   EEPROM.update(addr4, solShotBias);
   EEPROM.update(addr5, solenoidOnTime);
   EEPROM.update(addr6, quickWaterPercentage);
-  EEPROM.update(addr7, manualPumpState);
+  EEPROM.update(addr7, adminState);
 }
 
 void loadSettings()
@@ -35,8 +35,8 @@ void loadSettings()
   EEPROM.get(addr4, solShotBias);
   EEPROM.get(addr5, solenoidOnTime);
   EEPROM.get(addr6, quickWaterPercentage);
-  EEPROM.get(addr7, manualPumpState);
-  if (manualPumpState)
+  EEPROM.get(addr7, adminState);
+  if (adminState)
     settingMode = 1;
   calculatePulse_fuelToWaterRatio();
   calculateSolenoidOnTime();

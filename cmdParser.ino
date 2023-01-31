@@ -8,13 +8,13 @@ void cmdParser()
       {
         digitalWrite(solenoidWater, LOW);
         digitalWrite(motorWater, LOW);
-        if (manualPumpState)
+        if (adminState)
         {
-          printManualSettings();
+          adminSettings();
           break;
         }
         settingMode = !settingMode;
-        printSetting();
+        printSettings();
         if (settingMode)
         {
           Serial.println("Setting mode entered");
@@ -29,18 +29,18 @@ void cmdParser()
       }
     case '$':
       {
-        if (manualPumpState)
+        if (adminState)
         {
-          printManualSettings();
+          adminSettings();
           break;
         }
         if (settingMode)
-          printSetting();
+          printSettings();
         break;
       }
     case 'A': case 'a':
       {
-        if (!settingMode || manualPumpState)
+        if (!settingMode || adminState)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -53,7 +53,7 @@ void cmdParser()
           EEPROM.put(addr7, quickWaterPercentage);
           calculatePulse_fuelToWaterRatio();
           calculateDenom();
-          printSetting();
+          printSettings();
         }
         else
         {
@@ -64,7 +64,7 @@ void cmdParser()
       }
     case 'B': case 'b':
       {
-        if (!settingMode || manualPumpState)
+        if (!settingMode || adminState)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -77,7 +77,7 @@ void cmdParser()
           pulse_fuelToWaterRatio = val;
           EEPROM.put(addr1, pulse_fuelToWaterRatio);
           calculateDenom();
-          printSetting();
+          printSettings();
         }
         else
         {
@@ -88,29 +88,7 @@ void cmdParser()
       }
     case 'C': case 'c':
       {
-        if (!settingMode || manualPumpState)
-        {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
-          break;
-        }
-        int val = valStr.toInt();
-        if (val > 0)
-        {
-          engineOffTimeOut = val;
-          EEPROM.put(addr2, engineOffTimeOut);
-          printSetting();
-        }
-        else
-        {
-          Serial.println("Input is out of range");
-          bt.println("Input is out of range");
-        }
-        break;
-      }
-    case 'D': case 'd':
-      {
-        if (!settingMode || manualPumpState)
+        if (!settingMode || adminState)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -123,7 +101,7 @@ void cmdParser()
           EEPROM.put(addr3, flowRateBias);
           calculatePulse_fuelToWaterRatio();
           calculateDenom();
-          printSetting();
+          printSettings();
         }
         else
         {
@@ -132,9 +110,9 @@ void cmdParser()
         }
         break;
       }
-    case 'E': case 'e':
+    case 'D': case 'd':
       {
-        if (!settingMode || manualPumpState)
+        if (!settingMode || adminState)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -148,7 +126,7 @@ void cmdParser()
           calculateSolenoidOnTime();
           calculatePulse_fuelToWaterRatio();
           calculateDenom();
-          printSetting();
+          printSettings();
         }
         else
         {
@@ -157,9 +135,9 @@ void cmdParser()
         }
         break;
       }
-    case 'F': case 'f':
+    case 'E': case 'e':
       {
-        if (!settingMode || manualPumpState)
+        if (!settingMode || adminState)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -171,7 +149,29 @@ void cmdParser()
           solenoidOnTime = val;
           EEPROM.put(addr5, solenoidOnTime);
           calculatePulse_fuelToWaterRatio();
-          printSetting();
+          printSettings();
+        }
+        else
+        {
+          Serial.println("Input is out of range");
+          bt.println("Input is out of range");
+        }
+        break;
+      }
+    case 'F': case 'f':
+      {
+        if (!settingMode || adminState)
+        {
+          Serial.println("Not in settings mode");
+          bt.println("Not in settings mode");
+          break;
+        }
+        int val = valStr.toInt();
+        if (val > 0)
+        {
+          engineOffTimeOut = val;
+          EEPROM.put(addr2, engineOffTimeOut);
+          printSettings();
         }
         else
         {
@@ -191,20 +191,18 @@ void cmdParser()
       }
     case 'M': case 'm':
       {
-        if (!settingMode || manualPumpState)
+        if (!settingMode || adminState)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
           break;
         }
-        manualPumpState = 1;
-        EEPROM.put(addr6, manualPumpState);
-        printManualSettings();
+        adminSettings();
         break;
       }
     case 'R': case 'r':
       {
-        if (!settingMode || manualPumpState)
+        if (!settingMode || adminState)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -250,12 +248,12 @@ void cmdParser()
           Serial.read();
           bt.read();
         }
-        printSetting();
+        printSettings();
         break;
       }
     case 'T': case 't':
       {
-        if (!manualPumpState)
+        if (!adminState)
         {
           Serial.println("Not in manual mode!");
           bt.println("Not in manual mode!");
@@ -266,13 +264,13 @@ void cmdParser()
         {
           solenoidManualState = !solenoidManualState;
           digitalWrite(solenoidWater, solenoidManualState);
-          printManualSettings();
+          adminSettings();
         }
         else if (val == 2) //on off water pump
         {
           waterPumpManualState = !waterPumpManualState;
           digitalWrite(motorWater, waterPumpManualState);
-          printManualSettings();
+          adminSettings();
         }
         else if (val == 3)
         {
@@ -281,7 +279,7 @@ void cmdParser()
           digitalWrite(solenoidWater, solenoidManualState);
           digitalWrite(motorWater, waterPumpManualState);
           toggleAllState = true;
-          printManualSettings();
+          adminSettings();
         }
         else if (val == 4)
         {
@@ -290,19 +288,19 @@ void cmdParser()
           digitalWrite(solenoidWater, solenoidManualState);
           digitalWrite(motorWater, waterPumpManualState);
           toggleAllState = false;
-          printManualSettings();
+          adminSettings();
         }
         else if (val == 5) //OFF ALL
         {
           manualPrintData = !manualPrintData;
           if (!manualPrintData)
-            printManualSettings();
+            adminSettings();
         }
         else if (val == 6)
         {
-          manualPumpState = 0;
-          EEPROM.put(addr7, manualPumpState);
-          printSetting();
+          adminState = 0;
+          EEPROM.put(addr7, adminState);
+          printSettings();
         }
         break;
       }
@@ -313,19 +311,19 @@ void cmdParser()
       }
   }
 }
-void printSetting()
+void printSettings()
 {
   Serial.println("**************************ALL SETTING**************************");
   Serial.println("RTES v" + String(ver));
-  Serial.print("A: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
+  Serial.println("A: Water percentage: " + String(quickWaterPercentage) + "%");
+  Serial.print("B: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
   (pulse_fuelToWaterRatio == 0 || pulse_fuelToWaterRatio > 1) ? Serial.println("s") : Serial.println();
-  Serial.println("B: Engine Off Timeout: " + String(engineOffTimeOut) + " s");
   Serial.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " ml/pulse");
   Serial.println("D: Water Shot Bias: " + String(solShotBias) + " ml/pulse");
   Serial.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
-  Serial.println("F: Water percentage: " + String(quickWaterPercentage) + "%");
+  Serial.println("F: Engine Off Timeout: " + String(engineOffTimeOut) + " s");
   Serial.println("G: Reset total fuel pulse counter");
-  Serial.println("M: Enter Manual Mode");
+  Serial.println("M: Enter Admin Settings");
   Serial.println("$: Refresh Settings");
   Serial.println("R: Reset to Factory Settings");
   Serial.println("S: Enter Settings/Exit Settings/Start RTES System");
@@ -334,15 +332,15 @@ void printSetting()
   {
     bt.println("***ALL SETTINGS***");
     bt.println("RTES v" + String(ver));
-    bt.print("A: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
+    bt.println("A: Water percentage: " + String(quickWaterPercentage) + "%");
+    bt.print("B: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
     (pulse_fuelToWaterRatio == 0 || pulse_fuelToWaterRatio > 1) ? bt.println("s") : bt.println();
-    bt.println("B: Engine Off Timeout: " + String(engineOffTimeOut) + " s");
     bt.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " ml/pulse");
     bt.println("D: Water Shot Bias: " + String(solShotBias) + " ml/pulse");
     bt.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
-    bt.println("F: Water percentage: " + String(quickWaterPercentage) + "%");
+    bt.println("F: Engine Off Timeout: " + String(engineOffTimeOut) + " s");
     bt.println("G: Reset total fuel pulse counter");
-    bt.println("M: Enter Manual Mode");
+    bt.println("M: Enter Admin Settings");
     bt.println("$: Refresh Settings");
     bt.println("R: Reset to Factory Settings");
     bt.println("S: Enter Settings/Exit Settings/Start RTES System");
@@ -350,8 +348,27 @@ void printSetting()
   }
 }
 
-void printManualSettings()
+void adminSettings()
 {
+  //security check
+  Serial.println("Enter admin password");
+  bt.println("Enter admin password");
+  while (!Serial.available() && !bt.available()) {}
+  String pwd = Serial.readStringUntil('\r\n');
+  if (digitalRead(btState))
+    pwd = bt.readStringUntil('\r\n');
+  pwd.trim();
+  if (pwd != pwd_default)
+  {
+    Serial.println("Your password is incorrect");
+    delay(500);
+    adminState = false;
+    printSettings();
+    return;
+  }
+  else
+    adminState = true;
+  EEPROM.put(addr6, adminState);
   Serial.println("**********************MANUAL MODE SETTINGS*********************");
   Serial.println("Manual Mode RTES v" + String(ver));
   Serial.print("T1: ON/OFF Solenoid: "); solenoidManualState ? Serial.println("ON") : Serial.println("OFF");
