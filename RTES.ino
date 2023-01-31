@@ -162,7 +162,7 @@ void loop()
     if (!engOffStatusPrintOnce)
     {
       Serial.println("*Engine is off*");
-      bt.println("*Engine is off*");
+      bt.println("**Engine is off**");
       //pulse_fuelToWaterRatioCount = 1;
       engOffStatusPrintOnce = true;
     }
