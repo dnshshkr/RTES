@@ -7,7 +7,7 @@ void countPulse()
   pulseMeasurePrevMillis = millis();
   totalFuelPulse ++;
   pulse_fuelToWaterRatioCount++;
-  if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
+  if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + 2)
     pulse_fuelToWaterRatioCount = 1;
   pulseDataPrint = true;
 }

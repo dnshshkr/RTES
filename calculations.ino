@@ -10,5 +10,5 @@ void calculateSolenoidOnTime()
 
 void calculateDenom()
 {
-  denom = flowRateBias * (float)(pulse_fuelToWaterRatio + 1) + solShotBias * (float)solenoidOnPulse;
+  denom = flowRateBias * (float)(pulse_fuelToWaterRatio + 1) + solShotBias;
 }

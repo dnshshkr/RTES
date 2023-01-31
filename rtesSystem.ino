@@ -17,7 +17,7 @@ void rtesSystem()
   //        digitalWrite(motorWater, LOW);
   //        //currentLimitedOut(fuelTrig, 0, waterTrig);
   //      }
-  //      if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
+  //      if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + 1 + 1)
   //      {
   //        sprayStarted = false;
   //        totalWaterPulse++;
@@ -42,7 +42,7 @@ void rtesSystem()
   }
   if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio)
     sprayStarted = true;
-  else if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse)
+  else if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + 1)
     sprayedOnce = true;
   if (sprayStarted && !sprayedOnce && sprayCompleted)
   {

@@ -103,7 +103,6 @@ bool sprayCompleted = true;
 bool solenoidManualState = false;
 bool waterPumpManualState = false;
 bool toggleAllState = false;
-const uint8_t solenoidOnPulse = 1;
 uint8_t engineOffTimeOut;
 uint8_t currentSensorType = 1; //'0'=ACS713 '1'=ACS712
 unsigned int pulse_fuelToWaterRatio; //pulse per water shot //CMD
