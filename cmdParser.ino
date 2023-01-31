@@ -231,7 +231,7 @@ void cmdParser()
               }
               prev = millis();
             }
-          } while (!Serial.available() && (digitalRead(btState) && !bt.available()) && countDown >= 0);
+          } while (!Serial.available() && !bt.available() && countDown >= 0);
           char choice = Serial.read();
           if (digitalRead(btState) && bt.available())
             choice = bt.read();
