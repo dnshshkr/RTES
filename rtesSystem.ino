@@ -20,7 +20,7 @@ void rtesSystem()
   //      if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + solenoidOnPulse + 1)
   //      {
   //        sprayStarted = false;
-  //        pulseInc++;
+  //        totalWaterPulse++;
   //        pulse_fuelToWaterRatioCount = 1;
   //      }
   //    }
@@ -53,7 +53,7 @@ void rtesSystem()
     sprayedOnce = true;
     sprayStarted = false;
     sprayCompleted = false;
-    pulseInc++;
+    totalWaterPulse++;
   }
   if (!sprayCompleted && millis() - prevSolOnTime >= solenoidOnTime)
   {

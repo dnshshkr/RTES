@@ -75,7 +75,6 @@ const uint8_t btState = 5;
 /*********************variables***********************************************************************************/
 volatile float measuredPulsePerMin = 0;
 volatile float fuelPulsePeriod;
-volatile uint8_t pulseCounter = 1;
 volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;
 volatile unsigned long prevMillisEngOff = 0;
@@ -104,7 +103,7 @@ float quickWaterPercentage = 10;
 float flowRateBias = 1.45; //flowrate mililliter per pulse //CMD
 float solShotBias = 1.4; //solenoid mililliter per shot //CMD
 unsigned long prevSolOnTime;
-unsigned long pulseInc = 0;
+unsigned long totalWaterPulse = 0;
 String cmd;
 
 /*********************CmdParser***********************************************************************************/
@@ -132,8 +131,6 @@ void setup()
   //  pinMode(bttx, OUTPUT);
   pinMode(btState, INPUT);
   attachInterrupt(digitalPinToInterrupt(pulseFlowrate), countPulse, FALLING);
-  pulseCounter = 0;
-  totalFuelPulse = 0;
   loadSettings(); //load settings
   settingMode = false;
   digitalWrite(solenoidWater, LOW);
