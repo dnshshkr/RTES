@@ -103,7 +103,6 @@ bool sprayCompleted = true;
 bool solenoidManualState = false;
 bool waterPumpManualState = false;
 bool toggleAllState = false;
-const uint8_t solenoidOnPulse = 1;
 uint8_t engineOffTimeOut;
 uint8_t currentSensorType = 1; //'0'=ACS713 '1'=ACS712
 unsigned int pulse_fuelToWaterRatio; //pulse per water shot //CMD
@@ -163,7 +162,7 @@ void loop()
     if (!engOffStatusPrintOnce)
     {
       Serial.println("*Engine is off*");
-      bt.println("*Engine is off*");
+      bt.println("**Engine is off**");
       //pulse_fuelToWaterRatioCount = 1;
       engOffStatusPrintOnce = true;
     }
@@ -189,7 +188,7 @@ void loop()
     cmdParser();
   if (!settingMode && !adminState)
   {
-    rtesSystem();
+    RTES();
     if (pulseDataPrint)
       printData();
   }
