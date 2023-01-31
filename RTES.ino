@@ -44,18 +44,22 @@
    13 Oct 22:
    Add flowrate measurement on print_data (ml/min)
   ;================================================================================================================*/
+/*
+ * | packages inclusion
+ */
 #include<EEPROM.h>
 #include<SoftwareSerial.h>
 
-/*********************Set limit***********************************************************************************/
-//Save Initial Setting EEPROM
-#define addr1 0
-#define addr2 5
-#define addr3 10
-#define addr4 15
-#define addr5 20
-#define addr6 25
-#define addr7 30
+/*
+ * | EEPROM memory address
+ */
+#define addr1 0 //2 bytes
+#define addr2 2 //1 byte
+#define addr3 3 //4 bytes
+#define addr4 7 //4 bytes
+#define addr5 11 //2 bytes
+#define addr6 13 //4 bytes
+#define addr7 17 //1 byte
 
 /*********************Pinouts*************************************************************************************/
 const uint8_t pulseFlowrate = 2;
