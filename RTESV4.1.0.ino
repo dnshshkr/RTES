@@ -135,7 +135,7 @@ void setup()
   pulseCounter = 0;
   totalFuelPulse = 0;
   loadSettings(); //load settings
-  settingMode = true;
+  settingMode = false;
   digitalWrite(solenoidWater, LOW);
   digitalWrite(motorWater, LOW);
   printSetting();
@@ -143,7 +143,6 @@ void setup()
   bt.println("RTES Initialized");
   if (manualPumpState)
     printSettingManual();
-  settingMode = false;
   Serial.println("RTES mode entered");
   bt.println("RTES mode entered");
 }
