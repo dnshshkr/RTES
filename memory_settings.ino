@@ -1,4 +1,4 @@
-void resetSettings() //factory reset
+void factoryReset() //factory reset
 {
   EEPROM.put(addr1, 10);
   EEPROM.put(addr2, 15);

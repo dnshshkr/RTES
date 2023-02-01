@@ -245,7 +245,7 @@ void cmdParser()
           if (digitalRead(btState) && bt.available())
             choice = bt.read();
           if (choice == 'Y' || choice == 'y')
-            resetSettings();
+            factoryReset();
           else
           {
             Serial.println("Factory reset aborted");
