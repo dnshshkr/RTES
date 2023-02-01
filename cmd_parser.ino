@@ -199,17 +199,14 @@ void cmdParser()
           bt.println("Not in settings mode");
           break;
         }
-        Serial.println(pwd_default);
+        //Serial.println(pwd_default);
         Serial.print("Enter admin password");
         bt.print("Enter admin password");
         bool wait = timeoutUI();
-        String pwdStr = Serial.readStringUntil('\r\n');
+        uint32_t pwd = Serial.parseInt();
         if (digitalRead(btState))
-          pwdStr = bt.readStringUntil('\r\n');
-        pwdStr.trim();
-        uint32_t pwd = pwdStr.toInt();
+          pwd = bt.parseInt();
         flushSerial();
-        Serial.println(pwd);
         if (!wait)
         {
           printSettings();
