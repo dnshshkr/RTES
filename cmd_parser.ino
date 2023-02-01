@@ -8,7 +8,7 @@ void cmdParser()
       {
         digitalWrite(solenoidWater, LOW);
         digitalWrite(motorWater, LOW);
-        if (adminState)
+        if (adminMode)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -31,7 +31,7 @@ void cmdParser()
       }
     case '$':
       {
-        if (adminState)
+        if (adminMode)
         {
           adminSettings();
           break;
@@ -42,7 +42,7 @@ void cmdParser()
       }
     case 'A': case 'a':
       {
-        if (!settingMode || adminState)
+        if (!settingMode || adminMode)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -66,7 +66,7 @@ void cmdParser()
       }
     case 'B': case 'b':
       {
-        if (!settingMode || adminState)
+        if (!settingMode || adminMode)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -90,7 +90,7 @@ void cmdParser()
       }
     case 'C': case 'c':
       {
-        if (!settingMode || adminState)
+        if (!settingMode || adminMode)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -114,7 +114,7 @@ void cmdParser()
       }
     case 'D': case 'd':
       {
-        if (!settingMode || adminState)
+        if (!settingMode || adminMode)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -139,7 +139,7 @@ void cmdParser()
       }
     case 'E': case 'e':
       {
-        if (!settingMode || adminState)
+        if (!settingMode || adminMode)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -162,7 +162,7 @@ void cmdParser()
       }
     case 'F': case 'f':
       {
-        if (!settingMode || adminState)
+        if (!settingMode || adminMode)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -194,7 +194,7 @@ void cmdParser()
       }
     case 'M': case 'm': //admin mode
       {
-        if (!settingMode || adminState)
+        if (!settingMode || adminMode)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -218,40 +218,37 @@ void cmdParser()
           Serial.println("Password incorrect");
           bt.println("Password incorrect");
           delay(1000);
-          adminState = false;
+          adminMode = false;
           printSettings();
           break;
         }
         else
-          adminState = true;
-        EEPROM.put(addr6, adminState);
+          adminMode = true;
+        EEPROM.put(addr6, adminMode);
         adminSettings();
         break;
       }
     case 'R': case 'r':
       {
-        if (!settingMode || adminState)
+        if (!adminMode)
         {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
+          Serial.println("Command unrecognized");
+          bt.println("Command unrecognized");
           break;
         }
+        Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
+        bt.print("Are you sure you want to reset to factory settings? (Y/N)") ;
+        bool wait = timeoutUI();
+        char choice = Serial.read();
+        if (digitalRead(btState) && bt.available())
+          choice = bt.read();
+        if (choice == 'Y' || choice == 'y')
+          factoryReset();
         else
         {
-          Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
-          bt.print("Are you sure you want to reset to factory settings? (Y/N)") ;
-          bool wait = timeoutUI();
-          char choice = Serial.read();
-          if (digitalRead(btState) && bt.available())
-            choice = bt.read();
-          if (choice == 'Y' || choice == 'y')
-            factoryReset();
-          else
-          {
-            Serial.println("Factory reset aborted");
-            bt.println("Factory reset aborted");
-            delay(1000);
-          }
+          Serial.println("Factory reset aborted");
+          bt.println("Factory reset aborted");
+          delay(1000);
         }
         flushSerial();
         printSettings();
@@ -259,10 +256,10 @@ void cmdParser()
       }
     case 'T': case 't':
       {
-        if (!adminState)
+        if (!adminMode)
         {
-          Serial.println("Not in manual mode!");
-          bt.println("Not in manual mode!");
+          Serial.println("Command unrecognized");
+          bt.println("Command unrecognized");
           break;
         }
         uint8_t val = valStr.toInt();
@@ -344,8 +341,8 @@ newpassword:
         }
         else if (val == 7)
         {
-          adminState = 0;
-          EEPROM.put(addr7, adminState);
+          adminMode = 0;
+          EEPROM.put(addr7, adminMode);
           printSettings();
         }
         break;

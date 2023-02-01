@@ -93,7 +93,7 @@ volatile unsigned long prevMillisEngOff = 0;
 volatile uint8_t pulse_fuelToWaterRatioCount = 0;
 bool settingMode = true;
 bool manualPrintData = false;
-bool adminState;
+bool adminMode;
 bool pulseDataPrint = false;
 bool cmdAvailable;
 bool engOffStatusPrintOnce;
@@ -148,7 +148,7 @@ void setup()
   printSettings();
   Serial.println("RTES initialized");
   bt.println("RTES initialized");
-  if (adminState)
+  if (adminMode)
     adminSettings();
   Serial.println("RTES mode entered");
   bt.println("RTES mode entered");
@@ -186,13 +186,13 @@ void loop()
   cmd.trim();
   if (cmdAvailable)
     cmdParser();
-  if (!settingMode && !adminState)
+  if (!settingMode && !adminMode)
   {
     RTES();
     if (pulseDataPrint)
       printData();
   }
-  else if (adminState && manualPrintData)//Stop RTES
+  else if (adminMode && manualPrintData)//Stop RTES
     printData();
   /***********************END*******************************************************************************************/
 }

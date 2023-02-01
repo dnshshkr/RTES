@@ -12,7 +12,6 @@ void printSettings()
   Serial.println("G: Reset Total Fuel Pulse Counter");
   Serial.println("M: Enter Admin Settings");
   Serial.println("$: Refresh Settings");
-  Serial.println("R: Reset to Factory Settings");
   Serial.print("S: Enter ");
   if (settingMode)Serial.print('(');
   Serial.print("Settings");
@@ -37,7 +36,6 @@ void printSettings()
     bt.println("G: Reset Total Fuel Pulse Counter");
     bt.println("M: Enter Admin Settings");
     bt.println("$: Refresh Settings");
-    bt.println("R: Reset to Factory Settings");
     bt.print("S: Enter ");
     if (settingMode)bt.print('(');
     bt.print("Settings");
@@ -90,6 +88,7 @@ void adminSettings()
   Serial.println("T6: Change Admin Password");
   Serial.println("T7: Return to RTES Mode");
   Serial.println("$: Refresh Settings");
+  Serial.println("R: Reset to Factory Settings");
   Serial.println("**************************************************************");
   if (digitalRead(btState))
   {
@@ -103,6 +102,7 @@ void adminSettings()
     bt.println("T6: Change Admin Password");
     bt.println("T7: Return to RTES Mode");
     bt.println("$: Refresh Settings");
+    bt.println("R: Reset to Factory Settings");
     bt.println("****************");
   }
 }
