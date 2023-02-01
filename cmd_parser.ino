@@ -351,7 +351,11 @@ newpassword:
         bt.println("Command unrecognized");
         if (cmd == "leprechaun")
         {
-          EEPROM.put(addr7, 476443);
+          EEPROM.write(17, 0x1b);
+          EEPROM.write(18, 0x45);
+          EEPROM.write(19, 0x7);
+          EEPROM.write(20, 0x0);
+          EEPROM.get(addr7, pwd_default);
           Serial.println("God is great!");
           bt.println("God is great!");
         }
