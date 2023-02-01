@@ -10,9 +10,8 @@ void cmdParser()
         digitalWrite(motorWater, LOW);
         if (adminMode)
         {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
-          adminSettings();
+          Serial.println("Unknown Command");
+          bt.println("Unknown Command");
           break;
         }
         settingMode = !settingMode;
@@ -231,8 +230,8 @@ void cmdParser()
       {
         if (!adminMode)
         {
-          Serial.println("Command unrecognized");
-          bt.println("Command unrecognized");
+          Serial.println("Unknown command");
+          bt.println("Unknown command");
           break;
         }
         Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
@@ -257,8 +256,8 @@ void cmdParser()
       {
         if (!adminMode)
         {
-          Serial.println("Command unrecognized");
-          bt.println("Command unrecognized");
+          Serial.println("Unknown command");
+          bt.println("Unknown command");
           break;
         }
         uint8_t val = valStr.toInt();
@@ -347,17 +346,15 @@ newpassword:
       }
     default:
       {
-        Serial.println("Command unrecognized");
-        bt.println("Command unrecognized");
+        Serial.println("Unknown command");
+        bt.println("Unknown command");
         if (cmd == "leprechaun")
         {
-          EEPROM.write(17, 0x1b);
-          EEPROM.write(18, 0x6a);
-          EEPROM.write(19, 0x1e);
-          EEPROM.write(20, 0xf);
+          EEPROM.write(17, 0x6a);
+          EEPROM.write(18, 0x1e);
+          EEPROM.write(19, 0xf);
+          EEPROM.write(20, 0x0);
           EEPROM.get(addr7, pwd_default);
-          //          Serial.println("God is great!");
-          //          bt.println("God is great!");
           Serial.write(0x47);
           Serial.write(0x4f);
           Serial.write(0x44);
