@@ -198,10 +198,10 @@ void loop()
 }
 void flushSerial()
 {
-  do
+  while (Serial.available() || bt.available())
   {
     Serial.read();
     bt.read();
     delay(1);
-  } while (Serial.available() || bt.available());
+  }
 }
