@@ -251,7 +251,7 @@ void cmdParser()
           delay(1000);
         }
         flushSerial();
-        printSettings();
+        adminSettings();
         break;
       }
     case 'T': case 't':
@@ -331,8 +331,8 @@ newpassword:
               delay(1000);
               goto newpassword;
             }
-            EEPROM.put(addr8, pwdStr.toInt());
-            EEPROM.get(addr8, pwd_default);
+            EEPROM.update(addr7, pwdStr.toInt());
+            EEPROM.get(addr7, pwd_default);
             Serial.println("Your new password has been set");
             bt.println("Your new password has been set");
             delay(1000);
@@ -342,7 +342,6 @@ newpassword:
         else if (val == 7)
         {
           adminMode = 0;
-          EEPROM.put(addr7, adminMode);
           printSettings();
         }
         break;

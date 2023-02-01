@@ -59,9 +59,8 @@
 #define addr4 7 //4 bytes
 #define addr5 11 //2 bytes
 #define addr6 13 //4 bytes
-#define addr7 17 //1 byte
-#define addr8 18 //4 bytes - admin pin
-uint32_t pwd_default;
+#define addr7 17 //4 bytes byte - admin
+unsigned long pwd_default;
 
 /*
    | pinouts
@@ -93,7 +92,7 @@ volatile unsigned long prevMillisEngOff = 0;
 volatile uint8_t pulse_fuelToWaterRatioCount = 0;
 bool settingMode = true;
 bool manualPrintData = false;
-bool adminMode;
+bool adminMode = 0;
 bool pulseDataPrint = false;
 bool cmdAvailable;
 bool engOffStatusPrintOnce;
@@ -126,7 +125,7 @@ SoftwareSerial bt(btrx, bttx);
 
 void setup()
 {
-  EEPROM.get(addr8, pwd_default);
+  EEPROM.get(addr7, pwd_default);
   Serial.begin(38400);
   bt.begin(38400);
   pinMode(flowrateSensor, INPUT_PULLUP);
@@ -148,8 +147,6 @@ void setup()
   printSettings();
   Serial.println("RTES initialized");
   bt.println("RTES initialized");
-  if (adminMode)
-    adminSettings();
   Serial.println("RTES mode entered");
   bt.println("RTES mode entered");
   digitalWrite(LED_BUILTIN, LOW);

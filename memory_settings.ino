@@ -1,12 +1,11 @@
 void factoryReset() //factory reset
 {
-  EEPROM.put(addr1, 10);
-  EEPROM.put(addr2, 15);
-  EEPROM.put(addr3, 1.45);
-  EEPROM.put(addr4, 0.81);
-  EEPROM.put(addr5, 250);
-  EEPROM.put(addr6, 10.0);
-  EEPROM.put(addr7, 0);
+  EEPROM.put(addr1, 4); //0
+  EEPROM.put(addr2, 15); //2
+  EEPROM.put(addr3, 1.45);  //3
+  EEPROM.put(addr4, 0.81); //7
+  EEPROM.put(addr5, 250); //11
+  EEPROM.put(addr6, 10.0); //13
   loadSettings();
   settingMode = 1;
   adminMode = 0;
@@ -24,7 +23,6 @@ void saveSettings()
   EEPROM.update(addr4, solShotBias);
   EEPROM.update(addr5, solenoidOnTime);
   EEPROM.update(addr6, quickWaterPercentage);
-  EEPROM.update(addr7, adminMode);
 }
 
 void loadSettings()
@@ -35,7 +33,6 @@ void loadSettings()
   EEPROM.get(addr4, solShotBias);
   EEPROM.get(addr5, solenoidOnTime);
   EEPROM.get(addr6, quickWaterPercentage);
-  EEPROM.get(addr7, adminMode);
   if (adminMode)
     settingMode = 1;
   calculatePulse_fuelToWaterRatio();
