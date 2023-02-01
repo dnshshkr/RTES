@@ -146,8 +146,8 @@ void setup()
   digitalWrite(solenoidWater, LOW);
   digitalWrite(motorWater, LOW);
   printSettings();
-  Serial.println("RTES Initialized");
-  bt.println("RTES Initialized");
+  Serial.println("RTES initialized");
+  bt.println("RTES initialized");
   if (adminState)
     adminSettings();
   Serial.println("RTES mode entered");

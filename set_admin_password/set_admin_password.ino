@@ -1,7 +1,7 @@
 #include<EEPROM.h>
 void setup()
 {
-  uint32_t pin = 990826;
+  uint32_t pin = 389156;
   Serial.begin(9600);
   EEPROM.put(18, pin);
   uint32_t readPin;
