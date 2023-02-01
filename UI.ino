@@ -2,7 +2,7 @@ void printSettings()
 {
   Serial.println("**************************ALL SETTING**************************");
   Serial.println("RTES v" + String(ver));
-  Serial.println("A: Water percentage: " + String(quickWaterPercentage) + "%");
+  Serial.println("A: Water Percentage: " + String(quickWaterPercentage) + "%");
   Serial.print("B: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
   (pulse_fuelToWaterRatio == 0 || pulse_fuelToWaterRatio > 1) ? Serial.println('s') : Serial.println();
   Serial.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
@@ -27,7 +27,7 @@ void printSettings()
   {
     bt.println("***ALL SETTINGS***");
     bt.println("RTES v" + String(ver));
-    bt.println("A: Water percentage: " + String(quickWaterPercentage) + "%");
+    bt.println("A: Water Percentage: " + String(quickWaterPercentage) + "%");
     bt.print("B: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
     (pulse_fuelToWaterRatio == 0 || pulse_fuelToWaterRatio > 1) ? bt.println('s') : bt.println();
     bt.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
