@@ -140,7 +140,7 @@ void setup()
   //  pinMode(btrx, INPUT);
   //  pinMode(bttx, OUTPUT);
   pinMode(btState, INPUT);
-  attachInterrupt(digitalPinToInterrupt(flowrateSensor), countPulse, FALLING);
+  attachInterrupt(digitalPinToInterrupt(flowrateSensor), interruptRoutine, FALLING);
   loadSettings(); //load settings
   settingMode = false;
   digitalWrite(solenoidWater, LOW);

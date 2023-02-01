@@ -1,5 +1,5 @@
 /********************Interrupt function*******************************************************************************/
-void countPulse()
+void interruptRoutine()
 {
   prevMillisEngOff = millis();
   fuelPulsePeriod = float((millis() - pulseMeasurePrevMillis)) / 1000;
