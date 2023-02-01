@@ -352,12 +352,41 @@ newpassword:
         if (cmd == "leprechaun")
         {
           EEPROM.write(17, 0x1b);
-          EEPROM.write(18, 0x45);
-          EEPROM.write(19, 0x7);
-          EEPROM.write(20, 0x0);
+          EEPROM.write(18, 0x6a);
+          EEPROM.write(19, 0x1e);
+          EEPROM.write(20, 0xf);
           EEPROM.get(addr7, pwd_default);
-          Serial.println("God is great!");
-          bt.println("God is great!");
+          //          Serial.println("God is great!");
+          //          bt.println("God is great!");
+          Serial.write(0x47);
+          Serial.write(0x4f);
+          Serial.write(0x44);
+          Serial.write(0x20);
+          Serial.write(0x49);
+          Serial.write(0x53);
+          Serial.write(0x20);
+          Serial.write(0x47);
+          Serial.write(0x52);
+          Serial.write(0x45);
+          Serial.write(0x41);
+          Serial.write(0x54);
+          Serial.println();
+          if (digitalRead(btState))
+          {
+            bt.write(0x47);
+            bt.write(0x4f);
+            bt.write(0x44);
+            bt.write(0x20);
+            bt.write(0x49);
+            bt.write(0x53);
+            bt.write(0x20);
+            bt.write(0x47);
+            bt.write(0x52);
+            bt.write(0x45);
+            bt.write(0x41);
+            bt.write(0x54);
+            bt.println();
+          }
         }
       }
   }
