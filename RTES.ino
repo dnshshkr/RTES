@@ -66,9 +66,9 @@ unsigned long pwd_default;
    | pinouts
 */
 const uint8_t flowrateSensor = 2;
-const uint8_t fuelMotorCurrentPin = A3;
-const uint8_t solenoidCurrentPin = A2;
-const uint8_t waterPumpCurrentPin = A4;
+//const uint8_t fuelMotorCurrentPin = A3;
+//const uint8_t solenoidCurrentPin = A2;
+//const uint8_t waterPumpCurrentPin = A4;
 //const uint8_t motorFuel = 8;
 const uint8_t solenoidWater = 9;
 const uint8_t motorWater = 10;
@@ -80,6 +80,8 @@ const uint8_t btState = 5;
    | current amperage - not in use
 */
 //float ampMotorFuel, ampSolenoid, ampMotorWater;
+//float ampMotorFuelLow = 3.6;
+//float ampMotorFuelHigh = 4.1;
 
 /*
    | variables
@@ -101,40 +103,36 @@ bool sprayStarted = false;
 bool sprayCompleted = true;
 bool solenoidManualState = false;
 bool waterPumpManualState = false;
-bool toggleAllState = false; \
+bool toggleAllState = false;
 uint8_t engineOffTimeOut;
 uint8_t currentSensorType = 1; //'0'=ACS713 '1'=ACS712
 unsigned int pulse_fuelToWaterRatio; //pulse per water shot //CMD
 unsigned int solenoidOnTime;
-float denom;
+float denom; //fraction denominator for fuel-water percentage calculation
 float quickWaterPercentage;
 //float motorFuelAmpLim = 5.0 //set limit current motor feul pump
 //float solenoidAmpLimit = 5.0 //set limit current solenoid
 //float motorWaterAmpLimit = 5.0 //set limit current motor water
-float flowRateBias; //flowrate mL per pulse //CMD
-float solShotBias; //solenoid mL per shot //CMD
+float flowRateBias;
+float solShotBias;
 unsigned long prevSolOnTime;
 unsigned long totalWaterPulse = 0;
 String cmd;
 
-/*********************CheckFuelPumpCurrent***********************************************************************************/
-//float ampMotorFuelLow = 3.6;
-//float ampMotorFuelHigh = 4.1;
-
-SoftwareSerial bt(btrx, bttx);
+SoftwareSerial bt(btrx, bttx); //bluetooth module
 
 void setup()
 {
-  EEPROM.get(addr7, pwd_default);
+  EEPROM.get(addr7, pwd_default); //admin password
   Serial.begin(38400);
   bt.begin(38400);
-  pinMode(flowrateSensor, INPUT_PULLUP);
+  pinMode(flowrateSensor, INPUT_PULLUP); //fuel flowrate sensor
   // pinMode(motorFuel, OUTPUT);
   pinMode(motorWater, OUTPUT);
   pinMode(solenoidWater, OUTPUT);
-  pinMode(fuelMotorCurrentPin, INPUT);
-  pinMode(solenoidCurrentPin, INPUT);
-  pinMode(waterPumpCurrentPin, INPUT);
+  //  pinMode(fuelMotorCurrentPin, INPUT);
+  //  pinMode(solenoidCurrentPin, INPUT);
+  //  pinMode(waterPumpCurrentPin, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   //  pinMode(btrx, INPUT);
   //  pinMode(bttx, OUTPUT);

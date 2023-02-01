@@ -304,7 +304,10 @@ void cmdParser()
           while (!Serial.available() && !bt.available()) {}
           uint32_t pwd = Serial.parseInt();
           if (digitalRead(btState))
-            pwd = bt.parseInt();
+          {
+            while (bt.available())
+              pwd = bt.parseInt();
+          }
           flushSerial();
           if (pwd != pwd_default)
           {
