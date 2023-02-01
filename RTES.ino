@@ -203,5 +203,5 @@ void flushSerial()
     Serial.read();
     bt.read();
     delay(1);
-  } while (Serial.available() || bt.available()); \
+  } while (Serial.available() || bt.available());
 }
