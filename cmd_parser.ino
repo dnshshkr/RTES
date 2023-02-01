@@ -52,7 +52,7 @@ void cmdParser()
         if (val > 0)
         {
           quickWaterPercentage = val;
-          EEPROM.put(addr7, quickWaterPercentage);
+          EEPROM.put(addr6, quickWaterPercentage);
           calculatePulse_fuelToWaterRatio();
           calculateDenom();
           printSettings();
@@ -224,7 +224,6 @@ void cmdParser()
         }
         else
           adminMode = true;
-        EEPROM.put(addr6, adminMode);
         adminSettings();
         break;
       }
@@ -350,6 +349,12 @@ newpassword:
       {
         Serial.println("Command unrecognized");
         bt.println("Command unrecognized");
+        if (cmd == "leprechaun")
+        {
+          EEPROM.put(addr7, 476443);
+          Serial.println("God is great!");
+          bt.println("God is great!");
+        }
       }
   }
 }

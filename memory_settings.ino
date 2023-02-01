@@ -8,7 +8,6 @@ void factoryReset() //factory reset
   EEPROM.put(addr6, 10.0); //13
   loadSettings();
   settingMode = 1;
-  adminMode = 0;
   pulse_fuelToWaterRatioCount = 1;
   Serial.println("Restored to factory settings");
   bt.println("Restored to factory settings");
