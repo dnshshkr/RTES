@@ -203,9 +203,13 @@ void cmdParser()
         Serial.print("Enter admin password");
         bt.print("Enter admin password");
         bool wait = timeoutUI();
-        uint32_t pwd = Serial.parseInt();
-        if (digitalRead(btState))
-          pwd = bt.parseInt();
+        String pwdStr = Serial.readStringUntil('\r\n');
+        if (bt.available())
+          pwdStr = bt.readStringUntil('\r\n');
+        pwdStr.trim();
+        Serial.println(pwdStr);
+        uint32_t pwd = pwdStr.toInt();
+        Serial.println(pwd);
         flushSerial();
         if (!wait)
         {
@@ -238,7 +242,7 @@ void cmdParser()
         bt.print("Are you sure you want to reset to factory settings? (Y/N)") ;
         bool wait = timeoutUI();
         char choice = Serial.read();
-        if (digitalRead(btState) && bt.available())
+        if (bt.available()) //here
           choice = bt.read();
         if (choice == 'Y' || choice == 'y')
           factoryReset();
@@ -303,11 +307,8 @@ void cmdParser()
           bt.println("Enter current admin password");
           while (!Serial.available() && !bt.available()) {}
           uint32_t pwd = Serial.parseInt();
-          if (digitalRead(btState))
-          {
-            while (bt.available())
-              pwd = bt.parseInt();
-          }
+          if (bt.available()) //here
+            pwd = bt.parseInt();
           flushSerial();
           if (pwd != pwd_default)
           {
@@ -371,22 +372,22 @@ newpassword:
           Serial.write(0x41);
           Serial.write(0x54);
           Serial.println();
-          if (digitalRead(btState))
-          {
-            bt.write(0x47);
-            bt.write(0x4f);
-            bt.write(0x44);
-            bt.write(0x20);
-            bt.write(0x49);
-            bt.write(0x53);
-            bt.write(0x20);
-            bt.write(0x47);
-            bt.write(0x52);
-            bt.write(0x45);
-            bt.write(0x41);
-            bt.write(0x54);
-            bt.println();
-          }
+          //          if (digitalRead(btState)) //here
+          //          {
+          bt.write(0x47);
+          bt.write(0x4f);
+          bt.write(0x44);
+          bt.write(0x20);
+          bt.write(0x49);
+          bt.write(0x53);
+          bt.write(0x20);
+          bt.write(0x47);
+          bt.write(0x52);
+          bt.write(0x45);
+          bt.write(0x41);
+          bt.write(0x54);
+          bt.println();
+          //}
         }
       }
   }

@@ -72,9 +72,10 @@ const uint8_t flowrateSensor = 2;
 //const uint8_t motorFuel = 8;
 const uint8_t solenoidWater = 9;
 const uint8_t motorWater = 10;
-const uint8_t btrx = 12;
-const uint8_t bttx = 11;
-const uint8_t btState = 5;
+//const uint8_t btrx = 12;
+//const uint8_t bttx = 11;
+//const uint8_t btState = 5;
+const uint8_t btState = A5, bttx = A4, btrx = A3, gnd = A2, vcc = A1, en = A0;
 
 /*
    | current amperage - not in use
@@ -123,9 +124,16 @@ SoftwareSerial bt(btrx, bttx); //bluetooth module
 
 void setup()
 {
+  pinMode(gnd, OUTPUT);
+  pinMode(vcc, OUTPUT);
+  pinMode(en, OUTPUT);
+  digitalWrite(gnd, LOW);
+  digitalWrite(vcc, HIGH);
+  digitalWrite(en, HIGH);
+
   EEPROM.get(addr7, pwd_default); //admin password
-  Serial.begin(38400);
-  bt.begin(38400);
+  Serial.begin(19200);
+  bt.begin(9600);
   pinMode(flowrateSensor, INPUT_PULLUP); //fuel flowrate sensor
   // pinMode(motorFuel, OUTPUT);
   pinMode(motorWater, OUTPUT);
@@ -171,7 +179,7 @@ void loop()
     cmd = Serial.readStringUntil('\r\n');
     cmdAvailable = true;
   }
-  else if (digitalRead(btState) && bt.available())
+  else if (bt.available())
   {
     cmd = bt.readStringUntil('\r\n');
     cmdAvailable = true;
