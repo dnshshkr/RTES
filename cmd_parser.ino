@@ -249,6 +249,7 @@ void cmdParser()
           {
             Serial.println("Factory reset aborted");
             bt.println("Factory reset aborted");
+            delay(1000);
           }
         }
         flushSerial();

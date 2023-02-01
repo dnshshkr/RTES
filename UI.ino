@@ -4,16 +4,25 @@ void printSettings()
   Serial.println("RTES v" + String(ver));
   Serial.println("A: Water percentage: " + String(quickWaterPercentage) + "%");
   Serial.print("B: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
-  (pulse_fuelToWaterRatio == 0 || pulse_fuelToWaterRatio > 1) ? Serial.println("s") : Serial.println();
+  (pulse_fuelToWaterRatio == 0 || pulse_fuelToWaterRatio > 1) ? Serial.println('s') : Serial.println();
   Serial.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " ml/pulse");
   Serial.println("D: Water Shot Bias: " + String(solShotBias) + " ml/pulse");
   Serial.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
   Serial.println("F: Engine Off Timeout: " + String(engineOffTimeOut) + " s");
-  Serial.println("G: Reset total fuel pulse counter");
+  Serial.println("G: Reset Total Fuel Pulse Counter");
   Serial.println("M: Enter Admin Settings");
   Serial.println("$: Refresh Settings");
   Serial.println("R: Reset to Factory Settings");
-  Serial.println("S: Enter Settings/Exit Settings/Start RTES System");
+  Serial.print("S: Enter ");
+  if (settingMode)Serial.print('(');
+  Serial.print("Settings");
+  if (settingMode)Serial.print(')');
+  Serial.print('/');
+  if (!settingMode)Serial.print('(');
+  Serial.print("RTES");
+  if (!settingMode)Serial.print(')');
+  Serial.println(" mode");
+  //Serial.println("S: Enter Settings/Exit Settings/Start RTES System");
   Serial.println("***************************************************************");
   if (digitalRead(btState))
   {
@@ -21,16 +30,25 @@ void printSettings()
     bt.println("RTES v" + String(ver));
     bt.println("A: Water percentage: " + String(quickWaterPercentage) + "%");
     bt.print("B: Fuel Pulse Count: " + String(pulse_fuelToWaterRatio) + " pulse");
-    (pulse_fuelToWaterRatio == 0 || pulse_fuelToWaterRatio > 1) ? bt.println("s") : bt.println();
+    (pulse_fuelToWaterRatio == 0 || pulse_fuelToWaterRatio > 1) ? bt.println('s') : bt.println();
     bt.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " ml/pulse");
     bt.println("D: Water Shot Bias: " + String(solShotBias) + " ml/pulse");
     bt.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
     bt.println("F: Engine Off Timeout: " + String(engineOffTimeOut) + " s");
-    bt.println("G: Reset total fuel pulse counter");
+    bt.println("G: Reset Total Fuel Pulse Counter");
     bt.println("M: Enter Admin Settings");
     bt.println("$: Refresh Settings");
     bt.println("R: Reset to Factory Settings");
-    bt.println("S: Enter Settings/Exit Settings/Start RTES System");
+    Serial.print("S: Enter ");
+    if (settingMode)bt.print('(');
+    bt.print("Settings");
+    if (settingMode)bt.print(')');
+    bt.print('/');
+    if (!settingMode)bt.print('(');
+    bt.print("RTES");
+    if (!settingMode)bt.print(')');
+    bt.println(" mode");
+    //bt.println("S: Enter Settings/Exit Settings/Start RTES System");
     bt.println("******************");
   }
 }
