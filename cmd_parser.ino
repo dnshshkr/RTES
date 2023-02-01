@@ -207,9 +207,9 @@ void cmdParser()
         if (bt.available())
           pwdStr = bt.readStringUntil('\r\n');
         pwdStr.trim();
-        Serial.println(pwdStr);
         uint32_t pwd = pwdStr.toInt();
-        Serial.println(pwd);
+        Serial.println();
+        bt.println();
         flushSerial();
         if (!wait)
         {
