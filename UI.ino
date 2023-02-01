@@ -22,7 +22,6 @@ void printSettings()
   Serial.print("RTES");
   if (!settingMode)Serial.print(')');
   Serial.println(" mode");
-  //Serial.println("S: Enter Settings/Exit Settings/Start RTES System");
   Serial.println("***************************************************************");
   if (digitalRead(btState))
   {
@@ -39,7 +38,7 @@ void printSettings()
     bt.println("M: Enter Admin Settings");
     bt.println("$: Refresh Settings");
     bt.println("R: Reset to Factory Settings");
-    Serial.print("S: Enter ");
+    bt.print("S: Enter ");
     if (settingMode)bt.print('(');
     bt.print("Settings");
     if (settingMode)bt.print(')');
@@ -48,7 +47,6 @@ void printSettings()
     bt.print("RTES");
     if (!settingMode)bt.print(')');
     bt.println(" mode");
-    //bt.println("S: Enter Settings/Exit Settings/Start RTES System");
     bt.println("******************");
   }
 }

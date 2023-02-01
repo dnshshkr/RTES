@@ -200,7 +200,7 @@ void cmdParser()
           bt.println("Not in settings mode");
           break;
         }
-        Serial.println(pwd_default);
+        //Serial.println(pwd_default);
         Serial.print("Enter admin password");
         bt.print("Enter admin password");
         bool wait = timeoutUI();
