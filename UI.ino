@@ -21,7 +21,7 @@ void printSettings()
   if (!settingMode)Serial.print('(');
   Serial.print("RTES");
   if (!settingMode)Serial.print(')');
-  Serial.println(" mode");
+  Serial.println(" Mode");
   Serial.println("***************************************************************");
   if (digitalRead(btState))
   {
@@ -46,7 +46,7 @@ void printSettings()
     if (!settingMode)bt.print('(');
     bt.print("RTES");
     if (!settingMode)bt.print(')');
-    bt.println(" mode");
+    bt.println(" Mode");
     bt.println("******************");
   }
 }
