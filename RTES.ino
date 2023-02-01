@@ -70,7 +70,7 @@ const uint8_t flowrateSensor = 2;
 const uint8_t fuelMotorCurrentPin = A3;
 const uint8_t solenoidCurrentPin = A2;
 const uint8_t waterPumpCurrentPin = A4;
-const uint8_t motorFuel = 8;
+//const uint8_t motorFuel = 8;
 const uint8_t solenoidWater = 9;
 const uint8_t motorWater = 10;
 const uint8_t btrx = 12;
@@ -102,7 +102,7 @@ bool sprayStarted = false;
 bool sprayCompleted = true;
 bool solenoidManualState = false;
 bool waterPumpManualState = false;
-bool toggleAllState = false;\
+bool toggleAllState = false; \
 uint8_t engineOffTimeOut;
 uint8_t currentSensorType = 1; //'0'=ACS713 '1'=ACS712
 unsigned int pulse_fuelToWaterRatio; //pulse per water shot //CMD
@@ -130,7 +130,7 @@ void setup()
   Serial.begin(38400);
   bt.begin(38400);
   pinMode(flowrateSensor, INPUT_PULLUP);
-  pinMode(motorFuel, OUTPUT);
+  // pinMode(motorFuel, OUTPUT);
   pinMode(motorWater, OUTPUT);
   pinMode(solenoidWater, OUTPUT);
   pinMode(fuelMotorCurrentPin, INPUT);
