@@ -1,55 +1,51 @@
 void RTES()
 {
-  //  METHOD 1
-  //    if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio && !sprayStarted)
+  //  METHOD 1 - spray along the final pulse
+  //    if (f2wPulseRatioCount > f2wPulseRatio && !sprayStarted)
   //    {
   //      prevSolOnTime = millis();
   //      //currentLimitedOut(fuelTrig, 1, waterTrig);
-  //      digitalWrite(solenoidWater, HIGH);
-  //      digitalWrite(motorWater, HIGH);
+  //      digitalWrite(solenoid, HIGH);
+  //      digitalWrite(waterPump, HIGH);
   //      sprayStarted = true;
   //    }
   //    else if (sprayStarted)
   //    {
   //      if (millis() - prevSolOnTime >= solenoidOnTime)
   //      {
-  //        digitalWrite(solenoidWater, LOW);
-  //        digitalWrite(motorWater, LOW);
+  //        digitalWrite(solenoid, LOW);
+  //        digitalWrite(waterPump, LOW);
   //        //currentLimitedOut(fuelTrig, 0, waterTrig);
   //      }
-  //      if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + 1 + 1)
+  //      if (f2wPulseRatioCount >= f2wPulseRatio + 1 + 1)
   //      {
   //        sprayStarted = false;
   //        totalWaterPulse++;
-  //        pulse_fuelToWaterRatioCount = 1;
+  //        f2wPulseRatioCount = 1;
   //      }
   //    }
   //    else
   //    {
-  //      digitalWrite(solenoidWater, LOW);
-  //      digitalWrite(motorWater, LOW);
+  //      digitalWrite(solenoid, LOW);
+  //      digitalWrite(waterPump, LOW);
   //    }
 
-  //METHOD 2
-  if (pulse_fuelToWaterRatioCount >= 1 && pulse_fuelToWaterRatioCount <= pulse_fuelToWaterRatio)
+  //METHOD 2 - spray on the final pulse but in a desired period
+  if (f2wPulseRatioCount >= 1 && f2wPulseRatioCount <= f2wPulseRatio) //make sure solenoid does not trigger on accident on other than the final pulse in every cycle
   {
     sprayedOnce = false;
     sprayStarted = false;
     sprayCompleted = true;
-    digitalWrite(solenoidWater, LOW);
-    digitalWrite(motorWater, LOW);
-    digitalWrite(LED_BUILTIN, LOW);
+    stopEmulsion();
   }
-  if (pulse_fuelToWaterRatioCount > pulse_fuelToWaterRatio)
+  if (f2wPulseRatioCount > f2wPulseRatio)
     sprayStarted = true;
-  else if (pulse_fuelToWaterRatioCount >= pulse_fuelToWaterRatio + 1)
+  else if (f2wPulseRatioCount >= f2wPulseRatio + 1)
     sprayedOnce = true;
   if (sprayStarted && !sprayedOnce && sprayCompleted)
   {
     prevSolOnTime = millis();
-    digitalWrite(solenoidWater, HIGH);
-    digitalWrite(motorWater, HIGH);
-    digitalWrite(LED_BUILTIN, HIGH);
+    startEmulsion();
     sprayedOnce = true;
     sprayStarted = false;
     sprayCompleted = false;
@@ -57,9 +53,7 @@ void RTES()
   }
   if (!sprayCompleted && millis() - prevSolOnTime >= solenoidOnTime)
   {
-    digitalWrite(solenoidWater, LOW);
-    digitalWrite(motorWater, LOW);
-    digitalWrite(LED_BUILTIN, LOW);
+    stopEmulsion();
     sprayCompleted = true;
   }
 }

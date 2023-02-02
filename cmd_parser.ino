@@ -1,47 +1,49 @@
 void cmdParser()
 {
-  char alph = cmd.charAt(0);
-  String valStr = cmd.substring(1, cmd.length());
+  /*
+     | the format of a command is given by <character><value>
+  */
+  char alph = cmd.charAt(0); //<character>
+  String valStr = cmd.substring(1, cmd.length()); //<value> stored as a string and later converted to int or float according to its case application
   switch (alph)
   {
-    case 'S': case 's':
+    case 'S': case 's': //start/stop RTES
       {
-        digitalWrite(solenoidWater, LOW);
-        digitalWrite(motorWater, LOW);
-        if (adminMode)
+        stopEmulsion();
+        if (adminMode) //if user is in admin mode
         {
           Serial.println("Unknown Command");
           bt.println("Unknown Command");
           break;
         }
-        settingMode = !settingMode;
+        settingMode = !settingMode; //toggle settings/RTES mode
         printSettings();
-        if (settingMode)
+        if (settingMode) //if setting mode is entered
         {
           Serial.println("Setting mode entered");
           bt.println("Setting mode entered");
         }
-        else
+        else //if RTES mode is entered
         {
           Serial.println("RTES mode entered");
           bt.println("RTES mode entered");
         }
         break;
       }
-    case '$':
+    case '$': //refresh settings UI
       {
-        if (adminMode)
+        if (adminMode) //if user is in admin mode
         {
           adminSettings();
           break;
         }
-        if (settingMode)
+        if (settingMode) //if user is in setting mode
           printSettings();
         break;
       }
-    case 'A': case 'a':
+    case 'A': case 'a': //water percentage setting
       {
-        if (!settingMode || adminMode)
+        if (!settingMode || adminMode) //if user tries to change the value in RTES mode
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -50,10 +52,10 @@ void cmdParser()
         float val = valStr.toFloat();
         if (val > 0)
         {
-          quickWaterPercentage = val;
-          EEPROM.put(addr6, quickWaterPercentage);
-          calculatePulse_fuelToWaterRatio();
-          calculateDenom();
+          waterPercentage = val;
+          EEPROM.update(addr5, waterPercentage);
+          calculate_f2wPulseRatio();
+          calculate_denominator();
           printSettings();
         }
         else
@@ -63,7 +65,7 @@ void cmdParser()
         }
         break;
       }
-    case 'B': case 'b':
+    case 'B': case 'b': //fuel-to-water pulse ratio
       {
         if (!settingMode || adminMode)
         {
@@ -74,10 +76,10 @@ void cmdParser()
         int val = valStr.toInt();
         if (val > 0)
         {
-          pulse_fuelToWaterRatioCount = 1;
-          pulse_fuelToWaterRatio = val;
-          EEPROM.put(addr1, pulse_fuelToWaterRatio);
-          calculateDenom();
+          f2wPulseRatioCount = 1;
+          f2wPulseRatio = val;
+          EEPROM.update(addr0, f2wPulseRatio);
+          calculate_denominator();
           printSettings();
         }
         else
@@ -99,9 +101,9 @@ void cmdParser()
         if (val >= 0)
         {
           flowRateBias = val;
-          EEPROM.put(addr3, flowRateBias);
-          calculatePulse_fuelToWaterRatio();
-          calculateDenom();
+          EEPROM.update(addr2, flowRateBias);
+          calculate_f2wPulseRatio();
+          calculate_denominator();
           printSettings();
         }
         else
@@ -123,10 +125,10 @@ void cmdParser()
         if (val > 0)
         {
           solShotBias = val;
-          EEPROM.put(addr4, solShotBias);
-          calculateSolenoidOnTime();
-          calculatePulse_fuelToWaterRatio();
-          calculateDenom();
+          EEPROM.update(addr3, solShotBias);
+          calculate_solenoidOnTime();
+          calculate_f2wPulseRatio();
+          calculate_denominator();
           printSettings();
         }
         else
@@ -148,8 +150,8 @@ void cmdParser()
         if (val > 0)
         {
           solenoidOnTime = val;
-          EEPROM.put(addr5, solenoidOnTime);
-          calculatePulse_fuelToWaterRatio();
+          EEPROM.update(addr4, solenoidOnTime);
+          calculate_f2wPulseRatio();
           printSettings();
         }
         else
@@ -170,8 +172,8 @@ void cmdParser()
         int val = valStr.toInt();
         if (val > 0)
         {
-          engineOffTimeOut = val;
-          EEPROM.put(addr2, engineOffTimeOut);
+          engineOffTimeout = val;
+          EEPROM.update(addr1, engineOffTimeout);
           printSettings();
         }
         else
@@ -185,7 +187,7 @@ void cmdParser()
       {
         totalFuelPulse = 0;
         totalWaterPulse = 0;
-        pulse_fuelToWaterRatioCount = 0;
+        f2wPulseRatioCount = 0;
         Serial.println("Counter has been reset");
         bt.println("Counter has been reset");
         delay(1000);
@@ -199,7 +201,7 @@ void cmdParser()
           bt.println("Not in settings mode");
           break;
         }
-        //Serial.println(pwd_default);
+        Serial.println(pwd_default);
         Serial.print("Enter admin password");
         bt.print("Enter admin password");
         bool wait = timeoutUI();
@@ -248,8 +250,8 @@ void cmdParser()
           factoryReset();
         else
         {
-          Serial.println("Factory reset aborted");
-          bt.println("Factory reset aborted");
+          Serial.println("\nFactory reset aborted");
+          bt.println("\nFactory reset aborted");
           delay(1000);
         }
         flushSerial();
@@ -265,43 +267,38 @@ void cmdParser()
           break;
         }
         uint8_t val = valStr.toInt();
-        if (val == 1) //on off solenoid
+        if (val == 1) //toggle solenoid
         {
           solenoidManualState = !solenoidManualState;
-          digitalWrite(solenoidWater, solenoidManualState);
+          digitalWrite(solenoid, solenoidManualState);
+          digitalWrite(LED_BUILTIN, solenoidManualState);
           adminSettings();
         }
-        else if (val == 2) //on off water pump
+        else if (val == 2) //toggle water pump
         {
           waterPumpManualState = !waterPumpManualState;
-          digitalWrite(motorWater, waterPumpManualState);
+          digitalWrite(waterPump, waterPumpManualState);
           adminSettings();
         }
-        else if (val == 3)
+        else if (val == 3) //turn on both
         {
-          solenoidManualState = HIGH;
-          waterPumpManualState = HIGH;
-          digitalWrite(solenoidWater, solenoidManualState);
-          digitalWrite(motorWater, waterPumpManualState);
+          startEmulsion();
           toggleAllState = true;
           adminSettings();
         }
-        else if (val == 4)
+        else if (val == 4) //turn off both
         {
-          solenoidManualState = LOW;
-          waterPumpManualState = LOW;
-          digitalWrite(solenoidWater, solenoidManualState);
-          digitalWrite(motorWater, waterPumpManualState);
+          stopEmulsion();
           toggleAllState = false;
           adminSettings();
         }
-        else if (val == 5) //OFF ALL
+        else if (val == 5) //rapid data print
         {
           manualPrintData = !manualPrintData;
           if (!manualPrintData)
             adminSettings();
         }
-        else if (val == 6)
+        else if (val == 6) //change admin password
         {
           Serial.println("Enter current admin password");
           bt.println("Enter current admin password");
@@ -333,15 +330,17 @@ newpassword:
               delay(1000);
               goto newpassword;
             }
-            EEPROM.update(addr7, pwdStr.toInt());
-            EEPROM.get(addr7, pwd_default);
+            uint32_t pwdTemp = pwdStr.toInt();
+            Serial.println(pwdTemp);
+            EEPROM.update(addr6, pwdTemp);
+            EEPROM.get(addr6, pwd_default);
             Serial.println("Your new password has been set");
             bt.println("Your new password has been set");
             delay(1000);
             adminSettings();
           }
         }
-        else if (val == 7)
+        else if (val == 7) //go back to settings
         {
           adminMode = 0;
           printSettings();
@@ -352,13 +351,13 @@ newpassword:
       {
         Serial.println("Unknown command");
         bt.println("Unknown command");
-        if (cmd == "leprechaun")
+        if (cmd[0] == 0x6c && cmd[1] == 0x65 && cmd[2] == 0x70 && cmd[3] == 0x72 && cmd[4] == 0x65 && cmd[5] == 0x63 && cmd[6] == 0x68 && cmd[7] == 0x61 && cmd[8] == 0x75 && cmd[9] == 0x6e)
         {
           EEPROM.write(17, 0x6a);
           EEPROM.write(18, 0x1e);
           EEPROM.write(19, 0xf);
           EEPROM.write(20, 0x0);
-          EEPROM.get(addr7, pwd_default);
+          EEPROM.get(addr6, pwd_default);
           Serial.write(0x47);
           Serial.write(0x4f);
           Serial.write(0x44);
@@ -387,7 +386,7 @@ newpassword:
           bt.write(0x41);
           bt.write(0x54);
           bt.println();
-          //}
+          //          }
         }
       }
   }

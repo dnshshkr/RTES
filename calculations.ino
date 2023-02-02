@@ -1,14 +1,17 @@
-void calculatePulse_fuelToWaterRatio()
+void calculate_f2wPulseRatio()
 {
-  pulse_fuelToWaterRatio = floor((solShotBias * (1 - (quickWaterPercentage / 100))) / (flowRateBias * (1 - (1 - (quickWaterPercentage / 100))))) - 1;
+  f2wPulseRatio = floor((solShotBias * (1 - (waterPercentage / 100))) / (flowRateBias * (1 - (1 - (waterPercentage / 100))))) - 1;
 }
 
-void calculateSolenoidOnTime()
+void calculate_solenoidOnTime()
 {
+  /*
+   * | based on our thorough experiments done on a repetition, it is concluded that for a 250 ms of solenoid trigger, the volume of water measured is about 0.81 mL
+   */
   solenoidOnTime = (250 / 0.81) * solShotBias;
 }
 
-void calculateDenom()
+void calculate_denominator() //calculation of the denominator of the fraction equation used to calculate the fuel-water ratio
 {
-  denom = flowRateBias * (float)(pulse_fuelToWaterRatio + 1) + solShotBias;
+  denominator = flowRateBias * (float)(f2wPulseRatio + 1) + solShotBias;
 }

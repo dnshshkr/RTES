@@ -6,14 +6,14 @@
 //    digitalWrite(motorFuel, LOW);
 //
 //  if (ampSolenoid < solenoidAmpLimit && b)
-//    digitalWrite(solenoidWater, HIGH);
+//    digitalWrite(solenoid, HIGH);
 //  else
-//    digitalWrite(solenoidWater, LOW);
+//    digitalWrite(solenoid, LOW);
 //
-//  if (ampMotorWater < motorWaterAmpLimit && c)
-//    digitalWrite(motorWater, HIGH);
+//  if (ampwaterPump < waterPumpAmpLimit && c)
+//    digitalWrite(waterPump, HIGH);
 //  else
-//    digitalWrite(motorWater, LOW);
+//    digitalWrite(waterPump, LOW);
 //}
 //
 //void fuelPump(int a)
@@ -27,15 +27,15 @@
 //void solPump(int b)
 //{
 //  if (ampMotorFuel < motorFuelAmpLim && b)
-//    digitalWrite(solenoidWater, HIGH);
+//    digitalWrite(solenoid, HIGH);
 //  else
-//    digitalWrite(solenoidWater, LOW);
+//    digitalWrite(solenoid, LOW);
 //}
 //
 //void waterPump(int c)
 //{
 //  if (ampMotorFuel < motorFuelAmpLim && c)
-//    digitalWrite(motorWater, HIGH);
+//    digitalWrite(waterPump, HIGH);
 //  else
-//    digitalWrite(motorWater, LOW);
+//    digitalWrite(waterPump, LOW);
 //}
