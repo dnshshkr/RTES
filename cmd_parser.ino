@@ -136,7 +136,7 @@ void cmdParser()
           calculate_f2wPulseRatio();
           calculate_denominator();
           EEPROM.update(addr4, solenoidOnTime);
-          EEPROM.update(addr, f2wPulseRatio)l
+          EEPROM.update(addr0, f2wPulseRatio);
           printSettings();
         }
         else
