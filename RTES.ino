@@ -75,7 +75,6 @@ const uint8_t motorWater = 10;
 //const uint8_t btrx = 12;
 //const uint8_t bttx = 11;
 //const uint8_t btState = 5;
-const uint8_t btState = A5, bttx = A4, btrx = A3, gnd = A2, vcc = A1, en = A0;
 
 /*
    | current amperage - not in use
@@ -107,7 +106,7 @@ bool waterPumpManualState = false;
 bool toggleAllState = false;
 uint8_t engineOffTimeOut;
 uint8_t currentSensorType = 1; //'0'=ACS713 '1'=ACS712
-unsigned int pulse_fuelToWaterRatio; //pulse per water shot //CMD
+unsigned int pulse_fuelToWaterRatio; //fuel pulses per cycle
 unsigned int solenoidOnTime;
 float denom; //fraction denominator for fuel-water percentage calculation
 float quickWaterPercentage;
@@ -124,38 +123,25 @@ SoftwareSerial bt(btrx, bttx); //bluetooth module
 
 void setup()
 {
-  pinMode(gnd, OUTPUT);
-  pinMode(vcc, OUTPUT);
-  pinMode(en, OUTPUT);
-  digitalWrite(gnd, LOW);
-  digitalWrite(vcc, HIGH);
-  digitalWrite(en, HIGH);
-
   EEPROM.get(addr7, pwd_default); //admin password
-  Serial.begin(19200);
-  bt.begin(9600);
+  Serial.begin(38400);
+  bt.begin(38400);
   pinMode(flowrateSensor, INPUT_PULLUP); //fuel flowrate sensor
-  // pinMode(motorFuel, OUTPUT);
   pinMode(motorWater, OUTPUT);
   pinMode(solenoidWater, OUTPUT);
-  //  pinMode(fuelMotorCurrentPin, INPUT);
-  //  pinMode(solenoidCurrentPin, INPUT);
-  //  pinMode(waterPumpCurrentPin, INPUT);
   pinMode(LED_BUILTIN, OUTPUT);
-  //  pinMode(btrx, INPUT);
-  //  pinMode(bttx, OUTPUT);
   pinMode(btState, INPUT);
   attachInterrupt(digitalPinToInterrupt(flowrateSensor), interruptRoutine, FALLING);
-  loadSettings(); //load settings
-  settingMode = false;
+  loadSettings();
+  settingMode = false; //start RTES mode immediately at startup
   digitalWrite(solenoidWater, LOW);
   digitalWrite(motorWater, LOW);
+  digitalWrite(LED_BUILTIN, LOW);
   printSettings();
   Serial.println("RTES initialized");
   bt.println("RTES initialized");
   Serial.println("RTES mode entered");
   bt.println("RTES mode entered");
-  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void loop()
