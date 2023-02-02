@@ -38,7 +38,10 @@ void cmdParser()
           break;
         }
         if (settingMode) //if user is in setting mode
+        {
           printSettings();
+          loadSettings();
+        }
         break;
       }
     case 'A': case 'a': //water percentage setting
@@ -55,7 +58,7 @@ void cmdParser()
           waterPercentage = val;
           EEPROM.update(addr5, waterPercentage);
           calculate_f2wPulseRatio();
-          calculate_denominator();
+          EEPROM.update(addr0, f2wPulseRatio);
           printSettings();
         }
         else
@@ -80,6 +83,8 @@ void cmdParser()
           f2wPulseRatio = val;
           EEPROM.update(addr0, f2wPulseRatio);
           calculate_denominator();
+          calculate_waterPercentage();
+          EEPROM.update(addr5, waterPercentage);
           printSettings();
         }
         else
@@ -89,7 +94,7 @@ void cmdParser()
         }
         break;
       }
-    case 'C': case 'c':
+    case 'C': case 'c': //fuel flowrate bias
       {
         if (!settingMode || adminMode)
         {
@@ -104,6 +109,7 @@ void cmdParser()
           EEPROM.update(addr2, flowRateBias);
           calculate_f2wPulseRatio();
           calculate_denominator();
+          EEPROM.update(addr0, f2wPulseRatio);
           printSettings();
         }
         else
@@ -113,7 +119,7 @@ void cmdParser()
         }
         break;
       }
-    case 'D': case 'd':
+    case 'D': case 'd': //solenoid shot bias
       {
         if (!settingMode || adminMode)
         {
@@ -129,6 +135,8 @@ void cmdParser()
           calculate_solenoidOnTime();
           calculate_f2wPulseRatio();
           calculate_denominator();
+          EEPROM.update(addr4, solenoidOnTime);
+          EEPROM.update(addr, f2wPulseRatio)l
           printSettings();
         }
         else
@@ -138,7 +146,7 @@ void cmdParser()
         }
         break;
       }
-    case 'E': case 'e':
+    case 'E': case 'e': //solenoid on time
       {
         if (!settingMode || adminMode)
         {
@@ -151,7 +159,13 @@ void cmdParser()
         {
           solenoidOnTime = val;
           EEPROM.update(addr4, solenoidOnTime);
+          calculate_solShotBias();
+          calculate_denominator();
+          calculate_waterPercentage();
           calculate_f2wPulseRatio();
+          EEPROM.update(addr3, solShotBias);
+          EEPROM.update(addr5, waterPercentage);
+          EEPROM.update(addr0, f2wPulseRatio);
           printSettings();
         }
         else

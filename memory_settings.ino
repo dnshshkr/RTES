@@ -9,9 +9,11 @@ void factoryReset() //factory reset
   loadSettings();
   settingMode = 1;
   f2wPulseRatioCount = 1;
-  Serial.println("\nRestored to factory settings");
-  bt.println("\nRestored to factory settings");
+  Serial.print("\nRestored to factory settings");
+  bt.print("\nRestored to factory settings");
   delay(1000);
+  Serial.println();
+  bt.println();
 }
 
 void saveSettings()
@@ -32,9 +34,9 @@ void loadSettings()
   EEPROM.get(addr3, solShotBias);
   EEPROM.get(addr4, solenoidOnTime);
   EEPROM.get(addr5, waterPercentage);
-  if (adminMode)
-    settingMode = 1;
-  calculate_f2wPulseRatio();
-  calculate_solenoidOnTime();
-  calculate_denominator();
+  //  if (adminMode)
+  //    settingMode = 1;
+  //  calculate_f2wPulseRatio();
+  //  calculate_solenoidOnTime();
+  //  calculate_denominator();
 }
