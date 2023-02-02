@@ -204,8 +204,8 @@ void cmdParser()
         totalFuelPulse = 0;
         totalWaterPulse = 0;
         f2wPulseRatioCount = 0;
-        Serial.println("Counter has been reset");
-        bt.println("Counter has been reset");
+        Serial.println("Counters have been reset");
+        bt.println("Counters have been reset");
         delay(1000);
         break;
       }
@@ -217,7 +217,6 @@ void cmdParser()
           bt.println("Not in settings mode");
           break;
         }
-        Serial.println(pwd_default);
         Serial.print("Enter admin password");
         bt.print("Enter admin password");
         bool wait = timeoutUI();
@@ -357,11 +356,12 @@ newpassword:
             pwdStr = String(pwdStr.toInt(), HEX);
             if (pwdStr.length() < 6)
               pwdStr = '0' + pwdStr;
-            String left_hex = pwdStr.substring(0, 2), mid_hex = pwdStr.substring(2, 4), right_hex = pwdStr.substring(4, 6);
-            uint8_t left_int = String(left_hex, DEC).toInt(), mid_int = String(mid_hex, DEC).toInt(), right_int = String(right_hex, DEC).toInt();
-            EEPROM.update(17, right_hex);
-            EEPROM.update(18, mid_hex);
-            EEPROM.update(19, right_hex);
+            uint8_t left = hexLookup(pwdStr.charAt(0)) << 4 | hexLookup(pwdStr.charAt(1));
+            uint8_t mid = hexLookup(pwdStr.charAt(2)) << 4 | hexLookup(pwdStr.charAt(3));
+            uint8_t right = hexLookup(pwdStr.charAt(4)) << 4 | hexLookup(pwdStr.charAt(5));
+            EEPROM.update(17, right);
+            EEPROM.update(18, mid);
+            EEPROM.update(19, left);
             EEPROM.update(20, 0x00);
             EEPROM.get(addr6, pwd_default);
             Serial.print("Your new password has been set");
