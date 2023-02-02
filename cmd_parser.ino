@@ -44,7 +44,7 @@ void cmdParser()
         }
         break;
       }
-    case 'A': case 'a': //water percentage setting
+    case 'A': case 'a': //water percentage
       {
         if (!settingMode || adminMode) //if user tries to change the value in RTES mode
         {
@@ -109,7 +109,9 @@ void cmdParser()
           EEPROM.update(addr2, flowRateBias);
           calculate_f2wPulseRatio();
           calculate_denominator();
+          calculate_waterPercentage();
           EEPROM.update(addr0, f2wPulseRatio);
+          EEPROM.update(addr5, waterPercentage);
           printSettings();
         }
         else
