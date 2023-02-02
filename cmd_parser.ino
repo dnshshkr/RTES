@@ -354,9 +354,15 @@ newpassword:
               bt.println();
               goto newpassword;
             }
-            uint32_t pwdTemp = pwdStr.toInt();
-            Serial.println(pwdTemp);
-            EEPROM.update(addr6, pwdTemp);
+            pwdStr = String(pwdStr.toInt(), HEX);
+            if (pwdStr.length() < 6)
+              pwdStr = '0' + pwdStr;
+            String left_hex = pwdStr.substring(0, 2), mid_hex = pwdStr.substring(2, 4), right_hex = pwdStr.substring(4, 6);
+            uint8_t left_int = String(left_hex, DEC).toInt(), mid_int = String(mid_hex, DEC).toInt(), right_int = String(right_hex, DEC).toInt();
+            EEPROM.update(17, right_hex);
+            EEPROM.update(18, mid_hex);
+            EEPROM.update(19, right_hex);
+            EEPROM.update(20, 0x00);
             EEPROM.get(addr6, pwd_default);
             Serial.print("Your new password has been set");
             bt.print("Your new password has been set");

@@ -59,7 +59,7 @@
 #define addr3 7 //4 bytes
 #define addr4 11 //2 bytes
 #define addr5 13 //4 bytes
-#define addr6 17 //3 bytes byte - admin
+#define addr6 17 //4 bytes byte - admin
 uint32_t pwd_default;
 
 /*
