@@ -220,9 +220,11 @@ void cmdParser()
         }
         else if (wait && pwd != pwd_default)
         {
-          Serial.println("Password incorrect");
-          bt.println("Password incorrect");
+          Serial.print("Password incorrect");
+          bt.print("Password incorrect");
           delay(1000);
+          Serial.println();
+          bt.println();
           adminMode = false;
           printSettings();
           break;
@@ -250,9 +252,11 @@ void cmdParser()
           factoryReset();
         else
         {
-          Serial.println("\nFactory reset aborted");
-          bt.println("\nFactory reset aborted");
+          Serial.print("\nFactory reset aborted");
+          bt.print("\nFactory reset aborted");
           delay(1000);
+          Serial.println();
+          bt.println();
         }
         flushSerial();
         adminSettings();
@@ -309,9 +313,11 @@ void cmdParser()
           flushSerial();
           if (pwd != pwd_default)
           {
-            Serial.println("Password incorrect");
-            bt.println("Password incorrect");
+            Serial.print("Password incorrect");
+            bt.print("Password incorrect");
             delay(1000);
+            Serial.println();
+            bt.println();
             adminSettings();
           }
           else
@@ -323,20 +329,24 @@ newpassword:
             while (!Serial.available() && !bt.available()) {}
             String pwdStr = Serial.readStringUntil('\r\n');
             pwdStr.trim();
-            if (pwdStr.length() < 6)
+            if (pwdStr.length() < 6 || pwdStr.length() > 6)
             {
-              Serial.println("Invalid password length (must be 6 digits)");
-              bt.println("Invalid password length (must be 6 digits)");
+              Serial.print("Invalid password length (must be 6 digits)");
+              bt.print("Invalid password length (must be 6 digits)");
               delay(1000);
+              Serial.println();
+              bt.println();
               goto newpassword;
             }
             uint32_t pwdTemp = pwdStr.toInt();
             Serial.println(pwdTemp);
             EEPROM.update(addr6, pwdTemp);
             EEPROM.get(addr6, pwd_default);
-            Serial.println("Your new password has been set");
-            bt.println("Your new password has been set");
+            Serial.print("Your new password has been set");
+            bt.print("Your new password has been set");
             delay(1000);
+            Serial.println();
+            bt.println();
             adminSettings();
           }
         }
