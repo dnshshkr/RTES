@@ -217,7 +217,7 @@ void cmdParser()
           bt.println("Not in settings mode");
           break;
         }
-        Serial.println(String(pwd_default).substring(0, 6));
+        //Serial.println(String(pwd_default).substring(0, 6));
         Serial.print("Enter admin password");
         bt.print("Enter admin password");
         bool wait = timeoutUI();
@@ -234,8 +234,8 @@ void cmdParser()
         }
         else if (wait && pwd != String(pwd_default).substring(0, 6))
         {
-          Serial.print("Password incorrect");
-          bt.print("Password incorrect");
+          Serial.print("Incorrect password");
+          bt.print("Incorrect password");
           delay(1000);
           Serial.println();
           bt.println();
@@ -272,7 +272,6 @@ void cmdParser()
           Serial.println();
           bt.println();
         }
-        flushSerial();
         adminSettings();
         break;
       }
@@ -327,8 +326,8 @@ void cmdParser()
           pwd.trim();
           if (pwd != String(pwd_default).substring(0, 6))
           {
-            Serial.print("Password incorrect");
-            bt.print("Password incorrect");
+            Serial.print("Incorrect password");
+            bt.print("Incorrect password");
             delay(1000);
             Serial.println();
             bt.println();
@@ -360,6 +359,7 @@ newpassword:
             delay(1000);
             Serial.println();
             bt.println();
+            flushSerial();
             adminSettings();
           }
         }
