@@ -92,9 +92,7 @@ volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;
 volatile unsigned long prevMillisEngOff = 0;
 volatile uint8_t f2wPulseRatioCount = 0;
-bool settingMode = true; //setting/RTES mode: '1' - settings, '0' - RTES
 bool manualPrintData = false;
-bool adminMode = false;
 bool pulseDataPrint = false;
 bool cmdAvailable;
 bool engOffStatusPrintOnce;
@@ -104,8 +102,9 @@ bool sprayCompleted = true;
 bool solenoidManualState = false;
 bool waterPumpManualState = false;
 bool toggleAllState = false;
+uint8_t mode; //0 - RTES, 1 - settings, 2 - admin
 uint8_t engineOffTimeout;
-uint8_t currentSensorType = 1; //'0'=ACS713 '1'=ACS712
+uint8_t currentSensorType = 1; //0 - ACS713, 1 - ACS712
 unsigned int f2wPulseRatio; //fuel pulses per cycle
 unsigned int solenoidOnTime;
 float denominator; //fraction denominatorinator for fuel-water percentage calculation
@@ -133,7 +132,8 @@ void setup()
   pinMode(btState, INPUT);
   attachInterrupt(digitalPinToInterrupt(flowrateSensor), interruptRoutine, FALLING);
   loadSettings();
-  settingMode = false; //start RTES mode immediately at startup
+  //settingMode = false; //start RTES mode immediately at startup
+  mode = 0;
   stopEmulsion();
   printSettings();
   Serial.println("RTES initialized");
@@ -147,7 +147,7 @@ void loop()
   /*
      | 1. engine-off detection
   */
-  if (millis() - prevMillisEngOff >= engineOffTimeout * 1000 && !settingMode)
+  if (millis() - prevMillisEngOff >= engineOffTimeout * 1000 && mode == 0)
   {
     if (!engOffStatusPrintOnce) //so that it prints the text only once
     {
@@ -181,13 +181,14 @@ void loop()
   /*
      | 3. RTES routine
   */
-  if (!settingMode && !adminMode)
+  //if (!settingMode && !adminMode)
+  if (mode == 0)
   {
     RTES();
     if (pulseDataPrint) //print data only on a fuel pulse detection
       printData();
   }
-  else if (adminMode && manualPrintData) //print data on rapid in admin mode
+  else if (mode == 2 && manualPrintData)
     printData();
 }
 void flushSerial() //clear serial buffer over usb and bluetooth

@@ -10,16 +10,20 @@ void cmdParser()
     case 'S': case 's': //start/stop RTES
       {
         stopEmulsion();
-        if (adminMode) //if user is in admin mode
+        if (mode == 2) //if user is in admin mode
         {
           Serial.println("Unknown Command");
           bt.println("Unknown Command");
           break;
         }
-        settingMode = !settingMode; //toggle settings/RTES mode
-        printSettings();
-        if (settingMode) //if setting mode is entered
+        //settingMode = !settingMode; //toggle settings/RTES mode
+        if (mode == 0)
+          mode = 1;
+        else if (mode == 1)
+          mode = 0;
+        if (mode == 1) //if setting mode is entered
         {
+          printSettings();
           Serial.println("Setting mode entered");
           bt.println("Setting mode entered");
         }
@@ -32,12 +36,12 @@ void cmdParser()
       }
     case '$': //refresh settings UI
       {
-        if (adminMode) //if user is in admin mode
+        if (mode == 2) //if user is in admin mode
         {
           adminSettings();
           break;
         }
-        if (settingMode) //if user is in setting mode
+        if (mode == 1) //if user is in setting mode
         {
           printSettings();
           loadSettings();
@@ -46,7 +50,7 @@ void cmdParser()
       }
     case 'A': case 'a': //water percentage
       {
-        if (!settingMode || adminMode) //if user tries to change the value in RTES mode
+        if (mode != 1) //if user tries to change the value in RTES or admin modes
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -70,7 +74,7 @@ void cmdParser()
       }
     case 'B': case 'b': //fuel-to-water pulse ratio
       {
-        if (!settingMode || adminMode)
+        if (mode != 1)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -96,7 +100,7 @@ void cmdParser()
       }
     case 'C': case 'c': //fuel flowrate bias
       {
-        if (!settingMode || adminMode)
+        if (mode != 1)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -123,7 +127,7 @@ void cmdParser()
       }
     case 'D': case 'd': //solenoid shot bias
       {
-        if (!settingMode || adminMode)
+        if (mode != 1)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -150,7 +154,7 @@ void cmdParser()
       }
     case 'E': case 'e': //solenoid on time
       {
-        if (!settingMode || adminMode)
+        if (mode != 1)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -179,7 +183,7 @@ void cmdParser()
       }
     case 'F': case 'f':
       {
-        if (!settingMode || adminMode)
+        if (mode != 1)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -206,12 +210,11 @@ void cmdParser()
         f2wPulseRatioCount = 0;
         Serial.println("Counters have been reset");
         bt.println("Counters have been reset");
-        delay(1000);
         break;
       }
     case 'M': case 'm': //admin mode
       {
-        if (!settingMode || adminMode)
+        if (mode != 1)
         {
           Serial.println("Not in settings mode");
           bt.println("Not in settings mode");
@@ -239,18 +242,20 @@ void cmdParser()
           delay(1000);
           Serial.println();
           bt.println();
-          adminMode = false;
+          //adminMode = false;
+          mode = 1;
           printSettings();
           break;
         }
         else
-          adminMode = true;
+          //adminMode = true;
+          mode = 2;
         adminSettings();
         break;
       }
     case 'R': case 'r':
       {
-        if (!adminMode)
+        if (mode != 2)
         {
           Serial.println("Unknown command");
           bt.println("Unknown command");
@@ -277,7 +282,7 @@ void cmdParser()
       }
     case 'T': case 't':
       {
-        if (!adminMode)
+        if (mode != 2)
         {
           Serial.println("Unknown command");
           bt.println("Unknown command");
@@ -365,7 +370,8 @@ newpassword:
         }
         else if (val == 7) //go back to settings
         {
-          adminMode = 0;
+          //adminMode = 0;
+          mode = 1;
           printSettings();
         }
         break;

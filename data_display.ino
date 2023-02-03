@@ -14,8 +14,6 @@ void printData()
   Serial.print(fuelPercentage, 1);
   Serial.println("% fuel");
 
-  //  if (digitalRead(btState)) //here
-  //  {
   bt.print(String(totalFuelPulse) + " total fuel pulse \t");
   bt.print(String(fuelPulsePeriod) + " s\t");
   bt.print(measuredPulsePerMin, 3);
@@ -26,7 +24,6 @@ void printData()
   bt.print(" % water\t");
   bt.print(fuelPercentage, 1);
   bt.println("% fuel");
-  //}
 
   pulseDataPrint = false; //change to false after printing the data and wait for next fuel pulse
 }

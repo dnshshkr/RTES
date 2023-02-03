@@ -13,16 +13,16 @@ void printSettings()
   Serial.println("M: Enter Admin Settings");
   Serial.println("$: Refresh Settings");
   Serial.print("S: Enter ");
-  if (settingMode)
+  if (mode == 1)
     Serial.print('(');
   Serial.print("Settings");
-  if (settingMode)
+  if (mode == 1)
     Serial.print(')');
   Serial.print('/');
-  if (!settingMode)
+  if (mode == 0)
     Serial.print('(');
   Serial.print("RTES");
-  if (!settingMode)
+  if (mode == 0)
     Serial.print(')');
   Serial.println(" Mode");
   Serial.println("***************************************************************");
@@ -39,16 +39,16 @@ void printSettings()
   bt.println("M: Enter Admin Settings");
   bt.println("$: Refresh Settings");
   bt.print("S: Enter ");
-  if (settingMode)
+  if (mode == 1)
     bt.print('(');
   bt.print("Settings");
-  if (settingMode)
+  if (mode == 1)
     bt.print(')');
   bt.print('/');
-  if (!settingMode)
+  if (mode == 0)
     bt.print('(');
   bt.print("RTES");
-  if (!settingMode)
+  if (mode == 0)
     bt.print(')');
   bt.println(" Mode");
   bt.println("******************");
