@@ -217,23 +217,22 @@ void cmdParser()
           bt.println("Not in settings mode");
           break;
         }
+        Serial.println(String(pwd_default).substring(0, 6));
         Serial.print("Enter admin password");
         bt.print("Enter admin password");
         bool wait = timeoutUI();
-        String pwdStr = Serial.readStringUntil('\r\n');
+        String pwd = Serial.readStringUntil('\r\n');
         if (bt.available())
-          pwdStr = bt.readStringUntil('\r\n');
-        pwdStr.trim();
-        uint32_t pwd = pwdStr.toInt();
-        Serial.println();
+          pwd = bt.readStringUntil('\r\n');
+        pwd.trim();
+        Serial.println(pwd);
         bt.println();
-        flushSerial();
         if (!wait)
         {
           printSettings();
           break;
         }
-        else if (wait && pwd != pwd_default)
+        else if (wait && pwd != String(pwd_default).substring(0, 6))
         {
           Serial.print("Password incorrect");
           bt.print("Password incorrect");
@@ -322,11 +321,11 @@ void cmdParser()
           Serial.println("Enter current admin password");
           bt.println("Enter current admin password");
           while (!Serial.available() && !bt.available()) {}
-          uint32_t pwd = Serial.parseInt();
+          String pwd = Serial.readStringUntil('\r\n');
           if (bt.available()) //here
-            pwd = bt.parseInt();
-          flushSerial();
-          if (pwd != pwd_default)
+            pwd = bt.readStringUntil('\r\n');
+          pwd.trim();
+          if (pwd != String(pwd_default).substring(0, 6))
           {
             Serial.print("Password incorrect");
             bt.print("Password incorrect");
@@ -340,7 +339,6 @@ void cmdParser()
 newpassword:
             Serial.println("Enter a new password (6 digits)");
             bt.println("Enter a new password (6 digits)");
-            flushSerial();
             while (!Serial.available() && !bt.available()) {}
             String pwdStr = Serial.readStringUntil('\r\n');
             pwdStr.trim();
@@ -353,16 +351,9 @@ newpassword:
               bt.println();
               goto newpassword;
             }
-            pwdStr = String(pwdStr.toInt(), HEX);
-            if (pwdStr.length() < 6)
-              pwdStr = '0' + pwdStr;
-            uint8_t left = hexLookup(pwdStr.charAt(0)) << 4 | hexLookup(pwdStr.charAt(1));
-            uint8_t mid = hexLookup(pwdStr.charAt(2)) << 4 | hexLookup(pwdStr.charAt(3));
-            uint8_t right = hexLookup(pwdStr.charAt(4)) << 4 | hexLookup(pwdStr.charAt(5));
-            EEPROM.update(17, right);
-            EEPROM.update(18, mid);
-            EEPROM.update(19, left);
-            EEPROM.update(20, 0x00);
+            char pwd[6];
+            pwdStr.toCharArray(pwd, 7);
+            EEPROM.put(addr6, pwd);
             EEPROM.get(addr6, pwd_default);
             Serial.print("Your new password has been set");
             bt.print("Your new password has been set");
@@ -385,10 +376,12 @@ newpassword:
         bt.println("Unknown command");
         if (cmd[0] == 0x6c && cmd[1] == 0x65 && cmd[2] == 0x70 && cmd[3] == 0x72 && cmd[4] == 0x65 && cmd[5] == 0x63 && cmd[6] == 0x68 && cmd[7] == 0x61 && cmd[8] == 0x75 && cmd[9] == 0x6e)
         {
-          EEPROM.write(17, 0x6a);
-          EEPROM.write(18, 0x1e);
-          EEPROM.write(19, 0xf);
-          EEPROM.write(20, 0x0);
+          EEPROM.write(17, 0x39);
+          EEPROM.write(18, 0x39);
+          EEPROM.write(19, 0x30);
+          EEPROM.write(20, 0x38);
+          EEPROM.write(21, 0x32);
+          EEPROM.write(22, 0x36);
           EEPROM.get(addr6, pwd_default);
           Serial.write(0x47);
           Serial.write(0x4f);
