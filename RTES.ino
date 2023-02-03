@@ -181,7 +181,6 @@ void loop()
   /*
      | 3. RTES routine
   */
-  //if (!settingMode && !adminMode)
   if (mode == 0)
   {
     RTES();
