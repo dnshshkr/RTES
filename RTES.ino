@@ -189,7 +189,12 @@ void loop()
   }
   else if (mode == 2 && manualPrintData)
     printData();
+  
+  /*
+     | 4. End
+  */
 }
+
 void flushSerial() //clear serial buffer over usb and bluetooth
 {
   while (Serial.available() || bt.available())
