@@ -43,8 +43,8 @@ void cmdParser()
         }
         if (mode == 1) //if user is in setting mode
         {
-          printSettings();
           loadSettings();
+          printSettings();
         }
         break;
       }
