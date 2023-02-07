@@ -1,5 +1,4 @@
-void printData()
-{
+void printData() {
   float waterPercentage = ((solShotBias * (float)sprayedOnce) / denominator) * 100.0;
   float fuelPercentage = ((flowRateBias * (float)f2wPulseRatioCount) / denominator) * 100.0;
 
@@ -25,5 +24,5 @@ void printData()
   bt.print(fuelPercentage, 1);
   bt.println("% fuel");
 
-  pulseDataPrint = false; //change to false after printing the data and wait for next fuel pulse
+  pulseDataPrint = false;  //change to false after printing the data and wait for next fuel pulse
 }

@@ -1,5 +1,4 @@
-void RTES()
-{
+void RTES() {
   //  METHOD 1 - spray along the final pulse
   //    if (f2wPulseRatioCount > f2wPulseRatio && !sprayStarted)
   //    {
@@ -31,7 +30,7 @@ void RTES()
   //    }
 
   //METHOD 2 - spray on the final pulse but in a desired period
-  if (f2wPulseRatioCount >= 1 && f2wPulseRatioCount <= f2wPulseRatio) //make sure solenoid does not trigger on accident on other than the final pulse in every cycle
+  if (f2wPulseRatioCount >= 1 && f2wPulseRatioCount <= f2wPulseRatio)  //make sure solenoid does not trigger on accident on other than the final pulse in every cycle
   {
     sprayedOnce = false;
     sprayStarted = false;
@@ -42,8 +41,7 @@ void RTES()
     sprayStarted = true;
   else if (f2wPulseRatioCount >= f2wPulseRatio + 1)
     sprayedOnce = true;
-  if (sprayStarted && !sprayedOnce && sprayCompleted)
-  {
+  if (sprayStarted && !sprayedOnce && sprayCompleted) {
     prevSolOnTime = millis();
     startEmulsion();
     sprayedOnce = true;
@@ -51,8 +49,7 @@ void RTES()
     sprayCompleted = false;
     totalWaterPulse++;
   }
-  if (!sprayCompleted && millis() - prevSolOnTime >= solenoidOnTime)
-  {
+  if (!sprayCompleted && millis() - prevSolOnTime >= solenoidOnTime) {
     stopEmulsion();
     sprayCompleted = true;
   }
