@@ -1,4 +1,4 @@
-void factoryReset() //factory reset
+void factoryReset()  //factory reset
 {
   EEPROM.put(addr0, 4);     //0x0
   EEPROM.put(addr1, 15);    //0x2
@@ -15,8 +15,7 @@ void factoryReset() //factory reset
   bt.println();
 }
 
-void saveSettings()
-{
+void saveSettings() {
   EEPROM.update(addr0, f2wPulseRatio);
   EEPROM.update(addr1, engineOffTimeout);
   EEPROM.update(addr2, flowRateBias);
@@ -25,8 +24,7 @@ void saveSettings()
   EEPROM.update(addr5, waterPercentage);
 }
 
-void loadSettings()
-{
+void loadSettings() {
   EEPROM.get(addr0, f2wPulseRatio);
   EEPROM.get(addr1, engineOffTimeout);
   EEPROM.get(addr2, flowRateBias);
