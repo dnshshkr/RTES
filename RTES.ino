@@ -127,7 +127,7 @@ SoftwareSerial bt(btrx, bttx);  //bluetooth module
 
 void setup() {
   EEPROM.get(addr6, pwd_default);  //admin password
-  Serial.begin(19200);
+  Serial.begin(38400);
   bt.begin(38400);
   pinMode(flowrateSensor, INPUT_PULLUP);  //fuel flowrate sensor
   pinMode(waterPump, OUTPUT);
@@ -136,28 +136,27 @@ void setup() {
   pinMode(btState, INPUT);
   attachInterrupt(digitalPinToInterrupt(flowrateSensor), interruptRoutine, FALLING);
   loadSettings();
-  //settingMode = false; //start RTES mode immediately at startup
   mode = 0;
   stopEmulsion();
   printSettings();
   Serial.println("RTES initialized");
   bt.println("RTES initialized");
-  bool validTime = setTime();
-  if (!validTime) {
-    printSettings();
-    Serial.println("Settings mode entered");
-    bt.println("Settings mode entered");
-  } else {
-    prevMillisRTESStopwatch = millis();
-    Serial.println("RTES mode entered at ");
-    bt.println("RTES mode entered at ");
-    displayClock12();
-  }
+  //bool validTime = setTime();
+  //if (!validTime) {
+  //printSettings();
+  //   Serial.println("Settings mode entered");
+  //   bt.println("Settings mode entered");
+  // } else {
+  //   prevMillisRTESStopwatch = millis();
+  Serial.println("RTES mode entered at ");
+  bt.println("RTES mode entered at ");
+  //displayClock12();
+  //}
 }
 
 void loop() {
-  if (mode == 0)
-    stopwatch();
+  // if (mode == 0)
+  //   stopwatch();
   /*
      | 1. engine-off detection
   */

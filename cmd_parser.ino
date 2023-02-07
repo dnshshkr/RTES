@@ -22,21 +22,21 @@ void cmdParser() {
           mode = 0;
         if (mode == 1)  //if setting mode is entered
         {
-invalidTime:
+          //invalidTime:
           printSettings();
           Serial.println("Setting mode entered");
           bt.println("Setting mode entered");
         } else  //if RTES mode is entered
         {
-          bool validTime = setTime();
-          if (validTime) {
-            prevMillisRTESStopwatch = millis();
-            lastMinute = 0;
-            Serial.println("RTES mode entered at ");
-            bt.println("RTES mode entered at");
-            displayClock12();
-          } else
-            goto invalidTime;
+          // bool validTime = setTime();
+          // if (validTime) {
+          //   prevMillisRTESStopwatch = millis();
+          //   lastMinute = 0;
+          Serial.println("RTES mode entered at ");
+          bt.println("RTES mode entered at");
+          //displayClock12();
+          //}
+          //else goto invalidTime;
         }
         break;
       }
