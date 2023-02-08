@@ -10,23 +10,24 @@ bool setTime()
   for (uint8_t i = 0; i < 4; i++)
   {
     if (!isdigit(msg[i]))
+    {
+      Serial.println("Invalid time");
+      bt.println("Invalid time");
+      delay(1000);
       return false;
+    }
   }
   hour = msg.substring(0, 2).toInt();
-  if (hour < 0 || hour >= 24)
-  {
-    Serial.println("Invalid hour");
-    bt.println("Invalid hour");
-    return false;
-  }
   minute = msg.substring(2, 4).toInt();
-  if (minute < 0 || minute >= 60)
+  if (hour < 0 || hour >= 24 || minute < 0 || minute >= 60)
   {
-    Serial.println("Invalid minute");
-    bt.println("Invalid minute");
+    Serial.println("Invalid time");
+    bt.println("Invalid time");
+    delay(1000);
     return false;
   }
-  return true;
+  else
+    return true;
 }
 void stopwatch() {
   if (millis() - prevMillisRTESStopwatch >= 1000) {
@@ -49,6 +50,8 @@ void displayClock12()
   uint8_t hour12;
   if (hour > 12)
     hour12 = hour - 12;
+  else if (hour == 0)
+    hour12 = 12;
   else
     hour12 = hour;
   Serial.print(String(hour12) + ':');

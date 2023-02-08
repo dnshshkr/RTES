@@ -165,6 +165,7 @@ void setup()
     if (testMode)
       prevMillisRTESStopwatch = millis();
 startRTES1:
+    printSettings();
     Serial.print("RTES mode entered");
     bt.print("RTES mode entered");
     if (testMode)
