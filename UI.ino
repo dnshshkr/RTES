@@ -1,4 +1,5 @@
-void printSettings() {
+void printSettings()
+{
   Serial.println("**************************ALL SETTING**************************");
   Serial.println("RTES v" + String(ver));
   Serial.println("A: Water Percentage: " + String(waterPercentage) + "%");
