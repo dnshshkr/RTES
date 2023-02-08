@@ -23,6 +23,7 @@ void cmdParser() {
         if (mode)  //if setting mode is entered
         {
 invalidTime:
+          mode = true;
           printSettings();
           Serial.println("Setting mode entered");
           bt.println("Setting mode entered");
