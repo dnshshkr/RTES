@@ -147,7 +147,8 @@ void setup()
   stopEmulsion();
   printSettings();
   Serial.println("RTES initialized");
-  bt.println("RTES initialized");
+  if (bt)
+    bt.println("RTES initialized");
   bool validTime;
   if (testMode)
     validTime = setTime();
@@ -158,7 +159,8 @@ void setup()
     mode = true;
     printSettings();
     Serial.println("Settings mode entered");
-    bt.println("Settings mode entered");
+    if (bt)
+      bt.println("Settings mode entered");
   }
   else
   {
@@ -167,15 +169,18 @@ void setup()
 startRTES1:
     printSettings();
     Serial.print("RTES mode entered");
-    bt.print("RTES mode entered");
+    if (bt)
+      bt.print("RTES mode entered");
     if (testMode)
     {
       Serial.print(" at ");
-      bt.print(" at ");
+      if (bt)
+        bt.print(" at ");
       displayClock12();
     }
     Serial.println();
-    bt.println();
+    if (bt)
+      bt.println();
   }
 }
 
@@ -190,7 +195,8 @@ void loop() {
     if (!engOffStatusPrintOnce)  //so that it prints the text only once
     {
       Serial.println("*Engine is off*");
-      bt.println("*Engine is off*");
+      if (bt)
+        bt.println("*Engine is off*");
       engOffStatusPrintOnce = true;
     }
   }
@@ -228,7 +234,8 @@ void loop() {
       {
         displayClock12();
         Serial.print(" -> ");
-        bt.print(" -> ");
+        if (bt)
+          bt.print(" -> ");
         lastMinute = minute;
       }
       printData();
