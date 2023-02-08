@@ -1,8 +1,7 @@
 bool setTime()
 {
   Serial.println("Input current time in 24-hour (HHMM)");
-  if (bt)
-    bt.println("Input current time in 24-hour (HHMM)");
+  bt.println("Input current time in 24-hour (HHMM)");
   while (!Serial.available() && !bt.available()) {}
   String msg = Serial.readStringUntil('\r\n');
   if (bt.available())
@@ -13,8 +12,7 @@ bool setTime()
     if (!isdigit(msg[i]))
     {
       Serial.println("Invalid time");
-      if (bt)
-        bt.println("Invalid time");
+      bt.println("Invalid time");
       delay(1000);
       return false;
     }
@@ -24,8 +22,7 @@ bool setTime()
   if (hour < 0 || hour >= 24 || minute < 0 || minute >= 60)
   {
     Serial.println("Invalid time");
-    if (bt)
-      bt.println("Invalid time");
+    bt.println("Invalid time");
     delay(1000);
     return false;
   }
@@ -33,13 +30,16 @@ bool setTime()
     return true;
 }
 void stopwatch() {
-  if (millis() - prevMillisRTESStopwatch >= 1000) {
+  if (millis() - prevMillisRTESStopwatch >= 1000)
+  {
     second++;
-    if (second == 60) {
+    if (second == 60)
+    {
       minute++;
       second = 0;
     }
-    if (minute == 60) {
+    if (minute == 60)
+    {
       hour++;
       minute = 0;
     }
