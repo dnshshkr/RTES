@@ -4,9 +4,9 @@ void cmdParser() {
   */
   char alph = cmd.charAt(0);                       //<character>
   String valStr = cmd.substring(1, cmd.length());  //<value> stored as a string and later converted to int or float according to its case application
-  switch (alph) {
-    case 'S':
-    case 's':  //start/stop RTES
+  switch (alph)
+  {
+    case 'S': case 's': //start/stop RTES
       {
         stopEmulsion();
         if (mode == 2)  //if user is in admin mode
@@ -26,7 +26,8 @@ void cmdParser() {
           printSettings();
           Serial.println("Setting mode entered");
           bt.println("Setting mode entered");
-        } else  //if RTES mode is entered
+        }
+        else  //if RTES mode is entered
         {
           // bool validTime = setTime();
           // if (validTime) {
@@ -42,50 +43,53 @@ void cmdParser() {
       }
     case '$':  //refresh settings UI
       {
-        if (mode == 2)  //if user is in admin mode
-        {
-          adminSettings();
-          break;
-        }
-        if (mode == 1)  //if user is in setting mode
+        //        if (mode == 2)  //if user is in admin mode
+        //        {
+        //          adminSettings();
+        //          break;
+        //        }
+        if (mode)  //if user is in setting mode
         {
           loadSettings();
           printSettings();
         }
         break;
       }
-    case 'A':
-    case 'a':  //water percentage
+    case 'A': case 'a': //water percentage
       {
-        if (mode != 1)  //if user tries to change the value in RTES or admin modes
+        if (!mode)  //if user tries to change the value in RTES or admin modes
         {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
           break;
         }
         float val = valStr.toFloat();
-        if (val > 0) {
+        if (val > 0)
+        {
           waterPercentage = val;
           EEPROM.update(addr5, waterPercentage);
           calculate_f2wPulseRatio();
           EEPROM.update(addr0, f2wPulseRatio);
           printSettings();
-        } else {
+        }
+        else
+        {
           Serial.println("Input is out of range");
           bt.println("Input is out of range");
         }
         break;
       }
-    case 'B':
-    case 'b':  //fuel-to-water pulse ratio
+    case 'B': case 'b': //fuel-to-water pulse ratio
       {
-        if (mode != 1) {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
           break;
         }
         int val = valStr.toInt();
-        if (val > 0) {
+        if (val > 0)
+        {
           f2wPulseRatioCount = 1;
           f2wPulseRatio = val;
           EEPROM.update(addr0, f2wPulseRatio);
@@ -93,22 +97,25 @@ void cmdParser() {
           calculate_waterPercentage();
           EEPROM.update(addr5, waterPercentage);
           printSettings();
-        } else {
+        }
+        else
+        {
           Serial.println("Input is out of range");
           bt.println("Input is out of range");
         }
         break;
       }
-    case 'C':
-    case 'c':  //fuel flowrate bias
+    case 'C': case 'c': //fuel flowrate bias
       {
-        if (mode != 1) {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
           break;
         }
         float val = valStr.toFloat();
-        if (val >= 0) {
+        if (val >= 0)
+        {
           flowRateBias = val;
           EEPROM.update(addr2, flowRateBias);
           calculate_f2wPulseRatio();
@@ -117,22 +124,25 @@ void cmdParser() {
           EEPROM.update(addr0, f2wPulseRatio);
           EEPROM.update(addr5, waterPercentage);
           printSettings();
-        } else {
+        }
+        else
+        {
           Serial.println("Input is out of range");
           bt.println("Input is out of range");
         }
         break;
       }
-    case 'D':
-    case 'd':  //solenoid shot bias
+    case 'D': case 'd': //solenoid shot bias
       {
-        if (mode != 1) {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
           break;
         }
         float val = valStr.toFloat();
-        if (val > 0) {
+        if (val > 0)
+        {
           solShotBias = val;
           EEPROM.update(addr3, solShotBias);
           calculate_solenoidOnTime();
@@ -141,22 +151,25 @@ void cmdParser() {
           EEPROM.update(addr4, solenoidOnTime);
           EEPROM.update(addr0, f2wPulseRatio);
           printSettings();
-        } else {
+        }
+        else
+        {
           Serial.println("Input is out of range");
           bt.println("Input is out of range");
         }
         break;
       }
-    case 'E':
-    case 'e':  //solenoid on time
+    case 'E': case 'e': //solenoid on time
       {
-        if (mode != 1) {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
           break;
         }
         int val = valStr.toInt();
-        if (val > 0) {
+        if (val > 0)
+        {
           solenoidOnTime = val;
           EEPROM.update(addr4, solenoidOnTime);
           calculate_solShotBias();
@@ -167,34 +180,44 @@ void cmdParser() {
           EEPROM.update(addr5, waterPercentage);
           EEPROM.update(addr0, f2wPulseRatio);
           printSettings();
-        } else {
+        }
+        else
+        {
           Serial.println("Input is out of range");
           bt.println("Input is out of range");
         }
         break;
       }
-    case 'F':
-    case 'f':
+    case 'F': case 'f':
       {
-        if (mode != 1) {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
           break;
         }
         int val = valStr.toInt();
-        if (val > 0) {
+        if (val > 0)
+        {
           engineOffTimeout = val;
           EEPROM.update(addr1, engineOffTimeout);
           printSettings();
-        } else {
+        }
+        else
+        {
           Serial.println("Input is out of range");
           bt.println("Input is out of range");
         }
         break;
       }
-    case 'G':
-    case 'g':
+    case 'G': case 'g':
       {
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
+          break;
+        }
         totalFuelPulse = 0;
         totalWaterPulse = 0;
         f2wPulseRatioCount = 0;
@@ -202,49 +225,52 @@ void cmdParser() {
         bt.println("Counters have been reset");
         break;
       }
-    case 'M':
-    case 'm':  //admin mode
+    //    case 'M': case 'm': //admin mode
+    //      {
+    //        if (!mode)
+    //        {
+    //          Serial.println("Press 's' to enter settings");
+    //          bt.println("Press 's' to enter settings");
+    //          break;
+    //        }
+    //        //Serial.println(String(pwd_default).substring(0, 6));
+    //        Serial.print("Enter admin password");
+    //        bt.print("Enter admin password");
+    //        bool wait = timeoutUI();
+    //        String pwd = Serial.readStringUntil('\r\n');
+    //        if (bt.available())
+    //          pwd = bt.readStringUntil('\r\n');
+    //        pwd.trim();
+    //        Serial.println();
+    //        bt.println();
+    //        if (!wait)
+    //        {
+    //          printSettings();
+    //          break;
+    //        }
+    //        else if (wait && pwd != String(pwd_default).substring(0, 6)) {
+    //          Serial.print("Incorrect password");
+    //          bt.print("Incorrect password");
+    //          delay(1000);
+    //          Serial.println();
+    //          bt.println();
+    //          //adminMode = false;
+    //          mode = 1;
+    //          printSettings();
+    //          break;
+    //        }
+    //        else
+    //          //adminMode = true;
+    //          mode = 2;
+    //        //adminSettings();
+    //        break;
+    //      }
+    case 'R': case 'r':
       {
-        if (mode != 1) {
-          Serial.println("Not in settings mode");
-          bt.println("Not in settings mode");
-          break;
-        }
-        //Serial.println(String(pwd_default).substring(0, 6));
-        Serial.print("Enter admin password");
-        bt.print("Enter admin password");
-        bool wait = timeoutUI();
-        String pwd = Serial.readStringUntil('\r\n');
-        if (bt.available())
-          pwd = bt.readStringUntil('\r\n');
-        pwd.trim();
-        Serial.println();
-        bt.println();
-        if (!wait) {
-          printSettings();
-          break;
-        } else if (wait && pwd != String(pwd_default).substring(0, 6)) {
-          Serial.print("Incorrect password");
-          bt.print("Incorrect password");
-          delay(1000);
-          Serial.println();
-          bt.println();
-          //adminMode = false;
-          mode = 1;
-          printSettings();
-          break;
-        } else
-          //adminMode = true;
-          mode = 2;
-        adminSettings();
-        break;
-      }
-    case 'R':
-    case 'r':
-      {
-        if (mode != 2) {
-          Serial.println("Unknown command");
-          bt.println("Unknown command");
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
           break;
         }
         Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
@@ -255,102 +281,113 @@ void cmdParser() {
           choice = bt.read();
         if (choice == 'Y' || choice == 'y')
           factoryReset();
-        else {
+        else
+        {
           Serial.print("\nFactory reset aborted");
           bt.print("\nFactory reset aborted");
           delay(1000);
           Serial.println();
           bt.println();
         }
-        adminSettings();
+        //adminSettings();
+        printSettings();
         break;
       }
-    case 'T':
-    case 't':
-      {
-        if (mode != 2) {
-          Serial.println("Unknown command");
-          bt.println("Unknown command");
-          break;
-        }
-        uint8_t val = valStr.toInt();
-        if (val == 1)  //toggle solenoid
-        {
-          solenoidManualState = !solenoidManualState;
-          digitalWrite(solenoid, solenoidManualState);
-          digitalWrite(LED_BUILTIN, solenoidManualState);
-          adminSettings();
-        } else if (val == 2)  //toggle water pump
-        {
-          waterPumpManualState = !waterPumpManualState;
-          digitalWrite(waterPump, waterPumpManualState);
-          adminSettings();
-        } else if (val == 3)  //turn on both
-        {
-          startEmulsion();
-          toggleAllState = true;
-          adminSettings();
-        } else if (val == 4)  //turn off both
-        {
-          stopEmulsion();
-          toggleAllState = false;
-          adminSettings();
-        } else if (val == 5)  //rapid data print
-        {
-          manualPrintData = !manualPrintData;
-          if (!manualPrintData)
-            adminSettings();
-        } else if (val == 6)  //change admin password
-        {
-          Serial.println("Enter current admin password");
-          bt.println("Enter current admin password");
-          while (!Serial.available() && !bt.available()) {}
-          String pwd = Serial.readStringUntil('\r\n');
-          if (bt.available())  //here
-            pwd = bt.readStringUntil('\r\n');
-          pwd.trim();
-          if (pwd != String(pwd_default).substring(0, 6)) {
-            Serial.print("Incorrect password");
-            bt.print("Incorrect password");
-            delay(1000);
-            Serial.println();
-            bt.println();
-            adminSettings();
-          } else {
-newpassword:
-            Serial.println("Enter a new password (6 digits)");
-            bt.println("Enter a new password (6 digits)");
-            while (!Serial.available() && !bt.available()) {}
-            String pwdStr = Serial.readStringUntil('\r\n');
-            pwdStr.trim();
-            if (pwdStr.length() < 6 || pwdStr.length() > 6) {
-              Serial.print("Invalid password length (must be 6 digits)");
-              bt.print("Invalid password length (must be 6 digits)");
-              delay(1000);
-              Serial.println();
-              bt.println();
-              goto newpassword;
-            }
-            char pwd[6];
-            pwdStr.toCharArray(pwd, 7);
-            EEPROM.put(addr6, pwd);
-            EEPROM.get(addr6, pwd_default);
-            Serial.print("Your new password has been set");
-            bt.print("Your new password has been set");
-            delay(1000);
-            Serial.println();
-            bt.println();
-            flushSerial();
-            adminSettings();
-          }
-        } else if (val == 7)  //go back to settings
-        {
-          //adminMode = 0;
-          mode = 1;
-          printSettings();
-        }
-        break;
-      }
+    //    case 'T': case 't':
+    //      {
+    //        if (mode != 2)
+    //        {
+    //          Serial.println("Unknown command");
+    //          bt.println("Unknown command");
+    //          break;
+    //        }
+    //        uint8_t val = valStr.toInt();
+    //        if (val == 1)  //toggle solenoid
+    //        {
+    //          solenoidManualState = !solenoidManualState;
+    //          digitalWrite(solenoid, solenoidManualState);
+    //          digitalWrite(LED_BUILTIN, solenoidManualState);
+    //          adminSettings();
+    //        }
+    //        else if (val == 2)  //toggle water pump
+    //        {
+    //          waterPumpManualState = !waterPumpManualState;
+    //          digitalWrite(waterPump, waterPumpManualState);
+    //          adminSettings();
+    //        }
+    //        else if (val == 3)  //turn on both
+    //        {
+    //          startEmulsion();
+    //          toggleAllState = true;
+    //          adminSettings();
+    //        }
+    //        else if (val == 4)  //turn off both
+    //        {
+    //          stopEmulsion();
+    //          toggleAllState = false;
+    //          adminSettings();
+    //        }
+    //        else if (val == 5)  //rapid data print
+    //        {
+    //          manualPrintData = !manualPrintData;
+    //          if (!manualPrintData)
+    //            adminSettings();
+    //        }
+    //        else if (val == 6)  //change admin password
+    //        {
+    //          Serial.println("Enter current admin password");
+    //          bt.println("Enter current admin password");
+    //          while (!Serial.available() && !bt.available()) {}
+    //          String pwd = Serial.readStringUntil('\r\n');
+    //          if (bt.available())  //here
+    //            pwd = bt.readStringUntil('\r\n');
+    //          pwd.trim();
+    //          if (pwd != String(pwd_default).substring(0, 6)) {
+    //            Serial.print("Incorrect password");
+    //            bt.print("Incorrect password");
+    //            delay(1000);
+    //            Serial.println();
+    //            bt.println();
+    //            //adminSettings();
+    //          }
+    //          else
+    //          {
+    //newpassword:
+    //            Serial.println("Enter a new password (6 digits)");
+    //            bt.println("Enter a new password (6 digits)");
+    //            while (!Serial.available() && !bt.available()) {}
+    //            String pwdStr = Serial.readStringUntil('\r\n');
+    //            pwdStr.trim();
+    //            if (pwdStr.length() < 6 || pwdStr.length() > 6)
+    //            {
+    //              Serial.print("Invalid password length (must be 6 digits)");
+    //              bt.print("Invalid password length (must be 6 digits)");
+    //              delay(1000);
+    //              Serial.println();
+    //              bt.println();
+    //              goto newpassword;
+    //            }
+    //            char pwd[6];
+    //            pwdStr.toCharArray(pwd, 7);
+    //            EEPROM.put(addr6, pwd);
+    //            EEPROM.get(addr6, pwd_default);
+    //            Serial.print("Your new password has been set");
+    //            bt.print("Your new password has been set");
+    //            delay(1000);
+    //            Serial.println();
+    //            bt.println();
+    //            flushSerial();
+    //            //adminSettings();
+    //          }
+    //        }
+    //        else if (val == 7)  //go back to settings
+    //        {
+    //          //adminMode = 0;
+    //          mode = 1;
+    //          printSettings();
+    //        }
+    //        break;
+    //      }
     default:
       {
         Serial.println("Unknown command");
