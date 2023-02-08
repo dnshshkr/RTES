@@ -167,7 +167,7 @@ void setup()
 }
 
 void loop() {
-  if (mode == 0)
+  if (!mode)
     stopwatch();
   /*
      | 1. engine-off detection
@@ -206,7 +206,7 @@ void loop() {
   /*
      | 3. RTES routine
   */
-  if (mode == 0)
+  if (!mode)
   {
     RTES();
     if (pulseDataPrint)  //print data only on a fuel pulse detection
