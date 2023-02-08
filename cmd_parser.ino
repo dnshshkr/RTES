@@ -265,7 +265,6 @@ startRTES2:
         bt.println("Counters have been reset");
         break;
       }
-
     //    case 'M': case 'm': //admin mode
     //      {
     //        if (!mode)
