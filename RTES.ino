@@ -59,8 +59,8 @@
 #define addr3 7   //4 bytes
 #define addr4 11  //2 bytes
 #define addr5 13  //4 bytes
-#define addr6 17  //6 bytes byte - admin
-#define addr7 23 //1 byte
+#define addr6 17  //1 byte
+#define addr7 18  //1 byte
 char pwd_default[6];
 
 /*
@@ -101,9 +101,10 @@ bool engOffStatusPrintOnce;
 bool sprayedOnce = false;
 bool sprayStarted = false;
 bool sprayCompleted = true;
-bool solenoidManualState = false;
-bool waterPumpManualState = false;
-bool toggleAllState = false;
+bool testMode;
+//bool solenoidManualState = false;
+//bool waterPumpManualState = false;
+//bool toggleAllState = false;
 bool mode;  //0 - RTES, 1 - settings, 2 - admin
 uint8_t engineOffTimeout;
 uint8_t hour = 0;
@@ -147,7 +148,11 @@ void setup()
   printSettings();
   Serial.println("RTES initialized");
   bt.println("RTES initialized");
-  bool validTime = setTime();
+  bool validTime;
+  if (testMode)
+    validTime = setTime();
+  else
+    goto startRTES1;
   if (!validTime)
   {
     mode = true;
@@ -157,17 +162,24 @@ void setup()
   }
   else
   {
-    prevMillisRTESStopwatch = millis();
-    Serial.print("RTES mode entered at ");
-    bt.print("RTES mode entered at ");
-    displayClock12();
+    if (testMode)
+      prevMillisRTESStopwatch = millis();
+startRTES1:
+    Serial.print("RTES mode entered");
+    bt.print("RTES mode entered");
+    if (testMode)
+    {
+      Serial.print(" at ");
+      bt.print(" at ");
+      displayClock12();
+    }
     Serial.println();
     bt.println();
   }
 }
 
 void loop() {
-  if (!mode)
+  if (!mode && testMode)
     stopwatch();
   /*
      | 1. engine-off detection
@@ -211,7 +223,7 @@ void loop() {
     RTES();
     if (pulseDataPrint)  //print data only on a fuel pulse detection
     {
-      if (minute - lastMinute >= checkpointPeriod)
+      if (testMode && minute - lastMinute >= checkpointPeriod)
       {
         displayClock12();
         Serial.print(" -> ");

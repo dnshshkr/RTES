@@ -29,18 +29,29 @@ invalidTime:
         }
         else  //if RTES mode is entered
         {
-          bool validTime = setTime();
+          bool validTime;
+          if (testMode)
+            validTime = setTime();
+          else
+            goto startRTES2;
           if (validTime)
           {
             prevMillisRTESStopwatch = millis();
             lastMinute = 0;
-            Serial.print("RTES mode entered at ");
-            bt.print("RTES mode entered at");
-            displayClock12();
+startRTES2:
+            Serial.print("RTES mode entered");
+            bt.print("RTES mode entered");
+            if (testMode)
+            {
+              Serial.print(" at ");
+              bt.print(" at ");
+              displayClock12();
+            }
             Serial.println();
             bt.println();
           }
-          else goto invalidTime;
+          else
+            goto invalidTime;
         }
         break;
       }
@@ -225,7 +236,7 @@ invalidTime:
         if (val > 0 && val < 256)
         {
           checkpointPeriod = val;
-          EEPROM.update(addr7, checkpointPeriod);
+          EEPROM.update(addr6, checkpointPeriod);
           printSettings();
         }
         else
@@ -318,6 +329,19 @@ invalidTime:
         //adminSettings();
         printSettings();
         flushSerial();
+        break;
+      }
+    case 'T': case 't':
+      {
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
+          break;
+        }
+        testMode = !testMode;
+        EEPROM.update(addr7, testMode);
+        printSettings();
         break;
       }
     //    case 'T': case 't':
@@ -419,44 +443,44 @@ invalidTime:
       {
         Serial.println("Unknown command");
         bt.println("Unknown command");
-        if (cmd[0] == 0x6c && cmd[1] == 0x65 && cmd[2] == 0x70 && cmd[3] == 0x72 && cmd[4] == 0x65 && cmd[5] == 0x63 && cmd[6] == 0x68 && cmd[7] == 0x61 && cmd[8] == 0x75 && cmd[9] == 0x6e) {
-          EEPROM.write(17, 0x39);
-          EEPROM.write(18, 0x39);
-          EEPROM.write(19, 0x30);
-          EEPROM.write(20, 0x38);
-          EEPROM.write(21, 0x32);
-          EEPROM.write(22, 0x36);
-          EEPROM.get(addr6, pwd_default);
-          Serial.write(0x47);
-          Serial.write(0x4f);
-          Serial.write(0x44);
-          Serial.write(0x20);
-          Serial.write(0x49);
-          Serial.write(0x53);
-          Serial.write(0x20);
-          Serial.write(0x47);
-          Serial.write(0x52);
-          Serial.write(0x45);
-          Serial.write(0x41);
-          Serial.write(0x54);
-          Serial.println();
-          //          if (digitalRead(btState)) //here
-          //          {
-          bt.write(0x47);
-          bt.write(0x4f);
-          bt.write(0x44);
-          bt.write(0x20);
-          bt.write(0x49);
-          bt.write(0x53);
-          bt.write(0x20);
-          bt.write(0x47);
-          bt.write(0x52);
-          bt.write(0x45);
-          bt.write(0x41);
-          bt.write(0x54);
-          bt.println();
-          //          }
-        }
+        //        if (cmd[0] == 0x6c && cmd[1] == 0x65 && cmd[2] == 0x70 && cmd[3] == 0x72 && cmd[4] == 0x65 && cmd[5] == 0x63 && cmd[6] == 0x68 && cmd[7] == 0x61 && cmd[8] == 0x75 && cmd[9] == 0x6e) {
+        //          EEPROM.write(17, 0x39);
+        //          EEPROM.write(18, 0x39);
+        //          EEPROM.write(19, 0x30);
+        //          EEPROM.write(20, 0x38);
+        //          EEPROM.write(21, 0x32);
+        //          EEPROM.write(22, 0x36);
+        //          EEPROM.get(addr6, pwd_default);
+        //          Serial.write(0x47);
+        //          Serial.write(0x4f);
+        //          Serial.write(0x44);
+        //          Serial.write(0x20);
+        //          Serial.write(0x49);
+        //          Serial.write(0x53);
+        //          Serial.write(0x20);
+        //          Serial.write(0x47);
+        //          Serial.write(0x52);
+        //          Serial.write(0x45);
+        //          Serial.write(0x41);
+        //          Serial.write(0x54);
+        //          Serial.println();
+        //          if (digitalRead(btState)) //here
+        //          {
+        //          bt.write(0x47);
+        //          bt.write(0x4f);
+        //          bt.write(0x44);
+        //          bt.write(0x20);
+        //          bt.write(0x49);
+        //          bt.write(0x53);
+        //          bt.write(0x20);
+        //          bt.write(0x47);
+        //          bt.write(0x52);
+        //          bt.write(0x45);
+        //          bt.write(0x41);
+        //          bt.write(0x54);
+        //          bt.println();
+        //          }
+        //}
       }
   }
 }

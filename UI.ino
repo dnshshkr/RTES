@@ -7,10 +7,13 @@ void printSettings() {
   Serial.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
   Serial.println("D: Water Shot Bias: " + String(solShotBias) + " mL/pulse");
   Serial.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
-  Serial.println("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
-  Serial.print("G: Checkpoint Period: " + String(checkpointPeriod) + " minute");
-  checkpointPeriod > 1 ? Serial.println('s') : Serial.println();
+  Serial.print("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
+  if (testMode)
+    Serial.print("\nG: Checkpoint Period: " + String(checkpointPeriod) + " minute");
+  (checkpointPeriod > 1 && testMode) ? Serial.println('s') : Serial.println();
   Serial.println("H: Reset Total Fuel Pulse Counter");
+  Serial.print("T: Toggle Test Mode: ");
+  Serial.println(testMode);
   Serial.println("R: Reset to Factory Settings");
   //Serial.println("M: Enter Admin Settings");
   Serial.println("$: Refresh Settings");
@@ -28,6 +31,8 @@ void printSettings() {
     Serial.print(')');
   Serial.println(" Mode");
   Serial.println("***************************************************************");
+
+  //bluetooth
   bt.println("***ALL SETTINGS***");
   bt.println("RTES v" + String(ver));
   bt.println("A: Water Percentage: " + String(waterPercentage) + "%");
@@ -36,11 +41,14 @@ void printSettings() {
   bt.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
   bt.println("D: Water Shot Bias: " + String(solShotBias) + " mL/pulse");
   bt.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
-  bt.println("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
-  bt.println("G: Checkpoint Period: " + String(checkpointPeriod) + " minute");
-  checkpointPeriod > 1 ? bt.println('s') : bt.println();
+  bt.print("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
+  if (testMode)
+    bt.print("\nG: Checkpoint Period: " + String(checkpointPeriod) + " minute");
+  (checkpointPeriod > 1 && testMode) ? bt.println('s') : bt.println();
   bt.println("H: Reset Total Fuel Pulse Counter");
   bt.println("R: Reset to Factory Settings");
+  bt.print("T: Toggle Test Mode: ");
+  bt.println(testMode);
   //bt.println("M: Enter Admin Settings");
   bt.println("$: Refresh Settings");
   bt.print("S: Enter ");
