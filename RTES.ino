@@ -102,7 +102,7 @@ bool sprayCompleted = true;
 bool solenoidManualState = false;
 bool waterPumpManualState = false;
 bool toggleAllState = false;
-uint8_t mode;  //0 - RTES, 1 - settings, 2 - admin
+bool mode;  //0 - RTES, 1 - settings, 2 - admin
 uint8_t engineOffTimeout;
 uint8_t hour = 0;
 uint8_t minute = 0;
@@ -125,7 +125,8 @@ String cmd;
 
 SoftwareSerial bt(btrx, bttx);  //bluetooth module
 
-void setup() {
+void setup()
+{
   EEPROM.get(addr6, pwd_default);  //admin password
   Serial.begin(38400);
   bt.begin(38400);
@@ -136,22 +137,25 @@ void setup() {
   pinMode(btState, INPUT);
   attachInterrupt(digitalPinToInterrupt(flowrateSensor), interruptRoutine, FALLING);
   loadSettings();
-  mode = 0;
+  mode = false;
   stopEmulsion();
   printSettings();
   Serial.println("RTES initialized");
   bt.println("RTES initialized");
-  //bool validTime = setTime();
-  //if (!validTime) {
-  //printSettings();
-  //   Serial.println("Settings mode entered");
-  //   bt.println("Settings mode entered");
-  // } else {
-  //   prevMillisRTESStopwatch = millis();
-  Serial.println("RTES mode entered at ");
-  bt.println("RTES mode entered at ");
-  //displayClock12();
-  //}
+  bool validTime = setTime();
+  if (!validTime)
+  {
+    printSettings();
+    Serial.println("Settings mode entered");
+    bt.println("Settings mode entered");
+  }
+  else
+  {
+    prevMillisRTESStopwatch = millis();
+    Serial.println("RTES mode entered at ");
+    bt.println("RTES mode entered at ");
+    displayClock12();
+  }
 }
 
 void loop() {
@@ -160,27 +164,32 @@ void loop() {
   /*
      | 1. engine-off detection
   */
-  if (millis() - prevMillisEngOff >= engineOffTimeout * 1000 && mode == 0) {
+  if (millis() - prevMillisEngOff >= engineOffTimeout * 1000 && mode == 0)
+  {
     if (!engOffStatusPrintOnce)  //so that it prints the text only once
     {
       Serial.println("*Engine is off*");
-      bt.println("**Engine is off**");
+      bt.println("*Engine is off*");
       engOffStatusPrintOnce = true;
     }
-  } else
+  }
+  else
     engOffStatusPrintOnce = false;
 
   /*
      | 2. serial command parsing
   */
-  if (Serial.available()) {
+  if (Serial.available())
+  {
     cmd = Serial.readStringUntil('\r\n');
     cmdAvailable = true;
-  } else if (bt.available())  //overwrite serial command over usb if bluetooth receives a command
+  }
+  else if (bt.available())  //overwrite serial command over usb if bluetooth receives a command
   {
     cmd = bt.readStringUntil('\r\n');
     cmdAvailable = true;
-  } else
+  }
+  else
     cmdAvailable = false;
   cmd.trim();  //eliminate null character at the end of the string
   if (cmdAvailable)
@@ -189,30 +198,33 @@ void loop() {
   /*
      | 3. RTES routine
   */
-  if (mode == 0) {
+  if (mode == 0)
+  {
     RTES();
     if (pulseDataPrint)  //print data only on a fuel pulse detection
     {
-      if (minute - lastMinute >= 3) {
+      if (minute - lastMinute >= 3)
+      {
         Serial.println(String(hour) + ':' + String(minute) + " -> ");
         bt.println(String(hour) + ':' + String(minute) + " -> ");
         lastMinute = minute;
       }
       printData();
     }
-  } else if (mode == 2 && manualPrintData)
-    printData();
+  }
+  //  else if (mode == 2 && manualPrintData)
+  //    printData();
 
   /*
      | 4. End
   */
 }
 
-void flushSerial()  //clear serial buffer over usb and bluetooth
-{
-  while (Serial.available() || bt.available()) {
-    Serial.read();
-    bt.read();
-    delay(1);
-  }
-}
+//void flushSerial()  //clear serial buffer over usb and bluetooth
+//{
+//  while (Serial.available() || bt.available()) {
+//    Serial.read();
+//    bt.read();
+//    delay(1);
+//  }
+//}

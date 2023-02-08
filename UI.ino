@@ -9,7 +9,8 @@ void printSettings() {
   Serial.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
   Serial.println("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
   Serial.println("G: Reset Total Fuel Pulse Counter");
-  Serial.println("M: Enter Admin Settings");
+  Serial.println("R: Reset to Factory Settings");
+  //Serial.println("M: Enter Admin Settings");
   Serial.println("$: Refresh Settings");
   Serial.print("S: Enter ");
   if (mode == 1)
@@ -35,7 +36,8 @@ void printSettings() {
   bt.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
   bt.println("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
   bt.println("G: Reset Total Fuel Pulse Counter");
-  bt.println("M: Enter Admin Settings");
+  bt.println("R: Reset to Factory Settings");
+  //bt.println("M: Enter Admin Settings");
   bt.println("$: Refresh Settings");
   bt.print("S: Enter ");
   if (mode == 1)
@@ -74,39 +76,39 @@ bool timeoutUI() {
   else
     return true;
 }
-void adminSettings() {
-  Serial.println("***************************ADMIN MODE*************************");
-  Serial.println("Manual Mode RTES v" + String(ver));
-  Serial.print("T1: Toggle Solenoid: ");
-  solenoidManualState ? Serial.println("ON") : Serial.println("OFF");
-  Serial.print("T2: Toggle Water Pump: ");
-  waterPumpManualState ? Serial.println("ON") : Serial.println("OFF");
-  Serial.print("T3: ON All: ");
-  toggleAllState ? Serial.println("ON") : Serial.println();
-  Serial.print("T4: OFF All: ");
-  !toggleAllState ? Serial.println("OFF") : Serial.println();
-  Serial.print("T5: Toggle Print Data: ");
-  manualPrintData ? Serial.println("ON") : Serial.println("OFF");
-  Serial.println("T6: Change Admin Password");
-  Serial.println("T7: Return to RTES Mode");
-  Serial.println("$: Refresh Settings");
-  Serial.println("R: Reset to Factory Settings");
-  Serial.println("**************************************************************");
-  bt.println("***ADMIN MODE***");
-  bt.println("Manual Mode RTES v" + String(ver));
-  bt.print("T1: Toggle Solenoid: ");
-  solenoidManualState ? bt.println("ON") : bt.println("OFF");
-  bt.print("T2: Toggle Water Pump: ");
-  waterPumpManualState ? bt.println("ON") : bt.println("OFF");
-  bt.println("T3: ON All");
-  toggleAllState ? bt.println("ON") : bt.println();
-  bt.println("T4: OFF All");
-  !toggleAllState ? bt.println("OFF") : bt.println();
-  bt.print("T5: Toggle Print Data: ");
-  manualPrintData ? bt.println("ON") : bt.println("OFF");
-  bt.println("T6: Change Admin Password");
-  bt.println("T7: Return to RTES Mode");
-  bt.println("$: Refresh Settings");
-  bt.println("R: Reset to Factory Settings");
-  bt.println("****************");
-}
+//void adminSettings() {
+//  Serial.println("***************************ADMIN MODE*************************");
+//  Serial.println("Manual Mode RTES v" + String(ver));
+//  Serial.print("T1: Toggle Solenoid: ");
+//  solenoidManualState ? Serial.println("ON") : Serial.println("OFF");
+//  Serial.print("T2: Toggle Water Pump: ");
+//  waterPumpManualState ? Serial.println("ON") : Serial.println("OFF");
+//  Serial.print("T3: ON All: ");
+//  toggleAllState ? Serial.println("ON") : Serial.println();
+//  Serial.print("T4: OFF All: ");
+//  !toggleAllState ? Serial.println("OFF") : Serial.println();
+//  Serial.print("T5: Toggle Print Data: ");
+//  manualPrintData ? Serial.println("ON") : Serial.println("OFF");
+//  Serial.println("T6: Change Admin Password");
+//  Serial.println("T7: Return to RTES Mode");
+//  Serial.println("$: Refresh Settings");
+//  
+//  Serial.println("**************************************************************");
+//  bt.println("***ADMIN MODE***");
+//  bt.println("Manual Mode RTES v" + String(ver));
+//  bt.print("T1: Toggle Solenoid: ");
+//  solenoidManualState ? bt.println("ON") : bt.println("OFF");
+//  bt.print("T2: Toggle Water Pump: ");
+//  waterPumpManualState ? bt.println("ON") : bt.println("OFF");
+//  bt.println("T3: ON All");
+//  toggleAllState ? bt.println("ON") : bt.println();
+//  bt.println("T4: OFF All");
+//  !toggleAllState ? bt.println("OFF") : bt.println();
+//  bt.print("T5: Toggle Print Data: ");
+//  manualPrintData ? bt.println("ON") : bt.println("OFF");
+//  bt.println("T6: Change Admin Password");
+//  bt.println("T7: Return to RTES Mode");
+//  bt.println("$: Refresh Settings");
+//  bt.println("R: Reset to Factory Settings");
+//  bt.println("****************");
+//}
