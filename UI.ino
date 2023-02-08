@@ -8,7 +8,9 @@ void printSettings() {
   Serial.println("D: Water Shot Bias: " + String(solShotBias) + " mL/pulse");
   Serial.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
   Serial.println("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
-  Serial.println("G: Reset Total Fuel Pulse Counter");
+  Serial.print("G: Checkpoint Period: " + String(checkpointPeriod) + " minute");
+  checkpointPeriod > 1 ? Serial.println('s') : Serial.println();
+  Serial.println("H: Reset Total Fuel Pulse Counter");
   Serial.println("R: Reset to Factory Settings");
   //Serial.println("M: Enter Admin Settings");
   Serial.println("$: Refresh Settings");
@@ -35,7 +37,9 @@ void printSettings() {
   bt.println("D: Water Shot Bias: " + String(solShotBias) + " mL/pulse");
   bt.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
   bt.println("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
-  bt.println("G: Reset Total Fuel Pulse Counter");
+  bt.println("G: Checkpoint Period: " + String(checkpointPeriod) + " minute");
+  checkpointPeriod > 1 ? bt.println('s') : bt.println();
+  bt.println("H: Reset Total Fuel Pulse Counter");
   bt.println("R: Reset to Factory Settings");
   //bt.println("M: Enter Admin Settings");
   bt.println("$: Refresh Settings");
@@ -92,7 +96,7 @@ bool timeoutUI() {
 //  Serial.println("T6: Change Admin Password");
 //  Serial.println("T7: Return to RTES Mode");
 //  Serial.println("$: Refresh Settings");
-//  
+//
 //  Serial.println("**************************************************************");
 //  bt.println("***ADMIN MODE***");
 //  bt.println("Manual Mode RTES v" + String(ver));

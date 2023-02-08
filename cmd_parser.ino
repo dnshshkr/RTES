@@ -9,35 +9,38 @@ void cmdParser() {
     case 'S': case 's': //start/stop RTES
       {
         stopEmulsion();
-        if (mode == 2)  //if user is in admin mode
-        {
-          Serial.println("Unknown Command");
-          bt.println("Unknown Command");
-          break;
-        }
+        //        if (mode == 2)  //if user is in admin mode
+        //        {
+        //          Serial.println("Unknown Command");
+        //          bt.println("Unknown Command");
+        //          break;
+        //        }
         //settingMode = !settingMode; //toggle settings/RTES mode
-        if (mode == 0)
-          mode = 1;
-        else if (mode == 1)
-          mode = 0;
-        if (mode == 1)  //if setting mode is entered
+        if (!mode)
+          mode = true;
+        else if (mode)
+          mode = false;
+        if (mode)  //if setting mode is entered
         {
-          //invalidTime:
+invalidTime:
           printSettings();
           Serial.println("Setting mode entered");
           bt.println("Setting mode entered");
         }
         else  //if RTES mode is entered
         {
-          // bool validTime = setTime();
-          // if (validTime) {
-          //   prevMillisRTESStopwatch = millis();
-          //   lastMinute = 0;
-          Serial.println("RTES mode entered at ");
-          bt.println("RTES mode entered at");
-          //displayClock12();
-          //}
-          //else goto invalidTime;
+          bool validTime = setTime();
+          if (validTime)
+          {
+            prevMillisRTESStopwatch = millis();
+            lastMinute = 0;
+            Serial.print("RTES mode entered at ");
+            bt.print("RTES mode entered at");
+            displayClock12();
+            Serial.println();
+            bt.println();
+          }
+          else goto invalidTime;
         }
         break;
       }
@@ -64,7 +67,7 @@ void cmdParser() {
           break;
         }
         float val = valStr.toFloat();
-        if (val > 0)
+        if (val > 0 && val < 3.4028235E38)
         {
           waterPercentage = val;
           EEPROM.update(addr5, waterPercentage);
@@ -88,7 +91,7 @@ void cmdParser() {
           break;
         }
         int val = valStr.toInt();
-        if (val > 0)
+        if (val > 0 && val < 65536)
         {
           f2wPulseRatioCount = 1;
           f2wPulseRatio = val;
@@ -114,7 +117,7 @@ void cmdParser() {
           break;
         }
         float val = valStr.toFloat();
-        if (val >= 0)
+        if (val >= 0 && val < 3.4028235E38)
         {
           flowRateBias = val;
           EEPROM.update(addr2, flowRateBias);
@@ -141,7 +144,7 @@ void cmdParser() {
           break;
         }
         float val = valStr.toFloat();
-        if (val > 0)
+        if (val > 0 && val < 3.4028235E38)
         {
           solShotBias = val;
           EEPROM.update(addr3, solShotBias);
@@ -168,7 +171,7 @@ void cmdParser() {
           break;
         }
         int val = valStr.toInt();
-        if (val > 0)
+        if (val > 0 && val < 65536)
         {
           solenoidOnTime = val;
           EEPROM.update(addr4, solenoidOnTime);
@@ -197,7 +200,7 @@ void cmdParser() {
           break;
         }
         int val = valStr.toInt();
-        if (val > 0)
+        if (val > 0 && val < 256)
         {
           engineOffTimeout = val;
           EEPROM.update(addr1, engineOffTimeout);
@@ -218,6 +221,28 @@ void cmdParser() {
           bt.println("Press 's' to enter settings");
           break;
         }
+        int val = valStr.toInt();
+        if (val > 0 && val < 256)
+        {
+          checkpointPeriod = val;
+          EEPROM.update(addr7, checkpointPeriod);
+          printSettings();
+        }
+        else
+        {
+          Serial.println("Input is out of range");
+          bt.println("Input is out of range");
+        }
+        break;
+      }
+    case 'H': case 'h':
+      {
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
+          break;
+        }
         totalFuelPulse = 0;
         totalWaterPulse = 0;
         f2wPulseRatioCount = 0;
@@ -225,6 +250,7 @@ void cmdParser() {
         bt.println("Counters have been reset");
         break;
       }
+
     //    case 'M': case 'm': //admin mode
     //      {
     //        if (!mode)
@@ -291,6 +317,7 @@ void cmdParser() {
         }
         //adminSettings();
         printSettings();
+        flushSerial();
         break;
       }
     //    case 'T': case 't':

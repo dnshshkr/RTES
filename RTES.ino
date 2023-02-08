@@ -60,6 +60,7 @@
 #define addr4 11  //2 bytes
 #define addr5 13  //4 bytes
 #define addr6 17  //6 bytes byte - admin
+#define addr7 23 //1 byte
 char pwd_default[6];
 
 /*
@@ -75,6 +76,7 @@ const uint8_t waterPump = 10;
 const uint8_t btrx = 12;
 const uint8_t bttx = 11;
 const uint8_t btState = 5;
+const uint8_t button = 4;
 
 /*
    | current amperage - not in use
@@ -108,6 +110,7 @@ uint8_t hour = 0;
 uint8_t minute = 0;
 uint8_t lastMinute;
 uint8_t second = 0;
+uint8_t checkpointPeriod;
 //uint8_t currentSensorType = 1; //0 - ACS713, 1 - ACS712
 unsigned int f2wPulseRatio;  //fuel pulses per cycle
 unsigned int solenoidOnTime;
@@ -135,6 +138,8 @@ void setup()
   pinMode(solenoid, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(btState, INPUT);
+  pinMode(button, OUTPUT);
+  digitalWrite(button, LOW);
   attachInterrupt(digitalPinToInterrupt(flowrateSensor), interruptRoutine, FALLING);
   loadSettings();
   mode = false;
@@ -145,6 +150,7 @@ void setup()
   bool validTime = setTime();
   if (!validTime)
   {
+    mode = true;
     printSettings();
     Serial.println("Settings mode entered");
     bt.println("Settings mode entered");
@@ -152,19 +158,21 @@ void setup()
   else
   {
     prevMillisRTESStopwatch = millis();
-    Serial.println("RTES mode entered at ");
-    bt.println("RTES mode entered at ");
+    Serial.print("RTES mode entered at ");
+    bt.print("RTES mode entered at ");
     displayClock12();
+    Serial.println();
+    bt.println();
   }
 }
 
 void loop() {
-  // if (mode == 0)
-  //   stopwatch();
+  if (mode == 0)
+    stopwatch();
   /*
      | 1. engine-off detection
   */
-  if (millis() - prevMillisEngOff >= engineOffTimeout * 1000 && mode == 0)
+  if (millis() - prevMillisEngOff >= engineOffTimeout * 1000 && !mode)
   {
     if (!engOffStatusPrintOnce)  //so that it prints the text only once
     {
@@ -203,10 +211,11 @@ void loop() {
     RTES();
     if (pulseDataPrint)  //print data only on a fuel pulse detection
     {
-      if (minute - lastMinute >= 3)
+      if (minute - lastMinute >= checkpointPeriod)
       {
-        Serial.println(String(hour) + ':' + String(minute) + " -> ");
-        bt.println(String(hour) + ':' + String(minute) + " -> ");
+        displayClock12();
+        Serial.print(" -> ");
+        bt.print(" -> ");
         lastMinute = minute;
       }
       printData();
@@ -220,11 +229,11 @@ void loop() {
   */
 }
 
-//void flushSerial()  //clear serial buffer over usb and bluetooth
-//{
-//  while (Serial.available() || bt.available()) {
-//    Serial.read();
-//    bt.read();
-//    delay(1);
-//  }
-//}
+void flushSerial()  //clear serial buffer over usb and bluetooth
+{
+  while (Serial.available() || bt.available())
+  {
+    Serial.read();
+    bt.read();
+  }
+}
