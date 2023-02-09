@@ -30,7 +30,7 @@ void RTES() {
   //    }
 
   //METHOD 2 - spray on the final pulse but in a desired period
-  if (f2wPulseRatioCount >= 1 && f2wPulseRatioCount <= f2wPulseRatio)  //make sure solenoid does not trigger on accident on other than the final pulse in every cycle
+  if (f2wPulseRatioCount >= 1 && f2wPulseRatioCount <= f2wPulseRatio)  //make sure solenoid does not trigger on accident on other pulses rather than the final pulse in every cycle
   {
     sprayedOnce = false;
     sprayStarted = false;
