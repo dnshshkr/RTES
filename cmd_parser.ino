@@ -37,8 +37,11 @@ invalidTime:
             goto startRTES2;
           if (validTime)
           {
-            prevMillisRTESStopwatch = millis();
-            lastMinute = minute;
+            if (testMode)
+            {
+              prevMillisRTESStopwatch = millis();
+              lastMinute = accumMinute = 0;
+            }
 startRTES2:
             printSettings();
             Serial.print("RTES mode entered");
@@ -54,6 +57,7 @@ startRTES2:
             Serial.println();
             if (bt)
               bt.println();
+            firstRowData = true;
           }
           else
           {

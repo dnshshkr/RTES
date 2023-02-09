@@ -102,6 +102,7 @@ bool sprayedOnce = false;
 bool sprayStarted = false;
 bool sprayCompleted = true;
 bool testMode;
+bool firstRowData = true;
 //bool solenoidManualState = false;
 //bool waterPumpManualState = false;
 //bool toggleAllState = false;
@@ -109,10 +110,11 @@ bool mode;  //0 - RTES, 1 - settings, 2 - admin
 uint8_t engineOffTimeout;
 uint8_t hour = 0;
 uint8_t minute = 0;
-uint8_t lastMinute;
 uint8_t second = 0;
 uint8_t checkpointPeriod;
 //uint8_t currentSensorType = 1; //0 - ACS713, 1 - ACS712
+uint16_t lastMinute;
+uint16_t accumMinute;
 unsigned int f2wPulseRatio;  //fuel pulses per cycle
 unsigned int solenoidOnTime;
 float denominator;  //fraction denominatorinator for fuel-water percentage calculation
@@ -230,14 +232,17 @@ void loop() {
     RTES();
     if (pulseDataPrint)  //print data only on a fuel pulse detection
     {
-      if (testMode && minute - lastMinute >= checkpointPeriod)
+      if (testMode && accumMinute - lastMinute >= checkpointPeriod || firstRowData)
       {
         displayClock12();
         Serial.print(" -> ");
         if (bt)
-          bt.print(" -> ");
-        lastMinute = minute;
+          bt.println();
+        lastMinute = accumMinute;
+        firstRowData = false;
       }
+      else
+        Serial.print("\t    ");
       printData();
     }
   }

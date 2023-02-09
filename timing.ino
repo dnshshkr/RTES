@@ -36,6 +36,7 @@ void stopwatch() {
     if (second == 60)
     {
       minute++;
+      accumMinute++;
       second = 0;
     }
     if (minute == 60)
