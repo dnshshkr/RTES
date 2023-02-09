@@ -94,9 +94,9 @@ startRTES2:
         if (val > 0 && val < 3.4028235E38)
         {
           waterPercentage = val;
-          EEPROM.update(addr5, waterPercentage);
+          EEPROM.put(addr[5], waterPercentage);
           calculate_f2wPulseRatio();
-          EEPROM.update(addr0, f2wPulseRatio);
+          EEPROM.put(addr[0], f2wPulseRatio);
           printSettings();
         }
         else
@@ -121,10 +121,10 @@ startRTES2:
         {
           f2wPulseRatioCount = 1;
           f2wPulseRatio = val;
-          EEPROM.update(addr0, f2wPulseRatio);
+          EEPROM.put(addr[0], f2wPulseRatio);
           calculate_denominator();
           calculate_waterPercentage();
-          EEPROM.update(addr5, waterPercentage);
+          EEPROM.put(addr[5], waterPercentage);
           printSettings();
         }
         else
@@ -148,12 +148,12 @@ startRTES2:
         if (val >= 0 && val < 3.4028235E38)
         {
           flowRateBias = val;
-          EEPROM.update(addr2, flowRateBias);
+          EEPROM.put(addr[2], flowRateBias);
           calculate_f2wPulseRatio();
           calculate_denominator();
           calculate_waterPercentage();
-          EEPROM.update(addr0, f2wPulseRatio);
-          EEPROM.update(addr5, waterPercentage);
+          EEPROM.put(addr[0], f2wPulseRatio);
+          EEPROM.put(addr[5], waterPercentage);
           printSettings();
         }
         else
@@ -177,12 +177,12 @@ startRTES2:
         if (val > 0 && val < 3.4028235E38)
         {
           solShotBias = val;
-          EEPROM.update(addr3, solShotBias);
+          EEPROM.put(addr[3], solShotBias);
           calculate_solenoidOnTime();
           calculate_f2wPulseRatio();
           calculate_denominator();
-          EEPROM.update(addr4, solenoidOnTime);
-          EEPROM.update(addr0, f2wPulseRatio);
+          EEPROM.put(addr[4], solenoidOnTime);
+          EEPROM.put(addr[0], f2wPulseRatio);
           printSettings();
         }
         else
@@ -206,14 +206,14 @@ startRTES2:
         if (val > 0 && val < 65536)
         {
           solenoidOnTime = val;
-          EEPROM.update(addr4, solenoidOnTime);
+          EEPROM.put(addr[4], solenoidOnTime);
           calculate_solShotBias();
           calculate_denominator();
           calculate_waterPercentage();
           calculate_f2wPulseRatio();
-          EEPROM.update(addr3, solShotBias);
-          EEPROM.update(addr5, waterPercentage);
-          EEPROM.update(addr0, f2wPulseRatio);
+          EEPROM.put(addr[3], solShotBias);
+          EEPROM.put(addr[5], waterPercentage);
+          EEPROM.put(addr[0], f2wPulseRatio);
           printSettings();
         }
         else
@@ -237,7 +237,7 @@ startRTES2:
         if (val > 0 && val < 256)
         {
           engineOffTimeout = val;
-          EEPROM.update(addr1, engineOffTimeout);
+          EEPROM.update(addr[1], engineOffTimeout);
           printSettings();
         }
         else
@@ -261,7 +261,7 @@ startRTES2:
         if (val > 0 && val < 256)
         {
           checkpointPeriod = val;
-          EEPROM.update(addr6, checkpointPeriod);
+          EEPROM.update(addr[6], checkpointPeriod);
           printSettings();
         }
         else
@@ -372,7 +372,7 @@ startRTES2:
           break;
         }
         testMode = !testMode;
-        EEPROM.update(addr7, testMode);
+        EEPROM.update(addr[7], testMode);
         printSettings();
         break;
       }

@@ -53,15 +53,16 @@
 /*
    | EEPROM memory address
 */
-#define addr0 0   //2 bytes
-#define addr1 2   //1 byte
-#define addr2 3   //4 bytes
-#define addr3 7   //4 bytes
-#define addr4 11  //2 bytes
-#define addr5 13  //4 bytes
-#define addr6 17  //1 byte
-#define addr7 18  //1 byte
-char pwd_default[6];
+const uint8_t addr[8]={0,2,3,7,11,13,17,18};
+//#define addr0 0   //2 bytes
+//#define addr1 2   //1 byte
+//#define addr2 3   //4 bytes
+//#define addr3 7   //4 bytes
+//#define addr4 11  //2 bytes
+//#define addr5 13  //4 bytes
+//#define addr6 17  //1 byte
+//#define addr7 18  //1 byte
+//char pwd_default[6];
 
 /*
    | pinouts
@@ -133,8 +134,8 @@ SoftwareSerial bt(btrx, bttx);  //bluetooth module
 
 void setup()
 {
-  EEPROM.get(addr6, pwd_default);  //admin password
-  Serial.begin(38400);
+  //EEPROM.get(addr6, pwd_default);  //admin password
+  Serial.begin(9600);
   bt.begin(38400);
   pinMode(flowrateSensor, INPUT_PULLUP);  //fuel flowrate sensor
   pinMode(waterPump, OUTPUT);
@@ -169,7 +170,7 @@ void setup()
     if (testMode)
       prevMillisRTESStopwatch = millis();
 startRTES1:
-    printSettings();
+    //printSettings();
     Serial.print("RTES mode entered");
     if (bt)
       bt.print("RTES mode entered");

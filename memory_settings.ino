@@ -1,13 +1,13 @@
 void factoryReset()  //factory reset
 {
-  EEPROM.put(addr0, 4);     //0x0
-  EEPROM.put(addr1, 15);    //0x2
-  EEPROM.put(addr2, 1.45);  //0x3
-  EEPROM.put(addr3, 0.81);  //0x7
-  EEPROM.put(addr4, 250);   //0x11
-  EEPROM.put(addr5, 10.0);  //0x13
-  EEPROM.put(addr6, 3);     //0x23
-  EEPROM.put(addr7, 0);     //0x24
+  EEPROM.put(addr[0], 4);     //0x0
+  EEPROM.put(addr[1], 15);    //0x2
+  EEPROM.put(addr[2], 1.45);  //0x3
+  EEPROM.put(addr[3], 0.81);  //0x7
+  EEPROM.put(addr[4], 250);   //0x11
+  EEPROM.put(addr[5], 10.0);  //0x13
+  EEPROM.put(addr[6], 3);     //0x17
+  EEPROM.put(addr[7], 0);     //0x18
   loadSettings();
   f2wPulseRatioCount = 1;
   Serial.print("\nRestored to factory settings");
@@ -29,15 +29,16 @@ void factoryReset()  //factory reset
 //  EEPROM.update(addr7, checkpointPeriod);
 //}
 
-void loadSettings() {
-  EEPROM.get(addr0, f2wPulseRatio);
-  EEPROM.get(addr1, engineOffTimeout);
-  EEPROM.get(addr2, flowRateBias);
-  EEPROM.get(addr3, solShotBias);
-  EEPROM.get(addr4, solenoidOnTime);
-  EEPROM.get(addr5, waterPercentage);
-  EEPROM.get(addr6, checkpointPeriod);
-  EEPROM.get(addr7, testMode);
+void loadSettings()
+{
+  EEPROM.get(addr[0], f2wPulseRatio);
+  EEPROM.get(addr[1], engineOffTimeout);
+  EEPROM.get(addr[2], flowRateBias);
+  EEPROM.get(addr[3], solShotBias);
+  EEPROM.get(addr[4], solenoidOnTime);
+  EEPROM.get(addr[5], waterPercentage);
+  EEPROM.get(addr[6], checkpointPeriod);
+  EEPROM.get(addr[7], testMode);
   //  calculate_f2wPulseRatio();
   //  calculate_solenoidOnTime();
   calculate_denominator();
