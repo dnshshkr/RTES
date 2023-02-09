@@ -38,7 +38,7 @@ invalidTime:
           if (validTime)
           {
             prevMillisRTESStopwatch = millis();
-            lastMinute = 0;
+            lastMinute = minute;
 startRTES2:
             printSettings();
             Serial.print("RTES mode entered");

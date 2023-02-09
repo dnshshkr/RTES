@@ -151,7 +151,7 @@ void setup()
     bt.println("RTES initialized");
   bool validTime;
   if (testMode)
-    bool validTime = setTime();
+    validTime = setTime();
   else
     goto startRTES1;
   if (!validTime)
