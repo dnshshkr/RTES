@@ -62,9 +62,9 @@ void displayClock12()
     bt.print(String(hour12) + 's');
   if (String(minute).length() == 1)
   {
-    Serial.print('0');
+    Serial.write('0');
     if (bt)
-      bt.print('0');
+      bt.write('0');
   }
   Serial.print(minute);
   if (bt)

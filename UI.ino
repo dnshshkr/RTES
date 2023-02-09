@@ -20,16 +20,16 @@ void printSettings()
   Serial.println("$: Refresh Settings");
   Serial.print("S: Enter ");
   if (mode)
-    Serial.print('(');
+    Serial.write('(');
   Serial.print("Settings");
   if (mode)
-    Serial.print(')');
-  Serial.print('/');
+    Serial.write(')');
+  Serial.write('/');
   if (!mode)
-    Serial.print('(');
+    Serial.write('(');
   Serial.print("RTES");
   if (!mode)
-    Serial.print(')');
+    Serial.write(')');
   Serial.println(" Mode");
   Serial.println("***************************************************************");
 
@@ -56,16 +56,16 @@ void printSettings()
     bt.println("$: Refresh Settings");
     bt.print("S: Enter ");
     if (mode)
-      bt.print('(');
+      bt.write('(');
     bt.print("Settings");
     if (mode)
-      bt.print(')');
-    bt.print('/');
+      bt.write(')');
+    bt.write('/');
     if (!mode)
-      bt.print('(');
+      bt.write('(');
     bt.print("RTES");
     if (!mode)
-      bt.print(')');
+      bt.write(')');
     bt.println(" Mode");
     bt.println("******************");
   }
