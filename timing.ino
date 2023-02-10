@@ -58,28 +58,30 @@ void displayClock12()
     hour12 = 12;
   else
     hour12 = hour;
+  if (String(hour12).length() == 1)
+    Serial.write(' ');
   Serial.print(String(hour12) + ':');
-  if (bt)
-    bt.print(String(hour12) + 's');
+  //if(bt)
+  bt.print(String(hour12) + ':');
   if (String(minute).length() == 1)
   {
     Serial.write('0');
-    if (bt)
-      bt.write('0');
+    //if(bt)
+    bt.write('0');
   }
   Serial.print(minute);
-  if (bt)
-    bt.print(minute);
+  //if(bt)
+  bt.print(minute);
   if (hour >= 0 && hour < 12)
   {
     Serial.print(" AM");
-    if (bt)
-      bt.print(" AM");
+    //if(bt)
+    bt.print(" AM");
   }
   else
   {
     Serial.print(" PM");
-    if (bt)
-      bt.print(" PM");
+    //if(bt)
+    bt.print(" PM");
   }
 }

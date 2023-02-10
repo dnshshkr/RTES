@@ -53,7 +53,7 @@
 /*
    | EEPROM memory address
 */
-const uint8_t addr[8]={0,2,3,7,11,13,17,18};
+const uint8_t addr[8] = {0, 2, 3, 7, 11, 13, 17, 18};
 //#define addr0 0   //2 bytes
 //#define addr1 2   //1 byte
 //#define addr2 3   //4 bytes
@@ -95,6 +95,7 @@ volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;
 volatile unsigned long prevMillisEngOff = 0;
 volatile uint8_t f2wPulseRatioCount = 0;
+bool btConnectedOnce = false;
 bool manualPrintData = false;
 bool pulseDataPrint = false;
 bool cmdAvailable;
@@ -150,8 +151,8 @@ void setup()
   stopEmulsion();
   printSettings();
   Serial.println("RTES initialized");
-  if (bt)
-    bt.println("RTES initialized");
+  //if(bt)
+  bt.println("RTES initialized");
   bool validTime;
   if (testMode)
     validTime = setTime();
@@ -162,8 +163,8 @@ void setup()
     mode = true;
     printSettings();
     Serial.println("Settings mode entered");
-    if (bt)
-      bt.println("Settings mode entered");
+    //if(bt)
+    bt.println("Settings mode entered");
   }
   else
   {
@@ -172,24 +173,32 @@ void setup()
 startRTES1:
     //printSettings();
     Serial.print("RTES mode entered");
-    if (bt)
-      bt.print("RTES mode entered");
+    //if(bt)
+    bt.print("RTES mode entered");
     if (testMode)
     {
       Serial.print(" at ");
-      if (bt)
-        bt.print(" at ");
+      //if(bt)
+      bt.print(" at ");
       displayClock12();
     }
     Serial.println();
-    if (bt)
-      bt.println();
+    //if(bt)
+    bt.println();
   }
 }
 
 void loop() {
   if (!mode && testMode)
     stopwatch();
+  //  if (!btConnectedOnce && digitalRead(btState))
+  //  {
+  //    printSettings();
+  //    bt.println("RTES initialized");
+  //    btConnectedOnce = true;
+  //  }
+  //  else if (btConnectedOnce && !digitalRead(btState))
+  //    btConnectedOnce = false;
   /*
      | 1. engine-off detection
   */
@@ -198,8 +207,8 @@ void loop() {
     if (!engOffStatusPrintOnce)  //so that it prints the text only once
     {
       Serial.println("*Engine is off*");
-      if (bt)
-        bt.println("*Engine is off*");
+      //if(bt)
+      bt.println("*Engine is off*");
       engOffStatusPrintOnce = true;
     }
   }
@@ -233,16 +242,16 @@ void loop() {
     RTES();
     if (pulseDataPrint)  //print data only on a fuel pulse detection
     {
-      if (testMode && accumMinute - lastMinute >= checkpointPeriod || firstRowData)
+      if (testMode && accumMinute - lastMinute >= checkpointPeriod || (testMode && firstRowData))
       {
         displayClock12();
         Serial.print(" -> ");
-        if (bt)
-          bt.println();
+        //if(bt)
+        bt.println();
         lastMinute = accumMinute;
         firstRowData = false;
       }
-      else
+      else if (testMode)
         Serial.print("\t    ");
       printData();
     }

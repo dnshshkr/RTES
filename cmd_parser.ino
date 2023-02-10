@@ -25,8 +25,8 @@ void cmdParser() {
 invalidTime:
           printSettings();
           Serial.println("Setting mode entered");
-          if (bt)
-            bt.println("Setting mode entered");
+          //if(bt)
+          bt.println("Setting mode entered");
         }
         else  //if RTES mode is entered
         {
@@ -45,18 +45,18 @@ invalidTime:
 startRTES2:
             printSettings();
             Serial.print("RTES mode entered");
-            if (bt)
-              bt.print("RTES mode entered");
+            //if(bt)
+            bt.print("RTES mode entered");
             if (testMode)
             {
               Serial.print(" at ");
-              if (bt)
-                bt.print(" at ");
+              //if(bt)
+              bt.print(" at ");
               displayClock12();
             }
             Serial.println();
-            if (bt)
-              bt.println();
+            //if(bt)
+            bt.println();
             firstRowData = true;
           }
           else
@@ -86,8 +86,8 @@ startRTES2:
         if (!mode)  //if user tries to change the value in RTES or admin modes
         {
           Serial.println("Press 's' to enter settings");
-          if (bt)
-            bt.println("Press 's' to enter settings");
+          //if(bt)
+          bt.println("Press 's' to enter settings");
           break;
         }
         float val = valStr.toFloat();
@@ -102,8 +102,8 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          if (bt)
-            bt.println("Input is out of range");
+          //if(bt)
+          bt.println("Input is out of range");
         }
         break;
       }
@@ -112,8 +112,8 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          if (bt)
-            bt.println("Press 's' to enter settings");
+          //if(bt)
+          bt.println("Press 's' to enter settings");
           break;
         }
         int val = valStr.toInt();
@@ -130,8 +130,8 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          if (bt)
-            bt.println("Input is out of range");
+          //if(bt)
+          bt.println("Input is out of range");
         }
         break;
       }
@@ -140,8 +140,8 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          if (bt)
-            bt.println("Press 's' to enter settings");
+          //if(bt)
+          bt.println("Press 's' to enter settings");
           break;
         }
         float val = valStr.toFloat();
@@ -159,8 +159,8 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          if (bt)
-            bt.println("Input is out of range");
+          //if(bt)
+          bt.println("Input is out of range");
         }
         break;
       }
@@ -169,8 +169,8 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          if (bt)
-            bt.println("Press 's' to enter settings");
+          //if(bt)
+          bt.println("Press 's' to enter settings");
           break;
         }
         float val = valStr.toFloat();
@@ -188,8 +188,8 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          if (bt)
-            bt.println("Input is out of range");
+          //if(bt)
+          bt.println("Input is out of range");
         }
         break;
       }
@@ -198,8 +198,8 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          if (bt)
-            bt.println("Press 's' to enter settings");
+          //if(bt)
+          bt.println("Press 's' to enter settings");
           break;
         }
         int val = valStr.toInt();
@@ -219,8 +219,8 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          if (bt)
-            bt.println("Input is out of range");
+          //if(bt)
+          bt.println("Input is out of range");
         }
         break;
       }
@@ -229,8 +229,8 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          if (bt)
-            bt.println("Press 's' to enter settings");
+          //if(bt)
+          bt.println("Press 's' to enter settings");
           break;
         }
         int val = valStr.toInt();
@@ -243,8 +243,8 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          if (bt)
-            bt.println("Input is out of range");
+          //if(bt)
+          bt.println("Input is out of range");
         }
         break;
       }
@@ -253,8 +253,15 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          if (bt)
-            bt.println("Press 's' to enter settings");
+          //if(bt)
+          bt.println("Press 's' to enter settings");
+          break;
+        }
+        else if (!testMode)
+        {
+          Serial.println("Please turn on test mode first");
+          //if(bt)
+          bt.println("Please turn on test mode first");
           break;
         }
         int val = valStr.toInt();
@@ -267,8 +274,8 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          if (bt)
-            bt.println("Input is out of range");
+          //if(bt)
+          bt.println("Input is out of range");
         }
         break;
       }
@@ -277,16 +284,16 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          if (bt)
-            bt.println("Press 's' to enter settings");
+          //if(bt)
+          bt.println("Press 's' to enter settings");
           break;
         }
         totalFuelPulse = 0;
         totalWaterPulse = 0;
         f2wPulseRatioCount = 0;
         Serial.println("Counters have been reset");
-        if (bt)
-          bt.println("Counters have been reset");
+        //if(bt)
+        bt.println("Counters have been reset");
         break;
       }
     //    case 'M': case 'm': //admin mode
@@ -334,13 +341,13 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          if (bt)
-            bt.println("Press 's' to enter settings");
+          //if(bt)
+          bt.println("Press 's' to enter settings");
           break;
         }
         Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
-        if (bt)
-          bt.print("Are you sure you want to reset to factory settings? (Y/N)");
+        //if(bt)
+        bt.print("Are you sure you want to reset to factory settings? (Y/N)");
         bool wait = timeoutUI();
         char choice = Serial.read();
         if (bt.available())  //here
@@ -350,12 +357,12 @@ startRTES2:
         else
         {
           Serial.print("\nFactory reset aborted");
-          if (bt)
-            bt.print("\nFactory reset aborted");
+          //if(bt)
+          bt.print("\nFactory reset aborted");
           delay(1000);
           Serial.println();
-          if (bt)
-            bt.println();
+          //if(bt)
+          bt.println();
         }
         //adminSettings();
         printSettings();
@@ -367,8 +374,8 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          if (bt)
-            bt.println("Press 's' to enter settings");
+          //if(bt)
+          bt.println("Press 's' to enter settings");
           break;
         }
         testMode = !testMode;
@@ -474,8 +481,8 @@ startRTES2:
     default:
       {
         Serial.println("Unknown command");
-        if (bt)
-          bt.println("Unknown command");
+        //if(bt)
+        bt.println("Unknown command");
         //        if (cmd[0] == 0x6c && cmd[1] == 0x65 && cmd[2] == 0x70 && cmd[3] == 0x72 && cmd[4] == 0x65 && cmd[5] == 0x63 && cmd[6] == 0x68 && cmd[7] == 0x61 && cmd[8] == 0x75 && cmd[9] == 0x6e) {
         //          EEPROM.write(17, 0x39);
         //          EEPROM.write(18, 0x39);

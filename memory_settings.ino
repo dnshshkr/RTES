@@ -11,12 +11,12 @@ void factoryReset()  //factory reset
   loadSettings();
   f2wPulseRatioCount = 1;
   Serial.print("\nRestored to factory settings");
-  if (bt)
-    bt.print("\nRestored to factory settings");
+  //if(bt)
+  bt.print("\nRestored to factory settings");
   delay(1000);
   Serial.println();
-  if (bt)
-    bt.println();
+  //if(bt)
+  bt.println();
 }
 
 //void saveSettings() {
