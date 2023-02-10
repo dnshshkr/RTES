@@ -6,7 +6,7 @@ void factoryReset()  //factory reset
   EEPROM.put(addr[3], 0.81);  //0x7
   EEPROM.put(addr[4], 250);   //0x11
   EEPROM.put(addr[5], 10.0);  //0x13
-  EEPROM.put(addr[6], 3);     //0x17
+  EEPROM.put(addr[6], 5);     //0x17
   EEPROM.put(addr[7], 0);     //0x18
   loadSettings();
   f2wPulseRatioCount = 1;
