@@ -1,5 +1,4 @@
 #define ver "4.1.0"
-//branch asus-rtes
 /*===============================================================================================================
   ; Title:  RTES V4.0 Serial Interface
   ; Authors: Wan Ahmad V3.08v2 V3.09 V4.0 V4.0.1 (wahmad.wazhar@gmail.com) & Syamiladnin V3.07 (syamiladnin@gmail.com) & Danish V4.1.x (danish.shukor@outlook.com)
