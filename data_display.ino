@@ -11,7 +11,7 @@ void printData() {
   Serial.print(waterPercentage, 1);
   Serial.print(" % water\t");
   Serial.print(fuelPercentage, 1);
-  Serial.println("% fuel");
+  Serial.println(" % fuel");
 
   //if(bt)
   //{
