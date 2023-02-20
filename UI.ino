@@ -2,23 +2,22 @@ void printSettings()
 {
   Serial.println("**************************ALL SETTING**************************");
   Serial.println("RTES v" + String(ver));
-  Serial.println("A: Water Percentage: " + String(waterPercentage) + "%");
-  Serial.print("B: Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
+  Serial.println("A - Water Percentage: " + String(waterPercentage) + "%");
+  Serial.print("B - Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
   (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? Serial.println('s') : Serial.println();
-  Serial.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
-  Serial.println("D: Water Shot Bias: " + String(solShotBias) + " mL/pulse");
-  Serial.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
-  Serial.print("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
+  Serial.println("C - Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
+  Serial.println("D - Water Shot Bias: " + String(solShotBias) + " mL/pulse");
+  Serial.println("E - Solenoid On Time: " + String(solenoidOnTime) + " ms");
+  Serial.print("F - Engine Off Timeout: " + String(engineOffTimeout) + " s");
   if (testMode)
     Serial.print("\nG: Checkpoint Period: " + String(checkpointPeriod) + " minute");
   (checkpointPeriod > 1 && testMode) ? Serial.println('s') : Serial.println();
-  Serial.println("H: Reset Total Fuel Pulse Counter");
-  Serial.print("T: Toggle Test Mode: ");
-  Serial.println(testMode);
-  Serial.println("R: Reset to Factory Settings");
-  //Serial.println("M: Enter Admin Settings");
-  Serial.println("$: Refresh Settings");
-  Serial.print("S: Enter ");
+  Serial.println("H - Reset Total Fuel Pulse Counter");
+  Serial.println("T - Toggle Test Mode: " + String(testMode));
+  Serial.println("R - Reset to Factory Settings");
+  //Serial.println("M - Enter Admin Settings");
+  Serial.println("$ - Refresh Settings");
+  Serial.print("S - Enter ");
   if (mode)
     Serial.write('(');
   Serial.print("Settings");
@@ -38,11 +37,11 @@ void printSettings()
   //{
   bt.println("***ALL SETTINGS***");
   bt.println("RTES v" + String(ver));
-  bt.println("A: Water Percentage: " + String(waterPercentage) + "%");
+  bt.println("A: Water Percentage: " + String(waterPercentage) + " % ");
   bt.print("B: Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
   (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? bt.println('s') : bt.println();
-  bt.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
-  bt.println("D: Water Shot Bias: " + String(solShotBias) + " mL/pulse");
+  bt.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL / pulse");
+  bt.println("D: Water Shot Bias: " + String(solShotBias) + " mL / pulse");
   bt.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
   bt.print("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
   if (testMode)
@@ -50,8 +49,7 @@ void printSettings()
   (checkpointPeriod > 1 && testMode) ? bt.println('s') : bt.println();
   bt.println("H: Reset Total Fuel Pulse Counter");
   bt.println("R: Reset to Factory Settings");
-  bt.print("T: Toggle Test Mode: ");
-  bt.println(testMode);
+  bt.println("T: Toggle Test Mode: " + String(testMode));
   //bt.println("M: Enter Admin Settings");
   bt.println("$: Refresh Settings");
   bt.print("S: Enter ");
