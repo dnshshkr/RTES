@@ -1,18 +1,20 @@
 import csv
-with open('logs/sample-20022023.txt', 'r') as txt_file:
-    output=filter(lambda txt: txt.find('M') != -1 or txt.find(',') != -1, txt_file)
-    output=(line.strip() for line in output)
-    print(output)
-    with open('logs/sample-20022023.csv', 'w') as csv_file:
-        header=['Total Fuel Pulses','Total Water Pulses','Fuel Pulse Period (s)','Fuel Flowrate (mL/min)','Cycle Position (/5)','Water Percentage (%)','Fuel Percentage (%)']
-        csv_reader=csv.reader(output, delimiter=',')
-        csv_reader=(line.strip() for line in csv_reader)
-        csv_writer=csv.writer(csv_file, delimiter=',')
-        csv_writer.writerow(header)
-        csv_writer.writerows(csv_reader)
-    # for line in txt_file:
-    #     if line.find('M') != -1 or line.find(',') != -1:
-    #         in_txt = csv.reader(line, delimiter = ',')
-    #         print(in_txt)
-            # out_csv = csv.writer(csv_file)
-            # out_csv.(in_txt)
+import openpyxl
+import pathlib
+#*** insert your text file path here ***
+text_file='logs\sample-20022023.txt'
+#***************************************
+header=['Total Fuel Pulses','Total Water Pulses','Fuel Pulse Period (s)','Fuel Flowrate (mL/min)','Cycle Position (/5)','Water Percentage (%)','Fuel Percentage (%)']
+text_file.replace('\\','/')
+parent_dir=pathlib.Path(text_file).parent
+xlsx_file=parent_dir.joinpath('sample-20022023.xlsx')
+wb=openpyxl.Workbook()
+ws=wb.worksheets[0]
+with open(text_file, 'r') as txt_file:
+    text_file=filter(lambda txt: len(txt)==7 or len(txt)==8 or txt.find(',') != -1, txt_file)
+    reader=csv.reader(text_file,delimiter=',')
+    ws.append(header)
+    for row in reader:
+        row=[float(i) for i in row] if str(row).find(',') != -1 else row
+        ws.append(row)
+wb.save(xlsx_file)
