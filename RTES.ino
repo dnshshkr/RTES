@@ -102,7 +102,7 @@ bool cmdAvailable;
 bool engOffStatusPrintOnce;
 bool sprayedOnce = false;
 bool sprayStarted = false;
-bool sprayCompleted = true;
+bool sprayCompleted = false;
 bool testMode;
 bool firstRowData = true;
 //bool solenoidManualState = false;
