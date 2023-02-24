@@ -21,5 +21,5 @@ void resetParams()
   EEPROM.put(addr[6], 5);     //0x17
   EEPROM.put(addr[7], 0);     //0x18
   loadParams();
-  f2wPulseRatioCount = 1;
+  cycleCount = 1;
 }

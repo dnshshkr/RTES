@@ -5,7 +5,7 @@ const uint8_t rx = A1, tx = A0;
 const uint8_t addr[8] = {0, 2, 3, 7, 11, 13, 17, 18};
 
 volatile bool pulseDataPrint = false;
-volatile uint8_t f2wPulseRatioCount = 0;
+volatile uint8_t cycleCount = 0;
 volatile float fuelFlowRate;
 volatile float fuelPulsePeriod;
 volatile unsigned long totalFuelPulse = 0;
