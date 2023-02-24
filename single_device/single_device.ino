@@ -89,7 +89,7 @@ const uint8_t button = 4;
 /*
    | variables
 */
-volatile float measuredPulsePerMin;
+volatile float fuelFlowRate;
 volatile float fuelPulsePeriod;
 volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;

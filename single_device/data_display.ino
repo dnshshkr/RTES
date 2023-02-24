@@ -4,7 +4,7 @@ void printData() {
 
   Serial.print(String(totalFuelPulse) + " total fuel pulse \t");
   Serial.print(String(fuelPulsePeriod) + " s\t");
-  Serial.print(measuredPulsePerMin, 3);
+  Serial.print(fuelFlowRate, 3);
   Serial.print(" mL/min\t");
   Serial.print(String(f2wPulseRatioCount) + " counter\t");
   Serial.print(String(totalWaterPulse) + " total water pulse\t");
@@ -17,7 +17,7 @@ void printData() {
   //{
   bt.print(String(totalFuelPulse) + " total fuel pulse \t");
   bt.print(String(fuelPulsePeriod) + " s\t");
-  bt.print(measuredPulsePerMin, 3);
+  bt.print(fuelFlowRate, 3);
   bt.print(" mL/min\t");
   bt.print(String(f2wPulseRatioCount) + " counter\t");
   bt.print(String(totalWaterPulse) + " total water pulse\t");
