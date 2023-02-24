@@ -49,7 +49,7 @@ void stopwatch() {
     prevMillisRTESStopwatch = millis();
   }
 }
-void displayClock12()
+void displayClock12(bool firstSpace)
 {
   uint8_t hour12;
   if (hour > 12)
@@ -58,7 +58,7 @@ void displayClock12()
     hour12 = 12;
   else
     hour12 = hour;
-  if (String(hour12).length() == 1)
+  if (firstSpace && String(hour12).length() == 1)
     Serial.write(' ');
   Serial.print(String(hour12) + ':');
   //if(bt)
