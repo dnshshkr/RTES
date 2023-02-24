@@ -65,7 +65,7 @@ const uint8_t addr[8] = {0, 2, 3, 7, 11, 13, 17, 18};
 //char pwd_default[6];
 
 /*
-   | pinouts
+   | I/O pins
 */
 const uint8_t flowrateSensor = 2;
 //const uint8_t fuelMotorCurrentPin = A3;
@@ -89,20 +89,19 @@ const uint8_t button = 4;
 /*
    | variables
 */
-volatile float measuredPulsePerMin;
+volatile bool pulseDataPrint = false;
+volatile uint8_t f2wPulseRatioCount = 0;
+volatile float fuelFlowRate;
 volatile float fuelPulsePeriod;
 volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;
-volatile unsigned long prevMillisEngOff = 0;
-volatile uint8_t f2wPulseRatioCount = 0;
-bool btConnectedOnce = false;
+volatile unsigned long engOffPrevMillis = 0;
+//bool btConnectedOnce = false;
 bool manualPrintData = false;
-bool pulseDataPrint = false;
 bool cmdAvailable;
 bool engOffStatusPrintOnce;
-bool sprayedOnce = false;
 bool sprayStarted = false;
-bool sprayCompleted = true;
+bool sprayCompleted = false;
 bool testMode;
 bool firstRowData = true;
 //bool solenoidManualState = false;
@@ -118,7 +117,7 @@ uint8_t checkpointPeriod;
 uint16_t lastMinute;
 uint16_t accumMinute;
 unsigned int f2wPulseRatio;  //fuel pulses per cycle
-unsigned int solenoidOnTime;
+unsigned int solOnTime;
 float denominator;  //fraction denominatorinator for fuel-water percentage calculation
 float waterPercentage;
 //float motorFuelAmpLim = 5.0 //set limit current motor feul pump
@@ -126,7 +125,7 @@ float waterPercentage;
 //float waterPumpAmpLimit = 5.0 //set limit current motor water
 float flowRateBias;
 float solShotBias;
-unsigned long prevSolOnTime;
+unsigned long solOnTimePrevMillis;
 unsigned long prevMillisRTESStopwatch;
 unsigned long totalWaterPulse = 0;
 String cmd;
@@ -180,7 +179,7 @@ startRTES1:
       Serial.print(" at ");
       //if(bt)
       bt.print(" at ");
-      displayClock12();
+      displayClock12(false);
     }
     Serial.println();
     //if(bt)
@@ -202,7 +201,7 @@ void loop() {
   /*
      | 1. engine-off detection
   */
-  if (millis() - prevMillisEngOff >= engineOffTimeout * 1000 && !mode)
+  if (millis() - engOffPrevMillis >= engineOffTimeout * 1000 && !mode)
   {
     if (!engOffStatusPrintOnce)  //so that it prints the text only once
     {
@@ -244,7 +243,7 @@ void loop() {
     {
       if (testMode && accumMinute - lastMinute >= checkpointPeriod || (testMode && firstRowData))
       {
-        displayClock12();
+        displayClock12(true);
         Serial.print(" -> ");
         //if(bt)
         bt.println();

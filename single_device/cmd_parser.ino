@@ -52,7 +52,7 @@ startRTES2:
               Serial.print(" at ");
               //if(bt)
               bt.print(" at ");
-              displayClock12();
+              displayClock12(false);
             }
             Serial.println();
             //if(bt)
@@ -178,10 +178,10 @@ startRTES2:
         {
           solShotBias = val;
           EEPROM.put(addr[3], solShotBias);
-          calculate_solenoidOnTime();
+          calculate_solOnTime();
           calculate_f2wPulseRatio();
           calculate_denominator();
-          EEPROM.put(addr[4], solenoidOnTime);
+          EEPROM.put(addr[4], solOnTime);
           EEPROM.put(addr[0], f2wPulseRatio);
           printSettings();
         }
@@ -205,8 +205,8 @@ startRTES2:
         int val = valStr.toInt();
         if (val > 0 && val < 65536)
         {
-          solenoidOnTime = val;
-          EEPROM.put(addr[4], solenoidOnTime);
+          solOnTime = val;
+          EEPROM.put(addr[4], solOnTime);
           calculate_solShotBias();
           calculate_denominator();
           calculate_waterPercentage();
