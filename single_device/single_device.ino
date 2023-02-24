@@ -95,7 +95,7 @@ volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;
 volatile unsigned long prevMillisEngOff = 0;
 volatile uint8_t f2wPulseRatioCount = 0;
-bool btConnectedOnce = false;
+//bool btConnectedOnce = false;
 bool manualPrintData = false;
 bool pulseDataPrint = false;
 bool cmdAvailable;
