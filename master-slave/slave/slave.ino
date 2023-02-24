@@ -56,7 +56,7 @@ void loop()
   if (master.available())
   {
     uint8_t reqCode = master.read();
-    parseCMD(reqCode);
+    parseMaster(reqCode);
   }
   if (runRTES)
   {

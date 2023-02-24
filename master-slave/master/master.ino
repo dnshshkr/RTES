@@ -6,13 +6,17 @@
    0x82 - send new params
    0x83 - toggle RTES
    0x84 - exclusive stop RTES
-   0x85 - request RTES status
+   0x85 - reset total pulses
+   0x86 - reset cycleCount
 
    response codes
-   0xfb - rtes run
-   0xfc - rtes stopped
-   0xfd - params are reset
-   0xfe - params
+   0xf7 - new params received
+   0xf8 - cycleCount is reset
+   0xf9 - pulses are reset
+   0xfa - rtes run
+   0xfb - rtes stopped
+   0xfc - params are reset
+   0xfe - readings
    0xff - params
 */
 #include<Arduino_JSON.h>
@@ -21,14 +25,14 @@
 
 //variables
 bool mode;
-//unsigned int f2wPulseRatio;
-//uint8_t engineOffTimeout;
-//float flowRateBias;
-//float solShotBias;
-//unsigned int solOnTime;
-//float waterPercentage;
-//float denominator;
-//uint8_t checkpointPeriod;
+unsigned int f2wPulseRatio;
+uint8_t engineOffTimeout;
+float flowRateBias;
+float solShotBias;
+unsigned int solOnTime;
+float waterPercentage;
+float denominator;
+uint8_t checkpointPeriod;
 bool testMode;
 bool changesMade = false;
 unsigned long solOnTimePrevMillis;
@@ -46,7 +50,7 @@ void setup()
   Serial.println("RTES initialized");
   Serial2.write(0x84);
   while (!Serial2.available()) {}
-  if (Serial2.read() == 0xfc)
+  if (Serial2.read() == 0xfb)
   {
     mode = true;
     Serial2.write(0x80);
@@ -59,8 +63,8 @@ void loop()
   if (Serial2.available())
     parseSerial2();
 }
-void flushSerial()
-{
-  while (Serial.available())
-    Serial.read();
-}
+//void flushSerial()
+//{
+//  while (Serial.available())
+//    Serial.read();
+//}
