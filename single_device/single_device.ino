@@ -89,15 +89,15 @@ const uint8_t button = 4;
 /*
    | variables
 */
+volatile bool pulseDataPrint = false;
+volatile uint8_t f2wPulseRatioCount = 0;
 volatile float fuelFlowRate;
 volatile float fuelPulsePeriod;
 volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;
-volatile unsigned long prevMillisEngOff = 0;
-volatile uint8_t f2wPulseRatioCount = 0;
+volatile unsigned long engOffPrevMillis = 0;
 //bool btConnectedOnce = false;
 bool manualPrintData = false;
-bool pulseDataPrint = false;
 bool cmdAvailable;
 bool engOffStatusPrintOnce;
 bool sprayStarted = false;
@@ -201,7 +201,7 @@ void loop() {
   /*
      | 1. engine-off detection
   */
-  if (millis() - prevMillisEngOff >= engineOffTimeout * 1000 && !mode)
+  if (millis() - engOffPrevMillis >= engineOffTimeout * 1000 && !mode)
   {
     if (!engOffStatusPrintOnce)  //so that it prints the text only once
     {

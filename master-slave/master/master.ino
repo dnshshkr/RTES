@@ -1,6 +1,9 @@
 /*
-   0x01 - load params
-   0x02 -
+   0x80 - request params
+   0x81 - reset params
+   0x82 - send new params
+   0x83 - run RTES
+   0x84 - stop RTES
 */
 #include<Arduino_JSON.h>
 #include<SoftwareSerial.h>
@@ -14,9 +17,8 @@ void setup()
   pinMode(vin, OUTPUT);
   digitalWrite(gnd, LOW);
   digitalWrite(vin, HIGH);
+  slave.write(0x80);
 }
-
 void loop()
 {
-  slave.write(0x80);
 }

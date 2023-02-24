@@ -1,4 +1,3 @@
-/********************Interrupt function*******************************************************************************/
 void interruptRoutine() {
   engOffPrevMillis = millis();  //engine-off detection
   fuelPulsePeriod = (float)(millis() - pulseMeasurePrevMillis) / 1000.0;

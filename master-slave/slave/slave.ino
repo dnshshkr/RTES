@@ -4,11 +4,13 @@
 const uint8_t rx = A1, tx = A0;
 const uint8_t addr[8] = {0, 2, 3, 7, 11, 13, 17, 18};
 
+volatile bool pulseDataPrint = false;
+volatile uint8_t f2wPulseRatioCount = 0;
 volatile float fuelFlowRate;
 volatile float fuelPulsePeriod;
-volatile unsigned long totalFuelPulse=0;
-volatile unsigned long pulseMeasurePrevMillis=0;
-volatile unsigned long engOffPrevMillis=0;
+volatile unsigned long totalFuelPulse = 0;
+volatile unsigned long pulseMeasurePrevMillis = 0;
+volatile unsigned long engOffPrevMillis = 0;
 unsigned int f2wPulseRatio;
 uint8_t engineOffTimeout;
 float flowRateBias;
@@ -25,12 +27,14 @@ unsigned long solOnTimePrevMillis;
 unsigned long totalWaterPulse = 0;
 
 /*
- * I/O pinouts
- */
+   I/O pinouts
+*/
 const uint8_t flowrateSensor = 2;
 const uint8_t solenoid = 9;
 const uint8_t waterPump = 10;
 const uint8_t button = 4;
+
+JSONVar readings;
 SoftwareSerial master(rx, tx);
 void setup()
 {
@@ -54,5 +58,5 @@ void loop()
     parseCMD(reqCode);
   }
   if (runRTES)
-    rtesRoutine();
+    RTES();
 }
