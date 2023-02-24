@@ -104,9 +104,6 @@ bool sprayStarted = false;
 bool sprayCompleted = false;
 bool testMode;
 bool firstRowData = true;
-//bool solenoidManualState = false;
-//bool waterPumpManualState = false;
-//bool toggleAllState = false;
 bool mode;  //0 - RTES, 1 - settings, 2 - admin
 uint8_t engineOffTimeout;
 uint8_t hour = 0;
@@ -120,9 +117,6 @@ unsigned int f2wPulseRatio;  //fuel pulses per cycle
 unsigned int solOnTime;
 float denominator;  //fraction denominatorinator for fuel-water percentage calculation
 float waterPercentage;
-//float motorFuelAmpLim = 5.0 //set limit current motor feul pump
-//float solenoidAmpLimit = 5.0 //set limit current solenoid
-//float waterPumpAmpLimit = 5.0 //set limit current motor water
 float flowRateBias;
 float solShotBias;
 unsigned long solOnTimePrevMillis;
