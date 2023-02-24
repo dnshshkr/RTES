@@ -52,7 +52,7 @@ startRTES2:
               Serial.print(" at ");
               //if(bt)
               bt.print(" at ");
-              displayClock12();
+              displayClock12(false);
             }
             Serial.println();
             //if(bt)

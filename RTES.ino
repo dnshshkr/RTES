@@ -179,7 +179,7 @@ startRTES1:
       Serial.print(" at ");
       //if(bt)
       bt.print(" at ");
-      displayClock12();
+      displayClock12(false);
     }
     Serial.println();
     //if(bt)
@@ -243,7 +243,7 @@ void loop() {
     {
       if (testMode && accumMinute - lastMinute >= checkpointPeriod || (testMode && firstRowData))
       {
-        displayClock12();
+        displayClock12(true);
         Serial.print(" -> ");
         //if(bt)
         bt.println();
