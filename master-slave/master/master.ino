@@ -5,7 +5,8 @@
    0x81 - reset params
    0x82 - send new params
    0x83 - run/stop RTES
-   0x84 - request RTES status
+   0x84 - special stop RTES
+   0x85 - request RTES status
 
    response codes
    0xfb - rtes run
@@ -15,12 +16,11 @@
    0xff - params
 */
 #include<Arduino_JSON.h>
-#include<SoftwareSerial.h>
 //pinouts
 const uint8_t gnd = 13, vin = 12, rx = 27, tx = 26;
 
 //variables
-bool mode = 0;
+bool mode;
 //unsigned int f2wPulseRatio;
 //uint8_t engineOffTimeout;
 //float flowRateBias;
@@ -32,25 +32,31 @@ bool mode = 0;
 bool testMode;
 unsigned long solOnTimePrevMillis;
 unsigned long totalWaterPulse;
-
 String cmd;
-JSONVar params;
-SoftwareSerial slave(rx, tx);
+JSONVar params, readings;
 void setup()
 {
-  slave.begin(38400);
+  Serial2.begin(38400);
   Serial.begin(9600);
   pinMode(gnd, OUTPUT);
   pinMode(vin, OUTPUT);
   digitalWrite(gnd, LOW);
   digitalWrite(vin, HIGH);
+  Serial.println("RTES initialized");
+  Serial2.write(0x84);
+  while (!Serial2.available()) {}
+  if (Serial2.read() == 0xfc)
+  {
+    mode = true;
+    Serial2.write(0x80);
+  }
 }
 void loop()
 {
   if (Serial.available())
     parseCMD();
-  if (slave.available())
-    parseSlave();
+  if (Serial2.available())
+    parseSerial2();
 }
 void flushSerial()
 {

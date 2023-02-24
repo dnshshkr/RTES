@@ -32,5 +32,11 @@ void parseCMD(uint8_t reqCode)
           master.write(0xfc);
         break;
       }
+    case 0x84:
+      {
+        runRTES = false;
+        master.write(0xfc);
+        break;
+      }
   }
 }

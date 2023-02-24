@@ -33,10 +33,9 @@ void printSettings()
   Serial.println(" Mode");
   Serial.println("***************************************************************");
 }
-bool timeoutUI()
+bool timeoutUI(int8_t countDown)
 {
   unsigned long prev, prevCD;
-  int8_t countDown = 10;
   Serial.print(": " + String(countDown) + (char)32);
   prev = millis();
   do {

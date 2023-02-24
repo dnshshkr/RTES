@@ -5,21 +5,24 @@ void parseCMD()
   char alph = cmd.charAt(0);
   switch (alph)
   {
+    case'a':case'A':
+    {
+      
+    }
     case'r': case'R':
       {
         Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
-        bool wait = timeoutUI();
+        bool wait = timeoutUI(10);
         char choice = Serial.read();
         if (choice == 'Y' || choice == 'y')
         {
-          slave.write(0x81);
-          while (!slave.available()) {}
-          if (slave.read() == 0xfd)
+          Serial2.write(0x81);
+          while (!Serial2.available()) {}
+          if (Serial2.read() == 0xfd)
           {
             Serial.print("\nRestored to factory settings");
             delay(1000);
             Serial.println();
-            break;
           }
         }
         else
@@ -28,16 +31,12 @@ void parseCMD()
           delay(1000);
           Serial.println();
         }
+        printSettings();
+        break;
       }
     case's': case'S':
       {
-        slave.write(0x83);
-        //        while (!slave.available()) {}
-        //        uint8_t respCode = slave.read();
-        //        if (respCode == 0xfb)
-        //          mode = true;
-        //        else if (respCode == 0xfc)
-        //          mode = false;
+        Serial2.write(0x83);
         break;
       }
   }
