@@ -77,11 +77,4 @@ void RTES() {
     sprayedOnce = false;
     sprayCompleted = false;
   }
-  //  if (f2wPulseRatioCount == f2wPulseRatio)
-  //  {
-  //    sprayStarted = false;
-  //    sprayedOnce = false;
-  //    sprayCompleted = false;
-  //  }
-  //Serial.println("sprayStarted: " + String(sprayStarted) + " sprayedOnce: " + String(sprayedOnce) + " sprayCompleted: " + String(sprayCompleted));
 }
