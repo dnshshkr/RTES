@@ -97,7 +97,7 @@ volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;
 volatile unsigned long engOffPrevMillis = 0;
 //bool btConnectedOnce = false;
-bool manualPrintData = false;
+//bool manualPrintData = false;
 bool cmdAvailable;
 bool engOffStatusPrintOnce;
 bool sprayStarted = false;

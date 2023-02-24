@@ -3,6 +3,7 @@ void startEmulsion() {
   digitalWrite(waterPump, HIGH);
   digitalWrite(LED_BUILTIN, HIGH);
 }
+
 void stopEmulsion() {
   digitalWrite(solenoid, LOW);
   digitalWrite(waterPump, LOW);

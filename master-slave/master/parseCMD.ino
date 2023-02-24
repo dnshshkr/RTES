@@ -5,10 +5,10 @@ void parseCMD()
   char alph = cmd.charAt(0);
   switch (alph)
   {
-    case'a':case'A':
-    {
-      
-    }
+    case'a': case'A':
+      {
+
+      }
     case'r': case'R':
       {
         Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
@@ -36,6 +36,22 @@ void parseCMD()
       }
     case's': case'S':
       {
+        if (mode)
+        {
+          Serial.println("Save changes? (Y/N)");
+          bool wait = timeoutUI(5);
+          char choice = Serial.read();
+          if(choice=='Y'||choice=='y')
+          {
+            
+          }
+          else
+          {
+            Serial.print("\nChanges discarded");
+            delay(1000);
+            Serial.println();
+          }
+        }
         Serial2.write(0x83);
         break;
       }
