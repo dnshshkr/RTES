@@ -71,7 +71,8 @@ void printSettings()
   //}
 }
 
-bool timeoutUI() {
+bool timeoutUI()
+{
   unsigned long prev, prevCD;
   int8_t countDown = 10;
   Serial.print(": " + String(countDown) + (char)32);

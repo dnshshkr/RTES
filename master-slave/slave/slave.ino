@@ -17,6 +17,7 @@ float flowRateBias;
 float solShotBias;
 unsigned int solOnTime;
 float waterPercentage;
+float denominator;
 uint8_t checkpointPeriod;
 bool testMode;
 bool runRTES = false;
@@ -58,5 +59,9 @@ void loop()
     parseCMD(reqCode);
   }
   if (runRTES)
+  {
     RTES();
+    if (pulseDataPrint)
+      pushData();
+  }
 }

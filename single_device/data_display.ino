@@ -1,5 +1,9 @@
 void printData() {
-  float waterPercentage = (solShotBias / denominator) * 100.0;
+  float waterPercentage;
+  if (f2wPulseRatioCount <= f2wPulseRatio)
+    waterPercentage = 0.0;
+  else
+    waterPercentage = (solShotBias / denominator) * 100.0;
   float fuelPercentage = ((flowRateBias * (float)f2wPulseRatioCount) / denominator) * 100.0;
 
   Serial.print(String(totalFuelPulse) + " total fuel pulse \t");
