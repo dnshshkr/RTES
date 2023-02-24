@@ -1,13 +1,13 @@
 void printSettings()
 {
-  Serial.println("**************************ALL SETTING**************************");
+  Serial.println("*************************ALL SETTINGS**************************");
   Serial.println("RTES v" + String(ver));
   Serial.println("A: Water Percentage: " + String(waterPercentage) + "%");
   Serial.print("B: Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
   (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? Serial.println('s') : Serial.println();
   Serial.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
   Serial.println("D: Water Shot Bias: " + String(solShotBias) + " mL/pulse");
-  Serial.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
+  Serial.println("E: Solenoid On Time: " + String(solOnTime) + " ms");
   Serial.print("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
   if (testMode)
     Serial.print("\nG: Checkpoint Period: " + String(checkpointPeriod) + " minute");
@@ -43,7 +43,7 @@ void printSettings()
   (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? bt.println('s') : bt.println();
   bt.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
   bt.println("D: Water Shot Bias: " + String(solShotBias) + " mL/pulse");
-  bt.println("E: Solenoid On Time: " + String(solenoidOnTime) + " ms");
+  bt.println("E: Solenoid On Time: " + String(solOnTime) + " ms");
   bt.print("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
   if (testMode)
     bt.print("\nG: Checkpoint Period: " + String(checkpointPeriod) + " minute");

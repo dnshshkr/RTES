@@ -1,8 +1,8 @@
 void RTES() {
-  //  METHOD 1 - spray along the final pulse
+  //  REVISION 1 - spray along the final pulse
   //    if (f2wPulseRatioCount > f2wPulseRatio && !sprayStarted)
   //    {
-  //      prevSolOnTime = millis();
+  //      solOnTimePrevMillis = millis();
   //      //currentLimitedOut(fuelTrig, 1, waterTrig);
   //      digitalWrite(solenoid, HIGH);
   //      digitalWrite(waterPump, HIGH);
@@ -10,7 +10,7 @@ void RTES() {
   //    }
   //    else if (sprayStarted)
   //    {
-  //      if (millis() - prevSolOnTime >= solenoidOnTime)
+  //      if (millis() - solOnTimePrevMillis >= solOnTime)
   //      {
   //        digitalWrite(solenoid, LOW);
   //        digitalWrite(waterPump, LOW);
@@ -29,7 +29,7 @@ void RTES() {
   //      digitalWrite(waterPump, LOW);
   //    }
 
-  //METHOD 2 - spray on the final pulse but in a desired period
+  //REVISION 2 - spray on the final pulse but in a desired period
   //  if (f2wPulseRatioCount >= 1 && f2wPulseRatioCount <= f2wPulseRatio)  //make sure solenoid does not trigger on accident on other pulses rather than the final pulse in every cycle
   //  {
   //    sprayedOnce = false;
@@ -42,31 +42,40 @@ void RTES() {
   //  else if (f2wPulseRatioCount >= f2wPulseRatio + 1)
   //    sprayedOnce = true;
   //  if (sprayStarted && !sprayedOnce && sprayCompleted) {
-  //    prevSolOnTime = millis();
+  //    solOnTimePrevMillis = millis();
   //    startEmulsion();
   //    sprayedOnce = true;
   //    sprayStarted = false;
   //    sprayCompleted = false;
   //    totalWaterPulse++;
   //  }
-  //  if (!sprayCompleted && millis() - prevSolOnTime >= solenoidOnTime) {
+  //  if (!sprayCompleted && millis() - solOnTimePrevMillis >= solOnTime) {
   //    stopEmulsion();
   //    sprayCompleted = true;
   //  }
 
-  //METHOD 3
-  if (f2wPulseRatioCount == f2wPulseRatio + 1 && sprayCompleted)
-    stopEmulsion();
-  else if (f2wPulseRatioCount > f2wPulseRatio)
+  //REVISON 3
+  if (!sprayStarted && f2wPulseRatioCount > f2wPulseRatio)
   {
-    prevSolOnTime = millis();
-    startEmulsion();
-    totalWaterPulse++;
-    sprayCompleted = false;
+    if (!sprayCompleted)
+    {
+      startEmulsion();
+      solOnTimePrevMillis = millis();
+      totalWaterPulse++;
+      sprayStarted = true;
+      sprayedOnce = true;
+    }
   }
-  if (millis() - prevSolOnTime >= solenoidOnTime)
+  else if (sprayStarted && millis() - solOnTimePrevMillis > solOnTime)
   {
     stopEmulsion();
     sprayCompleted = true;
   }
+  if (f2wPulseRatioCount == f2wPulseRatio)
+  {
+    sprayStarted = false;
+    sprayedOnce = false;
+    sprayCompleted = false;
+  }
+  //Serial.println("sprayStarted: " + String(sprayStarted) + " sprayedOnce: " + String(sprayedOnce) + " sprayCompleted: " + String(sprayCompleted));
 }

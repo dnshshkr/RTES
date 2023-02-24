@@ -118,7 +118,7 @@ uint8_t checkpointPeriod;
 uint16_t lastMinute;
 uint16_t accumMinute;
 unsigned int f2wPulseRatio;  //fuel pulses per cycle
-unsigned int solenoidOnTime;
+unsigned int solOnTime;
 float denominator;  //fraction denominatorinator for fuel-water percentage calculation
 float waterPercentage;
 //float motorFuelAmpLim = 5.0 //set limit current motor feul pump
@@ -126,7 +126,7 @@ float waterPercentage;
 //float waterPumpAmpLimit = 5.0 //set limit current motor water
 float flowRateBias;
 float solShotBias;
-unsigned long prevSolOnTime;
+unsigned long solOnTimePrevMillis;
 unsigned long prevMillisRTESStopwatch;
 unsigned long totalWaterPulse = 0;
 String cmd;
