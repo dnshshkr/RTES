@@ -100,11 +100,11 @@ bool manualPrintData = false;
 bool pulseDataPrint = false;
 bool cmdAvailable;
 bool engOffStatusPrintOnce;
-bool sprayedOnce = false;
 bool sprayStarted = false;
 bool sprayCompleted = true;
 bool testMode;
 bool firstRowData = true;
+bool sprayedOnce = false;
 //bool solenoidManualState = false;
 //bool waterPumpManualState = false;
 //bool toggleAllState = false;
@@ -114,10 +114,11 @@ uint8_t hour = 0;
 uint8_t minute = 0;
 uint8_t second = 0;
 uint8_t checkpointPeriod;
+uint8_t f2wPulseRatio;
+uint8_t lastFuelPulsePos;
 //uint8_t currentSensorType = 1; //0 - ACS713, 1 - ACS712
 uint16_t lastMinute;
 uint16_t accumMinute;
-unsigned int f2wPulseRatio;  //fuel pulses per cycle
 unsigned int solenoidOnTime;
 float denominator;  //fraction denominatorinator for fuel-water percentage calculation
 float waterPercentage;
