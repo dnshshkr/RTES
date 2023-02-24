@@ -65,7 +65,7 @@ const uint8_t addr[8] = {0, 2, 3, 7, 11, 13, 17, 18};
 //char pwd_default[6];
 
 /*
-   | pinouts
+   | I/O pins
 */
 const uint8_t flowrateSensor = 2;
 //const uint8_t fuelMotorCurrentPin = A3;
@@ -100,7 +100,6 @@ bool manualPrintData = false;
 bool pulseDataPrint = false;
 bool cmdAvailable;
 bool engOffStatusPrintOnce;
-bool sprayedOnce = false;
 bool sprayStarted = false;
 bool sprayCompleted = false;
 bool testMode;

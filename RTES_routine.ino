@@ -63,7 +63,6 @@ void RTES() {
       solOnTimePrevMillis = millis();
       totalWaterPulse++;
       sprayStarted = true;
-      sprayedOnce = true;
     }
   }
   else if (sprayStarted && millis() - solOnTimePrevMillis > solOnTime)
@@ -74,7 +73,6 @@ void RTES() {
   if (sprayCompleted && f2wPulseRatioCount >= 1 && f2wPulseRatioCount <= f2wPulseRatio)
   {
     sprayStarted = false;
-    sprayedOnce = false;
     sprayCompleted = false;
   }
 }
