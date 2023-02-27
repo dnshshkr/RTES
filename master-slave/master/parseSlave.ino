@@ -1,13 +1,13 @@
 void parseSerial2()
 {
   uint8_t respCode = Serial2.read();
-  if (respCode == 0xfb)
+  if (respCode == 0xfa)
   {
     mode = false;
     printSettings();
     Serial.println("RTES mode entered");
   }
-  else if (respCode == 0xfc)
+  else if (respCode == 0xfb)
   {
     mode = true;
     printSettings();
@@ -15,18 +15,18 @@ void parseSerial2()
   }
   else if (respCode >= 0xfe)
   {
-    String msg = Serial2.readStringUntil('\r\n');
-    msg.trim();
+    String body = Serial2.readStringUntil('\r\n');
+    body.trim();
     //    Serial.println("response code: " + String(respCode));
-    //    Serial.println("msg: " + msg);
+    //    Serial.println("body: " + body);
     if (respCode == 0xfe)
     {
-      readings = JSON.parse(msg);
+      readings = JSON.parse(body);
       displayData();
     }
     else if (respCode == 0xff)
     {
-      params = JSON.parse(msg);
+      params = JSON.parse(body);
       testMode = (bool)params[7];
       printSettings();
     }

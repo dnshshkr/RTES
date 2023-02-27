@@ -29,7 +29,9 @@ bool setTime()
   else
     return true;
 }
-void stopwatch() {
+
+void stopwatch()
+{
   if (millis() - prevMillisRTESStopwatch >= 1000)
   {
     second++;
@@ -49,6 +51,7 @@ void stopwatch() {
     prevMillisRTESStopwatch = millis();
   }
 }
+
 void displayClock12(bool firstSpace)
 {
   uint8_t hour12;

@@ -16,7 +16,6 @@ void printSettings()
   Serial.print("T: Toggle Test Mode: ");
   Serial.println(testMode);
   Serial.println("R: Reset to Factory Settings");
-  //Serial.println("M: Enter Admin Settings");
   Serial.println("$: Refresh Settings");
   Serial.print("S: Enter ");
   if (mode)
@@ -33,17 +32,19 @@ void printSettings()
   Serial.println(" Mode");
   Serial.println("***************************************************************");
 }
+
 bool timeoutUI(int8_t countDown)
 {
   unsigned long prev, prevCD;
   Serial.print(": " + String(countDown) + (char)32);
   prev = millis();
-  do {
-    if (millis() - prev >= 1000) {
+  do
+  {
+    if (millis() - prev >= 1000)
+    {
       countDown--;
-      if (countDown >= 0) {
+      if (countDown >= 0)
         Serial.print(String(countDown) + (char)32);
-      }
       prev = millis();
     }
   } while (!Serial.available() && countDown >= 0);

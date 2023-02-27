@@ -1,6 +1,6 @@
 void RTES()
 {
-  if (!sprayStarted && f2wPulseRatioCount > f2wPulseRatio)
+  if (!sprayStarted && cycleCount > f2wPulseRatio)
   {
     if (!sprayCompleted)
     {
@@ -15,7 +15,7 @@ void RTES()
     stopEmulsion();
     sprayCompleted = true;
   }
-  if (sprayCompleted && f2wPulseRatioCount >= 1 && f2wPulseRatioCount <= f2wPulseRatio)
+  if (sprayCompleted && cycleCount >= 1 && cycleCount <= f2wPulseRatio)
   {
     sprayStarted = false;
     sprayCompleted = false;
