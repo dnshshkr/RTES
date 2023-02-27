@@ -1,4 +1,5 @@
 #define ver "5.0"
+#define Serial2 slave
 /*
    request codes
    0x80 - request params
@@ -20,10 +21,9 @@
    0xff - params
 */
 #include<Arduino_JSON.h>
-//pinouts
-//const uint8_t gnd = 13, vin = 12, rx = 27, tx = 26;
 
 //variables
+bool serialFirstOpen = false;
 bool mode;
 unsigned int f2wPulseRatio;
 uint8_t engineOffTimeout;
@@ -41,27 +41,38 @@ String cmd;
 JSONVar params, readings;
 void setup()
 {
-  Serial2.begin(38400);
+  slave.begin(38400);
   Serial.begin(9600);
   //  pinMode(gnd, OUTPUT);
   //  pinMode(vin, OUTPUT);
   //  digitalWrite(gnd, LOW);
   //  digitalWrite(vin, HIGH);
   Serial.println("RTES initialized");
-  Serial2.write(0x84);
-  while (!Serial2.available()) {}
-  if (Serial2.read() == 0xfb)
+  slave.write(0x84);
+  while (!slave.available()) {}
+  if (slave.read() == 0xfb)
   {
     mode = true;
-    Serial2.write(0x80);
+    slave.write(0x80);
+  }
+  while (!slave.available()) {}
+  if (slave.read() == 0xff)
+  {
+    assignParams();
+    printSettings();
   }
 }
 void loop()
 {
+  if (!serialFirstOpen && Serial)
+  {
+    serialFirstOpen = true;
+    printSettings();
+  }
   if (Serial.available())
     parseCMD();
-  if (Serial2.available())
-    parseSerial2();
+  if (slave.available())
+    parseSlave();
 }
 //void flushSerial()
 //{

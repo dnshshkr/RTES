@@ -9,7 +9,7 @@ void factoryReset()  //factory reset
   EEPROM.put(addr[6], 5);     //0x17
   EEPROM.put(addr[7], 0);     //0x18
   loadSettings();
-  f2wPulseRatioCount = 0;
+  cycleCount = 0;
   Serial.print("\nRestored to factory settings");
   //if(bt)
   bt.print("\nRestored to factory settings");

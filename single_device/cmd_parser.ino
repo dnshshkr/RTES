@@ -119,7 +119,7 @@ startRTES2:
         int val = valStr.toInt();
         if (val > 0 && val < 65536)
         {
-          f2wPulseRatioCount = 1;
+          cycleCount = 1;
           f2wPulseRatio = val;
           EEPROM.put(addr[0], f2wPulseRatio);
           calculate_denominator();
@@ -290,7 +290,7 @@ startRTES2:
         }
         totalFuelPulse = 0;
         totalWaterPulse = 0;
-        f2wPulseRatioCount = 0;
+        cycleCount = 0;
         Serial.println("Counters have been reset");
         //if(bt)
         bt.println("Counters have been reset");

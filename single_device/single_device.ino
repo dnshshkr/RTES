@@ -90,7 +90,7 @@ const uint8_t button = 4;
    | variables
 */
 volatile bool pulseDataPrint = false;
-volatile uint8_t f2wPulseRatioCount = 0;
+volatile uint8_t cycleCount = 0;
 volatile float fuelFlowRate;
 volatile float fuelPulsePeriod;
 volatile unsigned long totalFuelPulse = 0;

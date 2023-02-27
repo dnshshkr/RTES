@@ -1,6 +1,6 @@
 void RTES() {
   //  REVISION 1 - spray along the final pulse
-  //    if (f2wPulseRatioCount > f2wPulseRatio && !sprayStarted)
+  //    if (cycleCount > f2wPulseRatio && !sprayStarted)
   //    {
   //      solOnTimePrevMillis = millis();
   //      //currentLimitedOut(fuelTrig, 1, waterTrig);
@@ -16,11 +16,11 @@ void RTES() {
   //        digitalWrite(waterPump, LOW);
   //        //currentLimitedOut(fuelTrig, 0, waterTrig);
   //      }
-  //      if (f2wPulseRatioCount >= f2wPulseRatio + 1 + 1)
+  //      if (cycleCount >= f2wPulseRatio + 1 + 1)
   //      {
   //        sprayStarted = false;
   //        totalWaterPulse++;
-  //        f2wPulseRatioCount = 1;
+  //        cycleCount = 1;
   //      }
   //    }
   //    else
@@ -30,16 +30,16 @@ void RTES() {
   //    }
 
   //REVISION 2 - spray on the final pulse but in a desired period
-  //  if (f2wPulseRatioCount >= 1 && f2wPulseRatioCount <= f2wPulseRatio)  //make sure solenoid does not trigger on accident on other pulses rather than the final pulse in every cycle
+  //  if (cycleCount >= 1 && cycleCount <= f2wPulseRatio)  //make sure solenoid does not trigger on accident on other pulses rather than the final pulse in every cycle
   //  {
   //    sprayedOnce = false;
   //    sprayStarted = false;
   //    sprayCompleted = true;
   //    stopEmulsion();
   //  }
-  //  if (f2wPulseRatioCount > f2wPulseRatio)
+  //  if (cycleCount > f2wPulseRatio)
   //    sprayStarted = true;
-  //  else if (f2wPulseRatioCount >= f2wPulseRatio + 1)
+  //  else if (cycleCount >= f2wPulseRatio + 1)
   //    sprayedOnce = true;
   //  if (sprayStarted && !sprayedOnce && sprayCompleted) {
   //    solOnTimePrevMillis = millis();
@@ -55,7 +55,7 @@ void RTES() {
   //  }
 
   //REVISON 3
-  if (!sprayStarted && f2wPulseRatioCount > f2wPulseRatio)
+  if (!sprayStarted && cycleCount > f2wPulseRatio)
   {
     if (!sprayCompleted)
     {
@@ -70,7 +70,7 @@ void RTES() {
     stopEmulsion();
     sprayCompleted = true;
   }
-  if (sprayCompleted && f2wPulseRatioCount >= 1 && f2wPulseRatioCount <= f2wPulseRatio)
+  if (sprayCompleted && cycleCount >= 1 && cycleCount <= f2wPulseRatio)
   {
     sprayStarted = false;
     sprayCompleted = false;

@@ -6,7 +6,7 @@ void parseCMD()
   String valStr = cmd.substring(1, cmd.length());
   switch (alph)
   {
-    case'a': case'A':
+    case 'a': case 'A':
       {
         if (!mode)
         {
@@ -26,7 +26,7 @@ void parseCMD()
           Serial.println("Input is out of range");
         break;
       }
-    case'b': case'B':
+    case 'b': case 'B':
       {
         if (!mode)
         {
@@ -36,13 +36,11 @@ void parseCMD()
         int val = valStr.toInt();
         if (val > 0 && val < 65536)
         {
-          Serial2.write(0x86);
-          while (!Serial2.available()) {}
-          if (Serial2.read() == 0xf8) {}
+          slave.write(0x86);
+          while (!slave.available()) {}
+          if (slave.read() == 0xf8) {}
           else
-          {
-            Serial.println("Failed to reset cycleCount");
-          }
+            Serial.println("Failed to reset cycle count");
           params[0] = f2wPulseRatio = val;
           calculate_denominator();
           calculate_waterPercentage();
@@ -54,7 +52,7 @@ void parseCMD()
           Serial.println("Input is out of range");
         break;
       }
-    case'c': case'C':
+    case 'c': case 'C':
       {
         if (!mode)
         {
@@ -77,7 +75,7 @@ void parseCMD()
           Serial.println("Input is out of range");
         break;
       }
-    case'd': case'D':
+    case 'd': case 'D':
       {
         if (!mode)
         {
@@ -100,7 +98,7 @@ void parseCMD()
           Serial.println("Input is out of range");
         break;
       }
-    case'e': case'E':
+    case 'e': case 'E':
       {
         if (!mode)
         {
@@ -110,8 +108,7 @@ void parseCMD()
         int val = valStr.toInt();
         if (val > 0 && val < 65536)
         {
-          solOnTime = val;
-          params[4] = solOnTime;
+          params[4] = solOnTime = val;
           calculate_solShotBias();
           calculate_denominator();
           calculate_waterPercentage();
@@ -126,7 +123,7 @@ void parseCMD()
           Serial.println("Input is out of range");
         break;
       }
-    case'f': case'F':
+    case 'f': case 'F':
       {
         if (!mode)
         {
@@ -144,7 +141,7 @@ void parseCMD()
           Serial.println("Input is out of range");
         break;
       }
-    case'g': case'G':
+    case 'g': case 'G':
       {
         if (!mode)
         {
@@ -167,29 +164,29 @@ void parseCMD()
           Serial.println("Input is out of range");
         break;
       }
-    case'h': case'H':
+    case 'h': case 'H':
       {
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
           break;
         }
-        Serial2.write(0x86);
-        while (!Serial2.available()) {}
-        if (Serial2.read() == 0xf9)
+        slave.write(0x86);
+        while (!slave.available()) {}
+        if (slave.read() == 0xf9)
           Serial.println("Counters have been reset");
         break;
       }
-    case'r': case'R':
+    case 'r': case 'R':
       {
         Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
         bool wait = timeoutUI(10);
         char choice = Serial.read();
         if (choice == 'Y' || choice == 'y')
         {
-          Serial2.write(0x81);
-          while (!Serial2.available()) {}
-          if (Serial2.read() == 0xfc)
+          slave.write(0x81);
+          while (!slave.available()) {}
+          if (slave.read() == 0xfc)
           {
             Serial.print("\nRestored to factory settings");
             delay(1000);
@@ -205,7 +202,7 @@ void parseCMD()
         printSettings();
         break;
       }
-    case's': case'S':
+    case 's': case 'S':
       {
         if (mode && changesMade)
         {
@@ -214,14 +211,14 @@ void parseCMD()
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')
           {
-            Serial2.write(0x82); Serial.println(params);
-            while (!Serial2.available()) {}
-            if (Serial2.read() == 0xf7)
+            slave.write(0x82); Serial.println(params);
+            while (!slave.available()) {}
+            if (slave.read() == 0xf7)
             {
               Serial.println("Changes have been saved. Requesting new parameters to verify new changes");
-              Serial2.write(0x80);
-              while(!Serial2.available()){}
-              parseSerial2();
+              slave.write(0x80);
+              while (!slave.available()) {}
+              parseSlave();
             }
             else
               Serial.println("Failed to save changes");
@@ -234,10 +231,10 @@ void parseCMD()
             Serial.println();
           }
         }
-        Serial2.write(0x83);
+        slave.write(0x83);
         break;
       }
-    case't': case'T':
+    case 't': case 'T':
       {
         if (!mode)
         {

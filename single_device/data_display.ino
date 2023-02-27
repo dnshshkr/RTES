@@ -1,16 +1,16 @@
 void printData() {
   float waterPercentage;
-  if (f2wPulseRatioCount <= f2wPulseRatio)
+  if (cycleCount <= f2wPulseRatio)
     waterPercentage = 0.0;
   else
     waterPercentage = (solShotBias / denominator) * 100.0;
-  float fuelPercentage = ((flowRateBias * (float)f2wPulseRatioCount) / denominator) * 100.0;
+  float fuelPercentage = ((flowRateBias * (float)cycleCount) / denominator) * 100.0;
 
   Serial.print(String(totalFuelPulse) + " total fuel pulse \t");
   Serial.print(String(fuelPulsePeriod) + " s\t");
   Serial.print(fuelFlowRate, 3);
   Serial.print(" mL/min\t");
-  Serial.print(String(f2wPulseRatioCount) + " counter\t");
+  Serial.print(String(cycleCount) + " counter\t");
   Serial.print(String(totalWaterPulse) + " total water pulse\t");
   Serial.print(waterPercentage, 1);
   Serial.print(" % water\t");
@@ -23,7 +23,7 @@ void printData() {
   bt.print(String(fuelPulsePeriod) + " s\t");
   bt.print(fuelFlowRate, 3);
   bt.print(" mL/min\t");
-  bt.print(String(f2wPulseRatioCount) + " counter\t");
+  bt.print(String(cycleCount) + " counter\t");
   bt.print(String(totalWaterPulse) + " total water pulse\t");
   bt.print(waterPercentage, 1);
   bt.print(" % water\t");
