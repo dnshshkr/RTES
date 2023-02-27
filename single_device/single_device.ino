@@ -170,6 +170,7 @@ void setup()
       prevMillisRTESStopwatch = millis();
 startRTES1:
     //printSettings();
+    pulseMeasurePrevMillis = millis();
     Serial.print("RTES mode entered");
     if (dieselMode)
       Serial.print(" (Diesel-only mode)");

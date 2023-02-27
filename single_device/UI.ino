@@ -53,7 +53,7 @@ void printSettings()
   dieselMode ? Serial.println("true") : Serial.println("false");
   bt.println("R - Reset to Factory Settings");
   bt.print("T - Toggle Test Mode: ");
-  testMode ? Serial.println("true") : Serial.println("false");
+  testMode ? bt.println("true") : bt.println("false");
   //bt.println("M: Enter Admin Settings");
   bt.println("$ - Refresh Settings");
   bt.print("S - Enter ");
