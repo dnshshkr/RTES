@@ -190,6 +190,9 @@ void parseCMD()
           {
             Serial.print("\nRestored to factory settings");
             delay(1000);
+            slave.write(0x80);
+            while (!slave.available()) {}
+            parseSlave();
             Serial.println();
           }
         }
@@ -198,8 +201,8 @@ void parseCMD()
           Serial.print("\nFactory reset aborted");
           delay(1000);
           Serial.println();
+          printSettings();
         }
-        printSettings();
         flushSerial();
         break;
       }
@@ -212,19 +215,68 @@ void parseCMD()
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')
           {
-            Serial.println(params);
             slave.write(0x82), slave.println(params);
             while (!slave.available()) {}
             if (slave.read() == 0xf7)
             {
-              Serial.println("Changes have been saved. Requesting new parameters to verify changes");
+              JSONVar prevParams;
+              prevParams[0] = f2wPulseRatio;
+              prevParams[1] = engineOffTimeout;
+              prevParams[2] = flowRateBias;
+              prevParams[3] = solShotBias;
+              prevParams[4] = solOnTime;
+              prevParams[5] = waterPercentage;
+              prevParams[6] = checkpointPeriod;
+              prevParams[7] = testMode;
+              Serial.println("\nChanges have been saved. Requesting new parameters to verify changes");
               slave.write(0x80);
               while (!slave.available()) {}
-              parseSlave();
+              if (slave.read() == 0xff)
+              {
+                String body = slave.readStringUntil('\r\n');
+                body.trim();
+                params = JSON.parse(body);
+                //Serial.print("prevParams: "), Serial.println(prevParams);
+                //Serial.print("newParams: "), Serial.println(params);
+                if (params[0] == prevParams[0]) {}
+                else
+                  goto verifyChangesFail;
+                if (params[1] == prevParams[1]) {}
+                else
+                  goto verifyChangesFail;
+                if (round2d((double)params[2]) == round2d((double)prevParams[2])) {}
+                else
+                  goto verifyChangesFail;
+                if (round2d((double)params[3]) == round2d((double)prevParams[3])) {}
+                else
+                  goto verifyChangesFail;
+                if (params[4] == prevParams[4]) {}
+                else
+                  goto verifyChangesFail;
+                if (round2d((double)params[5]) == round2d((double)prevParams[5])) {}
+                else
+                  goto verifyChangesFail;
+                if (params[6] == prevParams[6]) {}
+                else
+                  goto verifyChangesFail;
+                if (params[7] == prevParams[7])
+                {
+                  Serial.println("Verification completed");
+                  goto verifyChangesSuccess;
+                }
+                else {}
+verifyChangesFail:
+                Serial.println("Failed to verify changes, reverting to previous parameters");
+                params = prevParams;
+                assignParams();
+                printSettings();
+              }
             }
             else
               Serial.println("Failed to save changes");
+verifyChangesSuccess:
             changesMade = false;
+            printSettings();
           }
           else
           {

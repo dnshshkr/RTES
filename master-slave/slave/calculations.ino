@@ -13,15 +13,15 @@ void calculate_solOnTime()
 
 void calculate_solShotBias()
 {
-  solShotBias = solOnTime / (250 / 0.81);
+  solShotBias = round2d(solOnTime / (250 / 0.81));
 }
 
 void calculate_denominator()  //calculation of the denominator of the fraction equation used to calculate the fuel-water ratio
 {
-  denominator = flowRateBias * (float)(f2wPulseRatio + 1) + solShotBias;
+  denominator = round2d(flowRateBias * (float)(f2wPulseRatio + 1) + solShotBias);
 }
 
 void calculate_waterPercentage()
 {
-  waterPercentage = solShotBias / denominator * 100.0;
+  waterPercentage = round2d(solShotBias / denominator * 100.0);
 }
