@@ -177,6 +177,12 @@ void parseCMD()
           Serial.println("Counters have been reset");
         break;
       }
+      case 'i':case 'I':
+      {
+        spiffsMain();
+        printSettings();
+        break;
+      }
     case 'r': case 'R':
       {
         Serial.print("Are you sure you want to reset to factory settings? (Y/N)");

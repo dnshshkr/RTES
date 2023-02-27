@@ -2,22 +2,23 @@ void printSettings()
 {
   Serial.println("*************************ALL SETTINGS**************************");
   Serial.println("RTES v" + String(ver));
-  Serial.println("A: Water Percentage: " + String(waterPercentage) + "%");
-  Serial.print("B: Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
+  Serial.println("A - Water Percentage: " + String(waterPercentage) + "%");
+  Serial.print("B - Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
   (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? Serial.println('s') : Serial.println();
-  Serial.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
-  Serial.println("D: Water Shot Bias: " + String(solShotBias) + " mL/pulse");
-  Serial.println("E: Solenoid On Time: " + String(solOnTime) + " ms");
-  Serial.print("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
+  Serial.println("C - Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
+  Serial.println("D - Water Shot Bias: " + String(solShotBias) + " mL/pulse");
+  Serial.println("E - Solenoid On Time: " + String(solOnTime) + " ms");
+  Serial.print("F - Engine Off Timeout: " + String(engineOffTimeout) + " s");
   if (testMode)
-    Serial.print("\nG: Checkpoint Period: " + String(checkpointPeriod) + " minute");
+    Serial.print("\nG - Checkpoint Period: " + String(checkpointPeriod) + " minute");
   (checkpointPeriod > 1 && testMode) ? Serial.println('s') : Serial.println();
-  Serial.println("H: Reset Total Fuel Pulse Counter");
-  Serial.print("T: Toggle Test Mode: ");
+  Serial.println("H - Reset Total Fuel Pulse Counter");
+  Serial.println("I - Browse Directory");
+  Serial.print("T - Toggle Test Mode: ");
   Serial.println(testMode);
-  Serial.println("R: Reset to Factory Settings");
-  Serial.println("$: Refresh Settings");
-  Serial.print("S: Enter ");
+  Serial.println("R - Reset to Factory Settings");
+  Serial.println("$ - Refresh Settings");
+  Serial.print("S - Enter ");
   if (mode)
     Serial.write('(');
   Serial.print("Settings");

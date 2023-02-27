@@ -20,7 +20,10 @@
 */
 #define ver "5.0"
 #define slave Serial2
+#define FORMAT_SPIFFS_IF_FAILED true
 #include<Arduino_JSON.h>
+#include "FS.h"
+#include "SPIFFS.h"
 
 //variables
 bool mode;
@@ -42,6 +45,8 @@ void setup()
 {
   slave.begin(38400);
   Serial.begin(9600);
+  if(!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+    Serial.println("Failed to mount SPIFFS. Continuing...");
   //  pinMode(gnd, OUTPUT);
   //  pinMode(vin, OUTPUT);
   //  digitalWrite(gnd, LOW);
