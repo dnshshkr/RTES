@@ -337,12 +337,10 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          //if(bt)
           bt.println("Press 's' to enter settings");
           break;
         }
         Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
-        //if(bt)
         bt.print("Are you sure you want to reset to factory settings? (Y/N)");
         bool wait = timeoutUI();
         char choice = Serial.read();
@@ -353,11 +351,9 @@ startRTES2:
         else
         {
           Serial.print("\nFactory reset aborted");
-          //if(bt)
           bt.print("\nFactory reset aborted");
           delay(1000);
           Serial.println();
-          //if(bt)
           bt.println();
         }
         //adminSettings();
@@ -370,7 +366,6 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          //if(bt)
           bt.println("Press 's' to enter settings");
           break;
         }
@@ -477,7 +472,6 @@ startRTES2:
     default:
       {
         Serial.println("Unknown command");
-        //if(bt)
         bt.println("Unknown command");
         //        if (cmd[0] == 0x6c && cmd[1] == 0x65 && cmd[2] == 0x70 && cmd[3] == 0x72 && cmd[4] == 0x65 && cmd[5] == 0x63 && cmd[6] == 0x68 && cmd[7] == 0x61 && cmd[8] == 0x75 && cmd[9] == 0x6e) {
         //          EEPROM.write(17, 0x39);

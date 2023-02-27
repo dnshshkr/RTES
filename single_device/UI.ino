@@ -36,7 +36,6 @@ void printSettings()
   Serial.println("***************************************************************");
 
   //bluetooth
-  //if(bt)
   bt.println("***ALL SETTINGS***");
   bt.println("RTES v" + String(ver));
   bt.println("A - Water Percentage: " + String(waterPercentage) + " % ");
