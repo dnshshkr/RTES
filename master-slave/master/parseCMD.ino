@@ -190,10 +190,10 @@ void parseCMD()
           {
             Serial.print("\nRestored to factory settings");
             delay(1000);
+            Serial.println();
             slave.write(0x80);
             while (!slave.available()) {}
             parseSlave();
-            Serial.println();
           }
         }
         else
