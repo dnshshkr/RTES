@@ -25,7 +25,6 @@ void cmdParser() {
 invalidTime:
           printSettings();
           Serial.println("Setting mode entered");
-          //if(bt)
           bt.println("Setting mode entered");
         }
         else  //if RTES mode is entered
@@ -45,17 +44,18 @@ invalidTime:
 startRTES2:
             printSettings();
             Serial.print("RTES mode entered");
-            //if(bt)
+            if (dieselMode)
+              Serial.print(" (Diesel-only mode)");
             bt.print("RTES mode entered");
+            if (dieselMode)
+              bt.print(" (Diesel-only mode)");
             if (testMode)
             {
               Serial.print(" at ");
-              //if(bt)
               bt.print(" at ");
               displayClock12(false);
             }
             Serial.println();
-            //if(bt)
             bt.println();
             firstRowData = true;
           }
@@ -86,7 +86,6 @@ startRTES2:
         if (!mode)  //if user tries to change the value in RTES or admin modes
         {
           Serial.println("Press 's' to enter settings");
-          //if(bt)
           bt.println("Press 's' to enter settings");
           break;
         }
@@ -102,7 +101,6 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          //if(bt)
           bt.println("Input is out of range");
         }
         break;
@@ -112,7 +110,6 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          //if(bt)
           bt.println("Press 's' to enter settings");
           break;
         }
@@ -130,7 +127,6 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          //if(bt)
           bt.println("Input is out of range");
         }
         break;
@@ -140,7 +136,6 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          //if(bt)
           bt.println("Press 's' to enter settings");
           break;
         }
@@ -159,7 +154,6 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          //if(bt)
           bt.println("Input is out of range");
         }
         break;
@@ -169,7 +163,6 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          //if(bt)
           bt.println("Press 's' to enter settings");
           break;
         }
@@ -188,7 +181,6 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          //if(bt)
           bt.println("Input is out of range");
         }
         break;
@@ -198,7 +190,6 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          //if(bt)
           bt.println("Press 's' to enter settings");
           break;
         }
@@ -219,7 +210,6 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          //if(bt)
           bt.println("Input is out of range");
         }
         break;
@@ -229,7 +219,6 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          //if(bt)
           bt.println("Press 's' to enter settings");
           break;
         }
@@ -243,7 +232,6 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          //if(bt)
           bt.println("Input is out of range");
         }
         break;
@@ -253,14 +241,12 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          //if(bt)
           bt.println("Press 's' to enter settings");
           break;
         }
         else if (!testMode)
         {
           Serial.println("Please turn on test mode first");
-          //if(bt)
           bt.println("Please turn on test mode first");
           break;
         }
@@ -274,7 +260,6 @@ startRTES2:
         else
         {
           Serial.println("Input is out of range");
-          //if(bt)
           bt.println("Input is out of range");
         }
         break;
@@ -284,7 +269,6 @@ startRTES2:
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
-          //if(bt)
           bt.println("Press 's' to enter settings");
           break;
         }
@@ -292,8 +276,20 @@ startRTES2:
         totalWaterPulse = 0;
         cycleCount = 0;
         Serial.println("Counters have been reset");
-        //if(bt)
         bt.println("Counters have been reset");
+        break;
+      }
+    case 'I': case 'i':
+      {
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
+          break;
+        }
+        dieselMode = !dieselMode;
+        EEPROM.update(addr[8], dieselMode);
+        printSettings();
         break;
       }
     //    case 'M': case 'm': //admin mode

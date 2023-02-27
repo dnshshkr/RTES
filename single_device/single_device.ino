@@ -53,7 +53,7 @@
 /*
    | EEPROM memory address
 */
-const uint8_t addr[8] = {0, 2, 3, 7, 11, 13, 17, 18};
+const uint8_t addr[9] = {0, 2, 3, 7, 11, 13, 17, 18, 19};
 //#define addr0 0   //2 bytes
 //#define addr1 2   //1 byte
 //#define addr2 3   //4 bytes
@@ -108,6 +108,7 @@ bool firstRowData = true;
 //bool waterPumpManualState = false;
 //bool toggleAllState = false;
 bool mode;  //0 - RTES, 1 - settings, 2 - admin
+bool dieselMode;
 uint8_t engineOffTimeout;
 uint8_t hour = 0;
 uint8_t minute = 0;
@@ -150,7 +151,6 @@ void setup()
   stopEmulsion();
   printSettings();
   Serial.println("RTES initialized");
-  //if(bt)
   bt.println("RTES initialized");
   bool validTime;
   if (testMode)
@@ -162,7 +162,6 @@ void setup()
     mode = true;
     printSettings();
     Serial.println("Settings mode entered");
-    //if(bt)
     bt.println("Settings mode entered");
   }
   else
@@ -172,17 +171,18 @@ void setup()
 startRTES1:
     //printSettings();
     Serial.print("RTES mode entered");
-    //if(bt)
+    if (dieselMode)
+      Serial.print(" (Diesel-only mode)");
     bt.print("RTES mode entered");
+    if (dieselMode)
+      bt.print(" (Diesel-only mode)");
     if (testMode)
     {
       Serial.print(" at ");
-      //if(bt)
       bt.print(" at ");
       displayClock12(false);
     }
     Serial.println();
-    //if(bt)
     bt.println();
   }
 }
@@ -206,7 +206,6 @@ void loop() {
     if (!engOffStatusPrintOnce)  //so that it prints the text only once
     {
       Serial.println("*Engine is off*");
-      //if(bt)
       bt.println("*Engine is off*");
       engOffStatusPrintOnce = true;
     }
