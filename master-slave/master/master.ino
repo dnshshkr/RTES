@@ -1,5 +1,3 @@
-#define ver "5.0"
-#define Serial2 slave
 /*
    request codes
    0x80 - request params
@@ -20,10 +18,11 @@
    0xfe - readings
    0xff - params
 */
+#define ver "5.0"
+#define slave Serial2
 #include<Arduino_JSON.h>
 
 //variables
-bool serialFirstOpen = false;
 bool mode;
 unsigned int f2wPulseRatio;
 uint8_t engineOffTimeout;
@@ -56,26 +55,17 @@ void setup()
     slave.write(0x80);
   }
   while (!slave.available()) {}
-  if (slave.read() == 0xff)
-  {
-    assignParams();
-    printSettings();
-  }
+  parseSlave();
 }
 void loop()
 {
-  if (!serialFirstOpen && Serial)
-  {
-    serialFirstOpen = true;
-    printSettings();
-  }
   if (Serial.available())
     parseCMD();
   if (slave.available())
     parseSlave();
 }
-//void flushSerial()
-//{
-//  while (Serial.available())
-//    Serial.read();
-//}
+void flushSerial()
+{
+  while (Serial.available())
+    Serial.read();
+}

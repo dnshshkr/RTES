@@ -200,22 +200,24 @@ void parseCMD()
           Serial.println();
         }
         printSettings();
+        flushSerial();
         break;
       }
     case 's': case 'S':
       {
         if (mode && changesMade)
         {
-          Serial.println("Save changes? (Y/N)");
+          Serial.print("Save changes? (Y/N)");
           bool wait = timeoutUI(5);
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')
           {
-            slave.write(0x82); Serial.println(params);
+            Serial.println(params);
+            slave.write(0x82), slave.println(params);
             while (!slave.available()) {}
             if (slave.read() == 0xf7)
             {
-              Serial.println("Changes have been saved. Requesting new parameters to verify new changes");
+              Serial.println("Changes have been saved. Requesting new parameters to verify changes");
               slave.write(0x80);
               while (!slave.available()) {}
               parseSlave();
@@ -227,11 +229,17 @@ void parseCMD()
           else
           {
             Serial.print("\nChanges discarded");
+            slave.write(0x80);
+            while (!slave.available());
+            parseSlave();
             delay(1000);
+            changesMade = false;
             Serial.println();
           }
+          flushSerial();
         }
-        slave.write(0x83);
+        else
+          slave.write(0x83);
         break;
       }
     case 't': case 'T':

@@ -1,3 +1,23 @@
+/*
+   request codes
+   0x80 - request params
+   0x81 - reset params
+   0x82 - send new params
+   0x83 - toggle RTES
+   0x84 - exclusive stop RTES
+   0x85 - reset total pulses
+   0x86 - reset cycleCount
+
+   response codes
+   0xf7 - new params received
+   0xf8 - cycleCount is reset
+   0xf9 - pulses are reset
+   0xfa - rtes run
+   0xfb - rtes stopped
+   0xfc - params are reset
+   0xfe - readings
+   0xff - params
+*/
 #include<Arduino_JSON.h>
 #include<SoftwareSerial.h>
 #include<EEPROM.h>

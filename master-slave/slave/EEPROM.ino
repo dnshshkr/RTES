@@ -10,6 +10,7 @@ void loadParams()
   EEPROM.get(addr[7], testMode);
   calculate_denominator();
 }
+
 void resetParams()
 {
   EEPROM.put(addr[0], 4);     //0x0
@@ -22,4 +23,17 @@ void resetParams()
   EEPROM.put(addr[7], 0);     //0x18
   loadParams();
   cycleCount = 1;
+}
+
+void saveNewParams()
+{
+  EEPROM.put(addr[0], f2wPulseRatio);
+  EEPROM.put(addr[1], engineOffTimeout);
+  EEPROM.put(addr[2], flowRateBias);
+  EEPROM.put(addr[3], solShotBias);
+  EEPROM.put(addr[4], solOnTime);
+  EEPROM.put(addr[5], waterPercentage);
+  EEPROM.put(addr[6], checkpointPeriod);
+  EEPROM.put(addr[7], testMode);
+  calculate_denominator();
 }

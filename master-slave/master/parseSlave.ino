@@ -26,6 +26,7 @@ void parseSlave()
     }
     else if (respCode == 0xff)
     {
+      Serial.println(body);
       params = JSON.parse(body);
       assignParams();
       printSettings();

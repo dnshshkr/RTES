@@ -37,14 +37,19 @@ void parseMaster(uint8_t reqCode)
         waterPercentage = (double)params[5];
         checkpointPeriod = (int)params[6];
         testMode = (bool)params[7];
+        saveNewParams();
         master.write(0xf7);
+        Serial.println(params);
         break;
       }
     case 0x83:
       {
         runRTES = !runRTES;
         if (runRTES)
+        {
+          pulseMeasurePrevMillis = millis();
           master.write(0xfa);
+        }
         else
           master.write(0xfb);
         break;
