@@ -61,7 +61,8 @@ void RTES() {
     {
       startEmulsion();
       solOnTimePrevMillis = millis();
-      totalWaterPulse++;
+      if (!dieselMode)
+        totalWaterPulse++;
       sprayStarted = true;
     }
   }

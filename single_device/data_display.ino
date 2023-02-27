@@ -17,15 +17,26 @@ void printData() {
   Serial.print(fuelPercentage, 1);
   Serial.println("% fuel");
 
-  bt.print(String(totalFuelPulse) + " total fuel pulse \t");
-  bt.print(String(fuelPulsePeriod) + " s\t");
+  //  bt.print(String(totalFuelPulse) + " total fuel pulse \t");
+  //  bt.print(String(fuelPulsePeriod) + " s\t");
+  //  bt.print(fuelFlowRate, 3);
+  //  bt.print(" mL/min\t");
+  //  bt.print(String(cycleCount) + " counter\t");
+  //  bt.print(String(totalWaterPulse) + " total water pulse\t");
+  //  bt.print(waterPercentage, 1);
+  //  bt.print(" % water\t");
+  //  bt.print(fuelPercentage, 1);
+  //  bt.println("% fuel");
+
+  bt.print(String(totalFuelPulse) + ",");
+  bt.print(String(totalWaterPulse) + ",");
+  bt.print(String(fuelPulsePeriod) + ",");
   bt.print(fuelFlowRate, 3);
-  bt.print(" mL/min\t");
-  bt.print(String(cycleCount) + " counter\t");
-  bt.print(String(totalWaterPulse) + " total water pulse\t");
+  bt.print(",");
+  bt.print(String(cycleCount) + ",");
   bt.print(waterPercentage, 1);
-  bt.print(" % water\t");
+  bt.print(",");
   bt.print(fuelPercentage, 1);
-  bt.println("% fuel");
+  bt.println();
   pulseDataPrint = false;  //change to false after printing the data and wait for next fuel pulse
 }

@@ -43,7 +43,6 @@ invalidTime:
             }
 startRTES2:
             printSettings();
-            pulseMeasurePrevMillis = millis();
             Serial.print("RTES mode entered");
             if (dieselMode)
               Serial.print(" (Diesel-only mode)");
@@ -289,6 +288,7 @@ startRTES2:
           break;
         }
         dieselMode = !dieselMode;
+        totalWaterPulse = 0;
         EEPROM.update(addr[8], dieselMode);
         printSettings();
         break;
