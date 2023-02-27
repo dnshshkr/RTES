@@ -50,7 +50,7 @@ void printSettings()
   (checkpointPeriod > 1 && testMode) ? bt.println('s') : bt.println();
   bt.println("H - Reset Total Fuel Pulse Counter");
   bt.println("I - Diesel-only Mode: ");
-  dieselMode ? Serial.println("true") : Serial.println("false");
+  dieselMode ? bt.println("true") : bt.println("false");
   bt.println("R - Reset to Factory Settings");
   bt.print("T - Toggle Test Mode: ");
   testMode ? bt.println("true") : bt.println("false");
