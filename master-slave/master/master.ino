@@ -4,15 +4,16 @@
    0x81 - reset params
    0x82 - send new params
    0x83 - toggle RTES
-   0x84 - exclusive stop RTES
-   0x85 - reset total pulses
-   0x86 - reset cycleCount
+   0x84 - exclusive start RTES
+   0x85 - exclusive stop RTES
+   0x86 - reset total pulses
+   0x87 - reset cycleCount
 
    response codes
    0xf7 - new params received
    0xf8 - cycleCount is reset
    0xf9 - pulses are reset
-   0xfa - rtes run
+   0xfa - rtes started
    0xfb - rtes stopped
    0xfc - params are reset
    0xfe - readings
@@ -44,7 +45,7 @@ unsigned long solOnTimePrevMillis;
 unsigned long totalWaterPulse;
 unsigned long engOffPrevMillis;
 String cmd;
-JSONVar params, readings;
+JSONVar readings, params;
 void setup()
 {
   slave.begin(38400);
@@ -57,7 +58,7 @@ void setup()
   //  pinMode(vin, OUTPUT);
   //  digitalWrite(gnd, LOW);
   //  digitalWrite(vin, HIGH);
-  slave.write(0x84);
+  slave.write(0x85);
   while (!slave.available()) {}
   if (slave.read() == 0xfb)
   {
@@ -69,10 +70,20 @@ void setup()
   printSettings();
   Serial.println("RTES initialized");
   engOffPrevMillis = millis();
-  Serial.print("RTES mode entered");
-  if (dieselMode)
-    Serial.println(" (Diesel-only mode)");
-  Serial.println();
+  slave.write(0x84);
+  while (!slave.available()) {}
+  if (slave.read() == 0xfa)
+  {
+    Serial.print("RTES mode entered");
+    if (dieselMode)
+      Serial.print(" (Diesel-only mode)");
+    Serial.println();
+  }
+  else
+  {
+    Serial.println("Failed to start RTES");
+    return;
+  }
 }
 void loop()
 {

@@ -14,7 +14,7 @@ void pushData()
   readings[4] = totalWaterPulse;
   readings[5] = waterPercentage;
   readings[6] = fuelPercentage;
-  master.write(0xfe), serializeJson(readings, master);
+  master.write(0xfe), master.println(readings);
   pulseDataPrint = false;
   //
   //  Serial.print(String(totalFuelPulse) + " total fuel pulse \t");
