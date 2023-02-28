@@ -25,3 +25,7 @@ void calculate_waterPercentage()
 {
   waterPercentage = round2d(solShotBias / denominator * 100.0);
 }
+
+float round2d(float val) {
+  return (int)(val * 100 + 0.5) / 100.0;
+}

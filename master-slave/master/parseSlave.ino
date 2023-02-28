@@ -5,7 +5,10 @@ void parseSlave()
   {
     mode = false;
     printSettings();
-    Serial.println("RTES mode entered");
+    Serial.print("RTES mode entered");
+    if (dieselMode)
+      Serial.println(" (Diesel-only mode)");
+    Serial.println();
   }
   else if (respCode == 0xfb)
   {
@@ -22,6 +25,7 @@ void parseSlave()
     if (respCode == 0xfe)
     {
       readings = JSON.parse(body);
+      engOffPrevMillis = millis();
       displayData();
     }
     else if (respCode == 0xff)
@@ -29,7 +33,6 @@ void parseSlave()
       //Serial.println(body);
       params = JSON.parse(body);
       assignParams();
-      printSettings();
     }
   }
 }

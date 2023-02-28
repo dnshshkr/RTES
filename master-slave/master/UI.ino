@@ -13,9 +13,11 @@ void printSettings()
     Serial.print("\nG - Checkpoint Period: " + String(checkpointPeriod) + " minute");
   (checkpointPeriod > 1 && testMode) ? Serial.println('s') : Serial.println();
   Serial.println("H - Reset Total Fuel Pulse Counter");
-  Serial.println("I - Browse Directory");
+  Serial.print("I - Toggle Diesel-only Mode: ");
+  dieselMode ? Serial.println("ON") : Serial.println("OFF");
+  Serial.println("J - Browse Storage");
   Serial.print("T - Toggle Test Mode: ");
-  Serial.println(testMode);
+  testMode ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("R - Reset to Factory Settings");
   Serial.println("$ - Refresh Settings");
   Serial.print("S - Enter ");

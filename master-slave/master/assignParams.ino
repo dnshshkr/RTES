@@ -8,4 +8,5 @@ void assignParams()
   waterPercentage = (double)params[5];
   checkpointPeriod = (int)params[6];
   testMode = (bool)params[7];
+  dieselMode = (bool)params[8];
 }

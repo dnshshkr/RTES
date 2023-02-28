@@ -177,7 +177,20 @@ void parseCMD()
           Serial.println("Counters have been reset");
         break;
       }
-      case 'i':case 'I':
+    case 'i': case 'I':
+      {
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          break;
+        }
+        dieselMode = !dieselMode;
+        params[8] = dieselMode;
+        changesMade = true;
+        printSettings();
+        break;
+      }
+    case 'j': case 'J':
       {
         spiffsMain();
         printSettings();

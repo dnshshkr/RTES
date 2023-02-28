@@ -90,11 +90,13 @@ startRTES2:
           break;
         }
         float val = valStr.toFloat();
-        if (val > 0 && val < 3.4028235E38)
+        int result = calculate_f2wPulseRatio(val, flowRateBias, solShotBias);
+        Serial.println(result);
+        if (result > 0)
         {
           waterPercentage = val;
           EEPROM.put(addr[5], waterPercentage);
-          calculate_f2wPulseRatio();
+          f2wPulseRatio = result;
           EEPROM.put(addr[0], f2wPulseRatio);
           printSettings();
         }
@@ -114,13 +116,16 @@ startRTES2:
           break;
         }
         int val = valStr.toInt();
-        if (val > 0 && val < 65536)
+        float result1 = calculate_denominator(val, flowRateBias, solShotBias);
+        int result2 = calculate_waterPercentage(solShotBias, result1);
+        Serial.println(result1);
+        Serial.println(result2);
+        if (val > 0 && val < 65536 && result2 > 0.0 && result2 <= 100.0)
         {
           cycleCount = 1;
           f2wPulseRatio = val;
           EEPROM.put(addr[0], f2wPulseRatio);
-          calculate_denominator();
-          calculate_waterPercentage();
+          waterPercentage = result2;
           EEPROM.put(addr[5], waterPercentage);
           printSettings();
         }
@@ -140,13 +145,18 @@ startRTES2:
           break;
         }
         float val = valStr.toFloat();
-        if (val >= 0 && val < 3.4028235E38)
+        int result1 = calculate_f2wPulseRatio(waterPercentage, val, solShotBias);
+        float result2 = calculate_denominator(f2wPulseRatio, val, solShotBias);
+        int result3 = calculate_waterPercentage(solShotBias, result2);
+        Serial.println(result1);
+        Serial.println(result2);
+        Serial.println(result3);
+        if (val >= 0 && val < 3.4028235E38 && result1 > 0 && result3 > 0.0 && result3 <= 100.0)
         {
           flowRateBias = val;
           EEPROM.put(addr[2], flowRateBias);
-          calculate_f2wPulseRatio();
-          calculate_denominator();
-          calculate_waterPercentage();
+          f2wPulseRatio = result1;
+          waterPercentage = result2;
           EEPROM.put(addr[0], f2wPulseRatio);
           EEPROM.put(addr[5], waterPercentage);
           printSettings();
@@ -167,13 +177,17 @@ startRTES2:
           break;
         }
         float val = valStr.toFloat();
-        if (val > 0 && val < 3.4028235E38)
+        int result1 = calculate_solOnTime(val);
+        int result2 = calculate_f2wPulseRatio(waterPercentage, flowRateBias, val);
+        Serial.println(result1);
+        Serial.println(result2);
+        if (val > 0 && val < 3.4028235E38 && result1 > 0 && result2 > 0)
         {
           solShotBias = val;
           EEPROM.put(addr[3], solShotBias);
-          calculate_solOnTime();
-          calculate_f2wPulseRatio();
-          calculate_denominator();
+          solOnTime = result1;
+          f2wPulseRatio = result2;
+          denominator = calculate_denominator(f2wPulseRatio, flowRateBias, solShotBias);
           EEPROM.put(addr[4], solOnTime);
           EEPROM.put(addr[0], f2wPulseRatio);
           printSettings();
@@ -194,14 +208,22 @@ startRTES2:
           break;
         }
         int val = valStr.toInt();
-        if (val > 0 && val < 65536)
+        float result1 = calculate_solShotBias(val);
+        float result2 = calculate_denominator(f2wPulseRatio, flowRateBias, result1);
+        float result3 = calculate_waterPercentage(result1, result2);
+        int result4 = calculate_f2wPulseRatio(result3, flowRateBias, result1);
+        Serial.println(result1);
+        Serial.println(result2);
+        Serial.println(result3);
+        Serial.println(result4);
+        if (val > 0 && val < 65536 && result1 > 0.0 && result3 > 0.0 && result3 <= 100.0 && result4 > 0)
         {
           solOnTime = val;
           EEPROM.put(addr[4], solOnTime);
-          calculate_solShotBias();
-          calculate_denominator();
-          calculate_waterPercentage();
-          calculate_f2wPulseRatio();
+          solShotBias = result1;
+          denominator = calculate_denominator(f2wPulseRatio, flowRateBias, solShotBias);
+          waterPercentage = result2;
+          f2wPulseRatio = result3;
           EEPROM.put(addr[3], solShotBias);
           EEPROM.put(addr[5], waterPercentage);
           EEPROM.put(addr[0], f2wPulseRatio);

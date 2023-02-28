@@ -18,11 +18,11 @@
    0xfe - readings
    0xff - params
 */
-#include<Arduino_JSON.h>
+#include<ArduinoJson.h>
 #include<SoftwareSerial.h>
 #include<EEPROM.h>
 const uint8_t rx = A1, tx = A0;
-const uint8_t addr[8] = {0, 2, 3, 7, 11, 13, 17, 18};
+const uint8_t addr[9] = {0, 2, 3, 7, 11, 13, 17, 18, 19};
 
 volatile bool pulseDataPrint = false;
 volatile uint8_t cycleCount = 0;
@@ -39,6 +39,7 @@ unsigned int solOnTime;
 float waterPercentage;
 float denominator;
 uint8_t checkpointPeriod;
+bool dieselMode;
 bool testMode;
 bool runRTES = false;
 bool sprayStarted = false;
@@ -55,7 +56,7 @@ const uint8_t solenoid = 9;
 const uint8_t waterPump = 10;
 const uint8_t button = 4;
 
-JSONVar readings;
+StaticJsonDocument<64> readings, params;
 SoftwareSerial master(rx, tx);
 void setup()
 {

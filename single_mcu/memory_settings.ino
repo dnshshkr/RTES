@@ -43,5 +43,5 @@ void loadSettings()
   EEPROM.get(addr[8], dieselMode);
   //  calculate_f2wPulseRatio();
   //  calculate_solOnTime();
-  calculate_denominator();
+  denominator = calculate_denominator(f2wPulseRatio, flowRateBias, solShotBias);
 }

@@ -3,8 +3,8 @@ void printSettings()
   Serial.println("*************************ALL SETTINGS**************************");
   Serial.println("RTES v" + String(ver));
   Serial.println("A - Water Percentage: " + String(waterPercentage) + "%");
-  Serial.print("B - Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
-  (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? Serial.println('s') : Serial.println();
+  Serial.print("B - Fuel Pulse(s) Per Cycle: " + String(f2wPulseRatio + 1) + " pulse");
+  (f2wPulseRatio + 1 == 0 || f2wPulseRatio + 1 > 1) ? Serial.println('s') : Serial.println();
   Serial.println("C - Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
   Serial.println("D - Water Shot Bias: " + String(solShotBias) + " mL/pulse");
   Serial.println("E - Solenoid On Time: " + String(solOnTime) + " ms");
@@ -14,9 +14,9 @@ void printSettings()
   (checkpointPeriod > 1 && testMode) ? Serial.println('s') : Serial.println();
   Serial.println("H - Reset Total Fuel Pulse Counter");
   Serial.print("I - Diesel-only Mode: ");
-  dieselMode ? Serial.println("true") : Serial.println("false");
+  dieselMode ? Serial.println("ON") : Serial.println("OFF");
   Serial.print("T - Toggle Test Mode: ");
-  testMode ? Serial.println("true") : Serial.println("false");
+  testMode ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("R - Reset to Factory Settings");
   //Serial.println("M: Enter Admin Settings");
   Serial.println("$ - Refresh Settings");

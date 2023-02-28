@@ -5,7 +5,6 @@ void parseMaster(uint8_t reqCode)
     case 0x80:
       {
         loadParams();
-        JSONVar params;
         params[0] = f2wPulseRatio;
         params[1] = engineOffTimeout;
         params[2] = flowRateBias;
@@ -14,7 +13,9 @@ void parseMaster(uint8_t reqCode)
         params[5] = waterPercentage;
         params[6] = checkpointPeriod;
         params[7] = testMode;
-        master.write(0xff), master.println(params);
+        params[8] = dieselMode;
+        master.write(0xff);
+        serializeJson(params, master);
         break;
       }
     case 0x81:
@@ -27,19 +28,19 @@ void parseMaster(uint8_t reqCode)
       {
         String body = master.readStringUntil('\r\n');
         body.trim();
-        JSONVar params;
-        params = JSON.parse(body);
-        f2wPulseRatio = (int)params[0];
-        engineOffTimeout = (int)params[1];
-        flowRateBias = (double)params[2];
-        solShotBias = (double)params[3];
-        solOnTime = (int)params[4];
-        waterPercentage = (double)params[5];
-        checkpointPeriod = (int)params[6];
-        testMode = (bool)params[7];
+        deserializeJson(params, body);
+        f2wPulseRatio = params[0].as<unsigned int>();
+        engineOffTimeout = params[1].as<unsigned short>();
+        flowRateBias = params[2].as<float>();
+        solShotBias = params[3].as<float>();
+        solOnTime = params[4].as<unsigned int>();
+        waterPercentage = params[5].as<float>();
+        checkpointPeriod = params[6].as<unsigned short>();
+        testMode = params[7].as<bool>();
+        dieselMode = params[8].as<bool>();
         saveNewParams();
         master.write(0xf7);
-        Serial.println(params);
+        //Serial.println(params);
         break;
       }
     case 0x83:
