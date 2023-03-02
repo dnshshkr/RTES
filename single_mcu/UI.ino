@@ -5,8 +5,8 @@ void printSettings()
   Serial.println("A - Water Percentage: " + String(waterPercentage) + "%");
   Serial.print("B - Fuel Pulse(s) Per Cycle: " + String(f2wPulseRatio + 1) + " pulse");
   (f2wPulseRatio + 1 == 0 || f2wPulseRatio + 1 > 1) ? Serial.println('s') : Serial.println();
-  Serial.println("C - Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
-  Serial.println("D - Water Shot Bias: " + String(solShotBias) + " mL/pulse");
+  Serial.println("C - Fuel Flow Rate Bias: " + String(fuelPulseBias) + " mL/pulse");
+  Serial.println("D - Water Shot Bias: " + String(waterPulseBias) + " mL/pulse");
   Serial.println("E - Solenoid On Time: " + String(solOnTime) + " ms");
   Serial.print("F - Engine Off Timeout: " + String(engineOffTimeout) + " s");
   if (testMode)
@@ -41,8 +41,8 @@ void printSettings()
   bt.println("A - Water Percentage: " + String(waterPercentage) + " % ");
   bt.print("B - Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
   (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? bt.println('s') : bt.println();
-  bt.println("C - Fuel Flow Rate Bias: " + String(flowRateBias) + " mL / pulse");
-  bt.println("D - Water Shot Bias: " + String(solShotBias) + " mL / pulse");
+  bt.println("C - Fuel Flow Rate Bias: " + String(fuelPulseBias) + " mL / pulse");
+  bt.println("D - Water Shot Bias: " + String(waterPulseBias) + " mL / pulse");
   bt.println("E - Solenoid On Time: " + String(solOnTime) + " ms");
   bt.print("F - Engine Off Timeout: " + String(engineOffTimeout) + " s");
   if (testMode)
@@ -96,6 +96,11 @@ bool timeoutUI()
     return false;
   else
     return true;
+}
+
+void displayLegend()
+{
+  Serial.println("Cycle | Total Fuel Pulse | Fuel Pulse Period (s) | Fuel Flow Rate (mL/min) | Total Water Pulse | Water Percentage (%/cycle) | Fuel Percentage (%/cycle)");
 }
 //void adminSettings() {
 //  Serial.println("***************************ADMIN MODE*************************");

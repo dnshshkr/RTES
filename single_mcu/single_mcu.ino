@@ -121,11 +121,12 @@ unsigned int f2wPulseRatio;  //fuel pulses per cycle
 unsigned int solOnTime;
 float denominator;  //fraction denominatorinator for fuel-water percentage calculation
 float waterPercentage;
+float waterPercentageDuringEmulsion;
 //float motorFuelAmpLim = 5.0 //set limit current motor feul pump
 //float solenoidAmpLimit = 5.0 //set limit current solenoid
 //float waterPumpAmpLimit = 5.0 //set limit current motor water
-float flowRateBias;
-float solShotBias;
+float fuelPulseBias;
+float waterPulseBias;
 unsigned long solOnTimePrevMillis;
 unsigned long prevMillisRTESStopwatch;
 unsigned long totalWaterPulse = 0;
@@ -170,7 +171,8 @@ void setup()
       prevMillisRTESStopwatch = millis();
 startRTES1:
     //printSettings();
-    pulseMeasurePrevMillis = millis();
+    waterPercentageDuringEmulsion = (waterPulseBias / denominator) * 100.0;
+    engOffPrevMillis = pulseMeasurePrevMillis = millis();
     Serial.print("RTES mode entered");
     if (dieselMode)
       Serial.print(" (Diesel-only mode)");
@@ -185,6 +187,7 @@ startRTES1:
     }
     Serial.println();
     bt.println();
+    displayLegend();
   }
 }
 
