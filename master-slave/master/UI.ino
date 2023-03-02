@@ -1,6 +1,6 @@
 void printSettings()
 {
-  Serial.println("*************************ALL SETTINGS**************************");
+  Serial.println("***************ALL SETTINGS***************");
   Serial.println("RTES v" + String(ver));
   Serial.println("A - Water Percentage: " + String(waterPercentage) + "%");
   Serial.print("B - Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
@@ -33,7 +33,7 @@ void printSettings()
   if (mode==0)
     Serial.write(')');
   Serial.println(" Mode");
-  Serial.println("***************************************************************");
+  Serial.println("******************************************");
 }
 
 bool timeoutUI(int8_t countDown)

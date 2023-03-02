@@ -7,10 +7,36 @@ void spiffsMain()
   Serial.println("D - Delete File");
   Serial.println("U - Upload File");
   Serial.println("E - Exit");
+  Serial.println("******************************************");
+}
+
+void readConfigFile(fs::FS &fs)
+{
+  File file = fs.open("/config.txt", FILE_READ);
+  if (!file || file.isDirectory())
+  {
+    Serial.println("- failed to open file for reading");
+    return;
+  }
+  String content;
+  while (file.available())
+    content += file.read();
+  fileConfig = JSON.parse(content);
+  file.close();
+}
+
+void writeConfigFile(fs::FS&fs)
+{
+  File file = fs.open("/config.txt", FILE_WRITE);
+  if (file.println(fileConfig))
+    Serial.println("config file write successful");
+  else
+    Serial.println("config file write failed");
 }
 
 void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
 {
+  byte index = 0;
   Serial.printf("Storage list: %s\r\n", dirname);
   File root = fs.open(dirname);
   if (!root)
@@ -33,12 +59,16 @@ void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
       if (levels)
         listDir(fs, file.path(), levels - 1);
     }
-    else
+    else if (file.name() != "/config.txt")
     {
-      Serial.print("  FILE: ");
-      Serial.print(file.name());
-      Serial.print("\tSIZE: ");
-      Serial.println(file.size());
+      String fileName = file.name();
+      Serial.println(String(index + 1) + ". " + fileName + "\tSIZE: " + String(file.size()));
+      //      Serial.print(fileName);
+      //      Serial.print("\tSIZE: ");
+      //      Serial.println(file.size());
+      fileConfig["content_length"] = index + 1;
+      fileConfig["contents"][index] = fileName;
+      index++;
     }
     file = root.openNextFile();
   }
@@ -47,7 +77,7 @@ void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
 void readFile(fs::FS &fs, const char *path)
 {
   Serial.printf("Reading file: %s\r\n", path);
-  File file = fs.open(path);
+  File file = fs.open(path, FILE_READ);
   if (!file || file.isDirectory())
   {
     Serial.println("- failed to open file for reading");
@@ -91,13 +121,19 @@ void appendFile(fs::FS &fs, const char *path, const char *message)
   file.close();
 }
 
-void renameFile(fs::FS &fs, const char *oldPath, const char *newPath)
+bool renameFile(fs::FS &fs, const char *oldPath, const char *newPath)
 {
   Serial.printf("Renaming file %s to %s\r\n", oldPath, newPath);
   if (fs.rename(oldPath, newPath))
+  {
     Serial.println("- file renamed");
+    return true;
+  }
   else
+  {
     Serial.println("- rename failed");
+    return false;
+  }
 }
 
 void deleteFile(fs::FS &fs, const char *path)

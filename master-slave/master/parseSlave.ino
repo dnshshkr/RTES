@@ -3,7 +3,8 @@ void parseSlave()
   uint8_t respCode = slave.read();
   if (respCode == 0xfa)
   {
-    mode = false;
+    mode = 0;
+    stream = SPIFFS.open("/temp.txt", FILE_WRITE);
     printSettings();
     Serial.print("RTES mode entered");
     if (dieselMode)
@@ -12,7 +13,29 @@ void parseSlave()
   }
   else if (respCode == 0xfb)
   {
-    mode = true;
+    if (firstData)
+    {
+      stream.close();
+      Serial.println("Enter a name for the log file");
+      while (!Serial.available()) {}
+      String fileName = Serial.readStringUntil('\r\n');
+      fileName.trim();
+      fileName = '/' + fileName + ".txt";
+      short len = fileName.length() + 1;
+      char fileNameChar[len];
+      fileName.toCharArray(fileNameChar, len);
+      if (SPIFFS.rename("/temp.txt", fileNameChar))
+        Serial.println("Log file saved successfully");
+      else
+        Serial.println("Failed to save log file");
+      firstData = false;
+    }
+    else
+    {
+      stream.close();
+      SPIFFS.remove("/temp.txt");
+    }
+    mode = 1;
     printSettings();
     Serial.println("Settings mode entered");
   }
@@ -25,6 +48,9 @@ void parseSlave()
     if (respCode == 0xfe)
     {
       readings = JSON.parse(body);
+      stream.println(body);
+      if (!firstData)
+        firstData = true;
       engOffPrevMillis = millis();
       displayData();
     }

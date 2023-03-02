@@ -6,59 +6,72 @@ void parseCMD()
   String valStr = cmd.substring(1, cmd.length());
   switch (alph)
   {
-    case 'a': case 'A':
+    case '$':
       {
-        if (mode==0)
+        if (mode == 1)
         {
-          Serial.println("Please enter settings");
-          break;
-        }
-        float val = valStr.toFloat();
-        if (val > 0 && val < 3.4028235E38)
-        {
-          params[5] = waterPercentage = val;
-          calculate_f2wPulseRatio();
-          params[0] = f2wPulseRatio;
-          changesMade = true;
+          slave.write(0x80);
+          while (!slave.available()) {}
+          parseSlave();
           printSettings();
         }
-        else
-          Serial.println("Input is out of range");
+        break;
+      }
+    case 'a': case 'A':
+      {
+        if (mode == 0)
+          Serial.println("Press 's' to enter settings");
+        else if (mode == 1)
+        {
+          float val = valStr.toFloat();
+          if (val > 0 && val < 3.4028235E38)
+          {
+            params[5] = waterPercentage = val;
+            calculate_f2wPulseRatio();
+            params[0] = f2wPulseRatio;
+            changesMade = true;
+            printSettings();
+          }
+          else
+            Serial.println("Input is out of range");
+        }
         break;
       }
     case 'b': case 'B':
       {
-        if (mode==0)
+        if (mode == 0)
+          Serial.println("Press 's' to enter settings");
+        else if (mode == 1)
         {
-          Serial.println("Please enter settings");
-          break;
-        }
-        int val = valStr.toInt();
-        if (val > 0 && val < 65536)
-        {
-          slave.write(0x86);
-          while (!slave.available()) {}
-          if (slave.read() == 0xf8) {}
+          int val = valStr.toInt();
+          if (val > 0 && val < 65536)
+          {
+            slave.write(0x86);
+            while (!slave.available()) {}
+            if (slave.read() == 0xf8) {}
+            else
+              Serial.println("Failed to reset cycle count");
+            params[0] = f2wPulseRatio = val;
+            calculate_denominator();
+            calculate_waterPercentage();
+            params[5] = waterPercentage;
+            changesMade = true;
+            printSettings();
+          }
           else
-            Serial.println("Failed to reset cycle count");
-          params[0] = f2wPulseRatio = val;
-          calculate_denominator();
-          calculate_waterPercentage();
-          params[5] = waterPercentage;
-          changesMade = true;
-          printSettings();
+            Serial.println("Input is out of range");
         }
-        else
-          Serial.println("Input is out of range");
         break;
       }
     case 'c': case 'C':
       {
-        if (mode==0)
+        if (mode == 0)
         {
-          Serial.println("Please enter settings");
+          Serial.println("Press 's' to enter settings");
           break;
         }
+        else if (mode == 2)
+          break;
         float val = valStr.toFloat();
         if (val >= 0 && val < 3.4028235E38)
         {
@@ -77,32 +90,64 @@ void parseCMD()
       }
     case 'd': case 'D':
       {
-        if (mode==0)
+        if (mode == 0)
+          Serial.println("Press 's' to enter settings");
+        else if (mode == 1)
         {
-          Serial.println("Please enter settings");
-          break;
-        }
-        float val = valStr.toFloat();
-        if (val > 0 && val < 3.4028235E38)
-        {
-          params[3] = solShotBias = val;
-          calculate_solOnTime();
-          calculate_f2wPulseRatio();
-          calculate_denominator();
-          params[4] = solOnTime;
-          params[0] = f2wPulseRatio;
-          changesMade = true;
-          printSettings();
+          float val = valStr.toFloat();
+          if (val > 0 && val < 3.4028235E38)
+          {
+            params[3] = solShotBias = val;
+            calculate_solOnTime();
+            calculate_f2wPulseRatio();
+            calculate_denominator();
+            params[4] = solOnTime;
+            params[0] = f2wPulseRatio;
+            changesMade = true;
+            printSettings();
+          }
+          else
+            Serial.println("Input is out of range");
         }
         else
-          Serial.println("Input is out of range");
+        {
+          Serial.print("Are you sure you want to delete the file? (Y/N):");
+          bool wait = timeoutUI(5);
+          char choice = Serial.read();
+          if (choice == 'Y' || choice == 'y')
+          {
+            int val = valStr.toInt();
+            String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
+            fileName = '/' + fileName.substring(1, fileName.length() - 1);
+            Serial.println(fileName);
+            short len = fileName.length() + 1;
+            char fileNameChar[len];
+            fileName.toCharArray(fileNameChar, len);
+            deleteFile(SPIFFS, fileNameChar);
+          }
+          else
+          {
+            Serial.print("\nFile deletion aborted");
+            delay(1000);
+            Serial.println();
+          }
+          flushSerial();
+          spiffsMain();
+        }
         break;
       }
     case 'e': case 'E':
       {
-        if (mode==0)
+        if (mode == 0)
         {
-          Serial.println("Please enter settings");
+          Serial.println("Press 's' to enter settings");
+          break;
+        }
+        else if (mode == 2)
+        {
+          mode = 1;
+          writeConfigFile(SPIFFS);
+          printSettings();
           break;
         }
         int val = valStr.toInt();
@@ -125,108 +170,148 @@ void parseCMD()
       }
     case 'f': case 'F':
       {
-        if (mode==0)
+        if (mode == 0)
+          Serial.println("Press 's' to enter settings");
+        else if (mode == 1)
         {
-          Serial.println("Please enter settings");
-          break;
+          int val = valStr.toInt();
+          if (val > 0 && val < 256)
+          {
+            params[1] = engineOffTimeout = val;
+            changesMade = true;
+            printSettings();
+          }
+          else
+            Serial.println("Input is out of range");
         }
-        int val = valStr.toInt();
-        if (val > 0 && val < 256)
-        {
-          params[1] = engineOffTimeout = val;
-          changesMade = true;
-          printSettings();
-        }
-        else
-          Serial.println("Input is out of range");
         break;
       }
     case 'g': case 'G':
       {
-        if (mode==0)
+        if (mode == 0)
+          Serial.println("Press 's' to enter settings");
+        else if (mode == 1 && testMode)
         {
-          Serial.println("Please enter settings");
-          break;
+          int val = valStr.toInt();
+          if (val > 0 && val < 256)
+          {
+            params[6] = checkpointPeriod = val;
+            changesMade = true;
+            printSettings();
+          }
+          else
+            Serial.println("Input is out of range");
         }
-        else if (!testMode)
-        {
-          Serial.println("Please turn on test mode first");
-          break;
-        }
-        int val = valStr.toInt();
-        if (val > 0 && val < 256)
-        {
-          params[6] = checkpointPeriod = val;
-          changesMade = true;
-          printSettings();
-        }
-        else
-          Serial.println("Input is out of range");
         break;
       }
     case 'h': case 'H':
       {
-        if (mode==0)
+        if (mode == 0)
+          Serial.println("Press 's' to enter settings");
+        else if (mode == 1)
         {
-          Serial.println("Please enter settings");
-          break;
+          slave.write(0x86);
+          while (!slave.available()) {}
+          if (slave.read() == 0xf9)
+            Serial.println("Counters have been reset");
         }
-        slave.write(0x86);
-        while (!slave.available()) {}
-        if (slave.read() == 0xf9)
-          Serial.println("Counters have been reset");
         break;
       }
     case 'i': case 'I':
       {
-        if (mode==0)
+        if (mode == 0)
+          Serial.println("Press 's' to enter settings");
+        else if (mode == 1)
         {
-          Serial.println("Please enter settings");
-          break;
+          dieselMode = !dieselMode;
+          params[8] = dieselMode;
+          changesMade = true;
+          printSettings();
         }
-        dieselMode = !dieselMode;
-        params[8] = dieselMode;
-        changesMade = true;
-        printSettings();
         break;
       }
     case 'j': case 'J':
       {
+        mode = 2;
+        spiffsMain();
+        break;
+      }
+    case 'o': case'O':
+      {
+        if (mode != 2)
+          break;
+        short val = valStr.toInt();
+        String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
+        fileName = '/' + fileName.substring(1, fileName.length() - 1);
+        Serial.println(fileName);
+        short len = fileName.length() + 1;
+        char fileNameChar[len];
+        fileName.toCharArray(fileNameChar, len);
+        readFile(SPIFFS, fileNameChar);
         spiffsMain();
         break;
       }
     case 'r': case 'R':
       {
-        Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
-        bool wait = timeoutUI(10);
-        char choice = Serial.read();
-        if (choice == 'Y' || choice == 'y')
+        if (mode == 0)
+          Serial.println("Press 's' to enter settings");
+        else if (mode == 1)
         {
-          slave.write(0x81);
-          while (!slave.available()) {}
-          if (slave.read() == 0xfc)
+          Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
+          bool wait = timeoutUI(10);
+          char choice = Serial.read();
+          if (choice == 'Y' || choice == 'y')
           {
-            Serial.print("\nRestored to factory settings");
+            slave.write(0x81);
+            while (!slave.available()) {}
+            if (slave.read() == 0xfc)
+            {
+              Serial.print("\nRestored to factory settings");
+              delay(1000);
+              Serial.println();
+              slave.write(0x80);
+              while (!slave.available()) {}
+              parseSlave();
+            }
+          }
+          else
+          {
+            Serial.print("\nFactory reset aborted");
             delay(1000);
             Serial.println();
-            slave.write(0x80);
-            while (!slave.available()) {}
-            parseSlave();
+            printSettings();
           }
+          flushSerial();
         }
         else
         {
-          Serial.print("\nFactory reset aborted");
-          delay(1000);
-          Serial.println();
-          printSettings();
+          Serial.println("Enter the file new name");
+          while (!Serial.available()) {}
+          String newName = Serial.readStringUntil('\r\n');
+          newName.trim();
+          short val = valStr.toInt();
+          String oldName = JSON.stringify(fileConfig["contents"][val - 1]);
+          oldName = '/' + oldName.substring(1, oldName.length() - 1);
+          Serial.println(oldName);
+          short lenOld = oldName.length() + 1;
+          char oldNameChar[lenOld];
+          oldName.toCharArray(oldNameChar, lenOld);
+          newName = '/' + newName + ".txt";
+          short lenNew = newName.length() + 1;
+          char newNameChar[lenNew];
+          newName.toCharArray(newNameChar, lenNew);
+          renameFile(SPIFFS, oldNameChar, newNameChar);
+          spiffsMain();
         }
-        flushSerial();
         break;
       }
     case 's': case 'S':
       {
-        if (mode && changesMade)
+        if (mode == 0 || (mode == 1 && !changesMade))
+        {
+          slave.write(0x83);
+        }
+        else if (mode == 1 && changesMade)
         {
           Serial.print("Save changes? (Y/N)");
           bool wait = timeoutUI(5);
@@ -308,21 +393,19 @@ verifyChangesSuccess:
           }
           flushSerial();
         }
-        else
-          slave.write(0x83);
         break;
       }
     case 't': case 'T':
       {
-        if (mode==0)
+        if (mode == 0)
+          Serial.println("Press 's' to enter settings");
+        else if (mode == 1)
         {
-          Serial.println("Please enter settings");
-          break;
+          testMode = !testMode;
+          params[7] = testMode;
+          changesMade = true;
+          printSettings();
         }
-        testMode = !testMode;
-        params[7] = testMode;
-        changesMade = true;
-        printSettings();
         break;
       }
     default:

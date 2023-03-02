@@ -27,6 +27,7 @@
 #include "SPIFFS.h"
 
 //variables
+bool firstData = false;
 bool dieselMode;
 bool testMode;
 bool changesMade = false;
@@ -45,15 +46,17 @@ unsigned long solOnTimePrevMillis;
 unsigned long totalWaterPulse;
 unsigned long engOffPrevMillis;
 String cmd;
-JSONVar readings, params;
+File stream;
+JSONVar readings, params, fileConfig;
 void setup()
 {
   slave.begin(38400);
-  Serial.begin(9600);
+  Serial.begin(115200);
   if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
     Serial.println("Failed to mount SPIFFS. Continuing...");
   else
     Serial.println("SPIFFS mounted");
+  readConfigFile(SPIFFS);
   //  pinMode(gnd, OUTPUT);
   //  pinMode(vin, OUTPUT);
   //  digitalWrite(gnd, LOW);
@@ -62,28 +65,16 @@ void setup()
   while (!slave.available()) {}
   if (slave.read() == 0xfb)
   {
-    mode = true;
+    mode = 1;
     slave.write(0x80);
   }
   while (!slave.available()) {}
   parseSlave();
-  printSettings();
   Serial.println("RTES initialized");
   engOffPrevMillis = millis();
   slave.write(0x84);
   while (!slave.available()) {}
-  if (slave.read() == 0xfa)
-  {
-    Serial.print("RTES mode entered");
-    if (dieselMode)
-      Serial.print(" (Diesel-only mode)");
-    Serial.println();
-  }
-  else
-  {
-    Serial.println("Failed to start RTES");
-    return;
-  }
+  parseSlave();
 }
 void loop()
 {
@@ -91,7 +82,7 @@ void loop()
     parseCMD();
   if (slave.available())
     parseSlave();
-  if (millis() - engOffPrevMillis >= engineOffTimeout * 1000 && mode==0)
+  if (millis() - engOffPrevMillis >= engineOffTimeout * 1000 && mode == 0)
   {
     if (!engOffStatusPrintOnce)
     {
