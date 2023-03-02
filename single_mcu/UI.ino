@@ -15,7 +15,7 @@ void printSettings()
   Serial.println("H - Reset Total Fuel Pulse Counter");
   Serial.print("I - Diesel-only Mode: ");
   dieselMode ? Serial.println("ON") : Serial.println("OFF");
-  Serial.print("T - Toggle Test Mode: ");
+  Serial.print("J - Toggle Test Mode: ");
   testMode ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("R - Reset to Factory Settings");
   //Serial.println("M: Enter Admin Settings");

@@ -52,5 +52,5 @@ void printData()
   bt.print(",");
   bt.print(P_f, 1);
   bt.println();
-  pulseDataPrint = false;  //change to false after printing the data and wait for next fuel pulse
+  // pulseDataPrint = false;  //change to false after printing the data and wait for next fuel pulse
 }

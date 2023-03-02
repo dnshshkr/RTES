@@ -2,7 +2,7 @@ import csv
 import openpyxl
 import pathlib
 #*** insert your text file path here ***
-text_file='logs\sample-20022023.txt'
+text_file=r"C:\Users\Design\Desktop\AE\RTES\logs\sample-20022023.txt"
 #***************************************
 header=['Total Fuel Pulses','Total Water Pulses','Fuel Pulse Period (s)','Fuel Flowrate (mL/min)','Cycle Position (/5)','Water Percentage (%)','Fuel Percentage (%)']
 text_file.replace('\\','/')

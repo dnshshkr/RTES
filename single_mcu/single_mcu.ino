@@ -67,17 +67,17 @@ const uint8_t addr[9] = {0, 2, 3, 7, 11, 13, 17, 18, 19};
 /*
    | I/O pins
 */
-const uint8_t flowrateSensor = 2;
+const byte flowrateSensor = 2;
 //const uint8_t fuelMotorCurrentPin = A3;
 //const uint8_t solenoidCurrentPin = A2;
 //const uint8_t waterPumpCurrentPin = A4;
 //const uint8_t motorFuel = 8;
-const uint8_t solenoid = 9;
-const uint8_t waterPump = 10;
-const uint8_t btrx = 12;
-const uint8_t bttx = 11;
-const uint8_t btState = 5;
-const uint8_t button = 4;
+const byte solenoid = 9;
+const byte waterPump = 10;
+const byte btrx = 12;
+const byte bttx = 11;
+const byte btState = 5;
+const byte button = 4;
 
 /*
    | current amperage - not in use
@@ -89,8 +89,8 @@ const uint8_t button = 4;
 /*
    | variables
 */
-volatile bool pulseDataPrint = false;
-volatile uint8_t cycleCount = 0;
+//volatile bool pulseDataPrint = false;
+volatile byte cycleCount = 0;
 volatile float fuelFlowRate;
 volatile float fuelPulsePeriod;
 volatile unsigned long totalFuelPulse = 0;
@@ -109,16 +109,16 @@ bool firstRowData = true;
 //bool toggleAllState = false;
 bool mode;  //0 - RTES, 1 - settings, 2 - admin
 bool dieselMode;
-uint8_t engineOffTimeout;
-uint8_t hour = 0;
-uint8_t minute = 0;
-uint8_t second = 0;
-uint8_t checkpointPeriod;
+byte engineOffTimeout;
+byte hour = 0;
+byte minute = 0;
+byte second = 0;
+byte checkpointPeriod;
 //uint8_t currentSensorType = 1; //0 - ACS713, 1 - ACS712
-uint16_t lastMinute;
-uint16_t accumMinute;
-unsigned int f2wPulseRatio;  //fuel pulses per cycle
-unsigned int solOnTime;
+byte lastMinute;
+byte accumMinute;
+word f2wPulseRatio;  //fuel pulses per cycle
+word solOnTime;
 float denominator;  //fraction denominatorinator for fuel-water percentage calculation
 float waterPercentage;
 float waterPercentageDuringEmulsion;
@@ -242,24 +242,22 @@ void loop() {
   if (!mode)
   {
     RTES();
-    if (pulseDataPrint)  //print data only on a fuel pulse detection
-    {
-      if (testMode && accumMinute - lastMinute >= checkpointPeriod || (testMode && firstRowData))
-      {
-        displayClock12(true);
-        Serial.print(" -> ");
-        //if(bt)
-        bt.println();
-        lastMinute = accumMinute;
-        firstRowData = false;
-      }
-      else if (testMode)
-        Serial.print("\t    ");
-      printData();
-    }
+    //    if (pulseDataPrint)  //print data only on a fuel pulse detection
+    //    {
+    //      if (testMode && accumMinute - lastMinute >= checkpointPeriod || (testMode && firstRowData))
+    //      {
+    //        displayClock12(true);
+    //        Serial.print(" -> ");
+    //        //if(bt)
+    //        bt.println();
+    //        lastMinute = accumMinute;
+    //        firstRowData = false;
+    //      }
+    //      else if (testMode)
+    //        Serial.print("\t    ");
+    //      printData();
+    //    }
   }
-  //  else if (mode == 2 && manualPrintData)
-  //    printData();
 
   /*
      | 4. End

@@ -9,5 +9,17 @@ void interruptRoutine()
   cycleCount++;
   if (cycleCount >= f2wPulseRatio + 2)
     cycleCount = 1;
-  pulseDataPrint = true;
+  //pulseDataPrint = true;
+  if (testMode && accumMinute - lastMinute >= checkpointPeriod || (testMode && firstRowData))
+  {
+    displayClock12(true);
+    Serial.print(" -> ");
+    //if(bt)
+    bt.println();
+    lastMinute = accumMinute;
+    firstRowData = false;
+  }
+  else if (testMode)
+    Serial.print("\t    ");
+  printData();
 }

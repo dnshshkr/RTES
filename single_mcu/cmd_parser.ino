@@ -43,6 +43,7 @@ invalidTime:
             }
 startRTES2:
             printSettings();
+            denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
             waterPercentageDuringEmulsion = (waterPulseBias / denominator) * 100.0;
             engOffPrevMillis = pulseMeasurePrevMillis = millis();
             Serial.print("RTES mode entered");
@@ -93,13 +94,13 @@ startRTES2:
           break;
         }
         float val = valStr.toFloat();
-        int result = calculate_f2wPulseRatio(val, fuelPulseBias, waterPulseBias);
+        int32_t result = calculate_f2wPulseRatio(val, fuelPulseBias, waterPulseBias);
         //Serial.println(result);
-        if (result > 0)
+        if (result > 0 && result < 65536)
         {
           waterPercentage = val;
-          EEPROM.put(addr[5], waterPercentage);
           f2wPulseRatio = result;
+          EEPROM.put(addr[5], waterPercentage);
           EEPROM.put(addr[0], f2wPulseRatio);
           printSettings();
         }
@@ -118,7 +119,7 @@ startRTES2:
           bt.println("Press 's' to enter settings");
           break;
         }
-        int val = valStr.toInt();
+        int32_t val = valStr.toInt();
         float result1 = calculate_denominator(val, fuelPulseBias, waterPulseBias);
         int result2 = calculate_waterPercentage(waterPulseBias, result1);
         //        Serial.println(result1);
@@ -154,7 +155,7 @@ startRTES2:
         //        Serial.println(result1);
         //        Serial.println(result2);
         //        Serial.println(result3);
-        if (val >= 0 && val < 3.4028235E38 && result1 > 0 && result3 > 0.0 && result3 <= 100.0)
+        if (val >= 0 && val < 3.4028235E38 && result1 > 0 && result1 < 65536 && result3 > 0.0 && result3 <= 100.0)
         {
           fuelPulseBias = val;
           EEPROM.put(addr[2], fuelPulseBias);
@@ -180,11 +181,11 @@ startRTES2:
           break;
         }
         float val = valStr.toFloat();
-        int result1 = calculate_solOnTime(val);
-        int result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, val);
+        int32_t result1 = calculate_solOnTime(val);
+        int32_t result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, val);
         //        Serial.println(result1);
         //        Serial.println(result2);
-        if (val > 0 && val < 3.4028235E38 && result1 > 0 && result2 > 0)
+        if (val > 0 && val < 3.4028235E38 && result1 > 0 && result1 <= 1000 && result2 > 0)
         {
           waterPulseBias = val;
           EEPROM.put(addr[3], waterPulseBias);
@@ -210,12 +211,12 @@ startRTES2:
           bt.println("Press 's' to enter settings");
           break;
         }
-        int val = valStr.toInt();
+        int32_t val = valStr.toInt();
         float result1 = calculate_waterPulseBias(val);
-        int result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, result1);
+        int32_t result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, result1);
         //        Serial.println(result1);
         //        Serial.println(result2);
-        if (val > 0 && val < 65536 && result1 > 0.0 && result2 > 0)
+        if (val > 0 && val <= 1000 && result1 > 0.0 && result2 > 0)
         {
           solOnTime = val;
           waterPulseBias = result1;
@@ -233,7 +234,7 @@ startRTES2:
         }
         break;
       }
-    case 'F': case 'f':
+    case 'F': case 'f': //engine off time
       {
         if (!mode)
         {
@@ -255,7 +256,7 @@ startRTES2:
         }
         break;
       }
-    case 'G': case 'g':
+    case 'G': case 'g': //checkpoint period
       {
         if (!mode)
         {
@@ -283,7 +284,7 @@ startRTES2:
         }
         break;
       }
-    case 'H': case 'h':
+    case 'H': case 'h': //reset counters
       {
         if (!mode)
         {
@@ -298,7 +299,7 @@ startRTES2:
         bt.println("Counters have been reset");
         break;
       }
-    case 'I': case 'i':
+    case 'I': case 'i': //diesel mode
       {
         if (!mode)
         {
@@ -309,6 +310,19 @@ startRTES2:
         dieselMode = !dieselMode;
         totalWaterPulse = 0;
         EEPROM.update(addr[8], dieselMode);
+        printSettings();
+        break;
+      }
+    case 'J': case 'j':
+      {
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
+          break;
+        }
+        testMode = !testMode;
+        EEPROM.update(addr[7], testMode);
         printSettings();
         break;
       }
@@ -352,7 +366,7 @@ startRTES2:
     //        //adminSettings();
     //        break;
     //      }
-    case 'R': case 'r':
+    case 'R': case 'r': //reset settings
       {
         if (!mode)
         {
@@ -379,19 +393,6 @@ startRTES2:
         //adminSettings();
         printSettings();
         flushSerial();
-        break;
-      }
-    case 'T': case 't':
-      {
-        if (!mode)
-        {
-          Serial.println("Press 's' to enter settings");
-          bt.println("Press 's' to enter settings");
-          break;
-        }
-        testMode = !testMode;
-        EEPROM.update(addr[7], testMode);
-        printSettings();
         break;
       }
     //    case 'T': case 't':
