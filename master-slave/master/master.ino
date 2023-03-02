@@ -27,12 +27,12 @@
 #include "SPIFFS.h"
 
 //variables
-bool mode;
 bool dieselMode;
 bool testMode;
 bool changesMade = false;
 bool engOffStatusPrintOnce = false;
 bool fileManageMode = false;
+byte mode;
 unsigned int f2wPulseRatio;
 uint8_t engineOffTimeout;
 float flowRateBias;
@@ -91,7 +91,7 @@ void loop()
     parseCMD();
   if (slave.available())
     parseSlave();
-  if (millis() - engOffPrevMillis >= engineOffTimeout * 1000 && !mode)
+  if (millis() - engOffPrevMillis >= engineOffTimeout * 1000 && mode==0)
   {
     if (!engOffStatusPrintOnce)
     {

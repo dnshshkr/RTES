@@ -6,6 +6,7 @@ void spiffsMain()
   Serial.println("R - Rename File");
   Serial.println("D - Delete File");
   Serial.println("U - Upload File");
+  Serial.println("E - Exit");
 }
 
 void listDir(fs::FS &fs, const char *dirname, uint8_t levels)

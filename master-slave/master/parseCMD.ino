@@ -8,9 +8,9 @@ void parseCMD()
   {
     case 'a': case 'A':
       {
-        if (!mode)
+        if (mode==0)
         {
-          Serial.println("Press 's' to enter settings");
+          Serial.println("Please enter settings");
           break;
         }
         float val = valStr.toFloat();
@@ -28,9 +28,9 @@ void parseCMD()
       }
     case 'b': case 'B':
       {
-        if (!mode)
+        if (mode==0)
         {
-          Serial.println("Press 's' to enter settings");
+          Serial.println("Please enter settings");
           break;
         }
         int val = valStr.toInt();
@@ -54,9 +54,9 @@ void parseCMD()
       }
     case 'c': case 'C':
       {
-        if (!mode)
+        if (mode==0)
         {
-          Serial.println("Press 's' to enter settings");
+          Serial.println("Please enter settings");
           break;
         }
         float val = valStr.toFloat();
@@ -77,9 +77,9 @@ void parseCMD()
       }
     case 'd': case 'D':
       {
-        if (!mode)
+        if (mode==0)
         {
-          Serial.println("Press 's' to enter settings");
+          Serial.println("Please enter settings");
           break;
         }
         float val = valStr.toFloat();
@@ -100,9 +100,9 @@ void parseCMD()
       }
     case 'e': case 'E':
       {
-        if (!mode)
+        if (mode==0)
         {
-          Serial.println("Press 's' to enter settings");
+          Serial.println("Please enter settings");
           break;
         }
         int val = valStr.toInt();
@@ -125,9 +125,9 @@ void parseCMD()
       }
     case 'f': case 'F':
       {
-        if (!mode)
+        if (mode==0)
         {
-          Serial.println("Press 's' to enter settings");
+          Serial.println("Please enter settings");
           break;
         }
         int val = valStr.toInt();
@@ -143,9 +143,9 @@ void parseCMD()
       }
     case 'g': case 'G':
       {
-        if (!mode)
+        if (mode==0)
         {
-          Serial.println("Press 's' to enter settings");
+          Serial.println("Please enter settings");
           break;
         }
         else if (!testMode)
@@ -166,9 +166,9 @@ void parseCMD()
       }
     case 'h': case 'H':
       {
-        if (!mode)
+        if (mode==0)
         {
-          Serial.println("Press 's' to enter settings");
+          Serial.println("Please enter settings");
           break;
         }
         slave.write(0x86);
@@ -179,9 +179,9 @@ void parseCMD()
       }
     case 'i': case 'I':
       {
-        if (!mode)
+        if (mode==0)
         {
-          Serial.println("Press 's' to enter settings");
+          Serial.println("Please enter settings");
           break;
         }
         dieselMode = !dieselMode;
@@ -193,7 +193,6 @@ void parseCMD()
     case 'j': case 'J':
       {
         spiffsMain();
-        printSettings();
         break;
       }
     case 'r': case 'R':
@@ -315,9 +314,9 @@ verifyChangesSuccess:
       }
     case 't': case 'T':
       {
-        if (!mode)
+        if (mode==0)
         {
-          Serial.println("Press 's' to enter settings");
+          Serial.println("Please enter settings");
           break;
         }
         testMode = !testMode;

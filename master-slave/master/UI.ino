@@ -27,10 +27,10 @@ void printSettings()
   if (mode)
     Serial.write(')');
   Serial.write('/');
-  if (!mode)
+  if (mode==0)
     Serial.write('(');
   Serial.print("RTES");
-  if (!mode)
+  if (mode==0)
     Serial.write(')');
   Serial.println(" Mode");
   Serial.println("***************************************************************");
