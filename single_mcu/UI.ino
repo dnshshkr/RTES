@@ -2,23 +2,25 @@ void printSettings()
 {
   Serial.println("*************************ALL SETTINGS**************************");
   Serial.println("RTES v" + String(ver));
-  Serial.println("A: Water Percentage: " + String(waterPercentage) + "%");
-  Serial.print("B: Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
-  (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? Serial.println('s') : Serial.println();
-  Serial.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
-  Serial.println("D: Water Shot Bias: " + String(solShotBias) + " mL/pulse");
-  Serial.println("E: Solenoid On Time: " + String(solOnTime) + " ms");
-  Serial.print("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
+  Serial.println("A - Water Percentage: " + String(waterPercentage) + "%");
+  Serial.print("B - Fuel Pulse(s) Per Cycle: " + String(f2wPulseRatio + 1) + " pulse");
+  (f2wPulseRatio + 1 == 0 || f2wPulseRatio + 1 > 1) ? Serial.println('s') : Serial.println();
+  Serial.println("C - Fuel Flow Rate Bias: " + String(fuelPulseBias) + " mL/pulse");
+  Serial.println("D - Water Shot Bias: " + String(waterPulseBias) + " mL/pulse");
+  Serial.println("E - Solenoid On Time: " + String(solOnTime) + " ms");
+  Serial.print("F - Engine Off Timeout: " + String(engineOffTimeout) + " s");
   if (testMode)
-    Serial.print("\nG: Checkpoint Period: " + String(checkpointPeriod) + " minute");
+    Serial.print("\nG - Checkpoint Period: " + String(checkpointPeriod) + " minute");
   (checkpointPeriod > 1 && testMode) ? Serial.println('s') : Serial.println();
-  Serial.println("H: Reset Total Fuel Pulse Counter");
-  Serial.print("T: Toggle Test Mode: ");
-  Serial.println(testMode);
-  Serial.println("R: Reset to Factory Settings");
+  Serial.println("H - Reset Total Fuel Pulse Counter");
+  Serial.print("I - Diesel-only Mode: ");
+  dieselMode ? Serial.println("ON") : Serial.println("OFF");
+  Serial.print("J - Toggle Test Mode: ");
+  testMode ? Serial.println("ON") : Serial.println("OFF");
+  Serial.println("R - Reset to Factory Settings");
   //Serial.println("M: Enter Admin Settings");
-  Serial.println("$: Refresh Settings");
-  Serial.print("S: Enter ");
+  Serial.println("$ - Refresh Settings");
+  Serial.print("S - Enter ");
   if (mode)
     Serial.write('(');
   Serial.print("Settings");
@@ -34,27 +36,27 @@ void printSettings()
   Serial.println("***************************************************************");
 
   //bluetooth
-  //if(bt)
-  //{
   bt.println("***ALL SETTINGS***");
   bt.println("RTES v" + String(ver));
-  bt.println("A: Water Percentage: " + String(waterPercentage) + "%");
-  bt.print("B: Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
+  bt.println("A - Water Percentage: " + String(waterPercentage) + " % ");
+  bt.print("B - Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
   (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? bt.println('s') : bt.println();
-  bt.println("C: Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
-  bt.println("D: Water Shot Bias: " + String(solShotBias) + " mL/pulse");
-  bt.println("E: Solenoid On Time: " + String(solOnTime) + " ms");
-  bt.print("F: Engine Off Timeout: " + String(engineOffTimeout) + " s");
+  bt.println("C - Fuel Flow Rate Bias: " + String(fuelPulseBias) + " mL / pulse");
+  bt.println("D - Water Shot Bias: " + String(waterPulseBias) + " mL / pulse");
+  bt.println("E - Solenoid On Time: " + String(solOnTime) + " ms");
+  bt.print("F - Engine Off Timeout: " + String(engineOffTimeout) + " s");
   if (testMode)
-    bt.print("\nG: Checkpoint Period: " + String(checkpointPeriod) + " minute");
+    bt.print("\nG - Checkpoint Period: " + String(checkpointPeriod) + " minute");
   (checkpointPeriod > 1 && testMode) ? bt.println('s') : bt.println();
-  bt.println("H: Reset Total Fuel Pulse Counter");
-  bt.println("R: Reset to Factory Settings");
-  bt.print("T: Toggle Test Mode: ");
-  bt.println(testMode);
+  bt.println("H - Reset Total Fuel Pulse Counter");
+  bt.print("I - Diesel-only Mode: ");
+  dieselMode ? bt.println("true") : bt.println("false");
+  bt.println("R - Reset to Factory Settings");
+  bt.print("T - Toggle Test Mode: ");
+  testMode ? bt.println("true") : bt.println("false");
   //bt.println("M: Enter Admin Settings");
-  bt.println("$: Refresh Settings");
-  bt.print("S: Enter ");
+  bt.println("$ - Refresh Settings");
+  bt.print("S - Enter ");
   if (mode)
     bt.write('(');
   bt.print("Settings");
@@ -68,7 +70,6 @@ void printSettings()
     bt.write(')');
   bt.println(" Mode");
   bt.println("******************");
-  //}
 }
 
 bool timeoutUI()
@@ -76,16 +77,17 @@ bool timeoutUI()
   unsigned long prev, prevCD;
   int8_t countDown = 10;
   Serial.print(": " + String(countDown) + (char)32);
-  if (digitalRead(btState))
-    bt.print(": " + String(countDown) + (char)32);
+  bt.print(": " + String(countDown) + (char)32);
   prev = millis();
-  do {
-    if (millis() - prev >= 1000) {
+  do
+  {
+    if (millis() - prev >= 1000)
+    {
       countDown--;
-      if (countDown >= 0) {
+      if (countDown >= 0)
+      {
         Serial.print(String(countDown) + (char)32);
-        if (digitalRead(btState))
-          bt.print(String(countDown) + (char)32);
+        bt.print(String(countDown) + (char)32);
       }
       prev = millis();
     }
@@ -94,6 +96,11 @@ bool timeoutUI()
     return false;
   else
     return true;
+}
+
+void displayLegend()
+{
+  Serial.println("Cycle | Total Fuel Pulse | Fuel Pulse Period (s) | Fuel Flow Rate (mL/min) | Total Water Pulse | Water Percentage (%/cycle) | Fuel Percentage (%/cycle)");
 }
 //void adminSettings() {
 //  Serial.println("***************************ADMIN MODE*************************");

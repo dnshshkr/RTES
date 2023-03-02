@@ -1,34 +1,64 @@
-void parseSerial2()
+void parseSlave()
 {
-  uint8_t respCode = Serial2.read();
-  if (respCode == 0xfb)
+  uint8_t respCode = slave.read();
+  if (respCode == 0xfa)
   {
-    mode = false;
+    mode = 0;
+    stream = SPIFFS.open("/temp.txt", FILE_WRITE);
     printSettings();
-    Serial.println("RTES mode entered");
+    Serial.print("RTES mode entered");
+    if (dieselMode)
+      Serial.println(" (Diesel-only mode)");
+    Serial.println();
   }
-  else if (respCode == 0xfc)
+  else if (respCode == 0xfb)
   {
-    mode = true;
+    if (firstData)
+    {
+      stream.close();
+      Serial.println("Enter a name for the log file");
+      while (!Serial.available()) {}
+      String fileName = Serial.readStringUntil('\r\n');
+      fileName.trim();
+      fileName = '/' + fileName + ".txt";
+      short len = fileName.length() + 1;
+      char fileNameChar[len];
+      fileName.toCharArray(fileNameChar, len);
+      if (SPIFFS.rename("/temp.txt", fileNameChar))
+        Serial.println("Log file saved successfully");
+      else
+        Serial.println("Failed to save log file");
+      firstData = false;
+    }
+    else
+    {
+      stream.close();
+      SPIFFS.remove("/temp.txt");
+    }
+    mode = 1;
     printSettings();
     Serial.println("Settings mode entered");
   }
   else if (respCode >= 0xfe)
   {
-    String msg = Serial2.readStringUntil('\r\n');
-    msg.trim();
+    String body = slave.readStringUntil('\r\n');
+    body.trim();
     //    Serial.println("response code: " + String(respCode));
-    //    Serial.println("msg: " + msg);
+    //    Serial.println("body: " + body);
     if (respCode == 0xfe)
     {
-      readings = JSON.parse(msg);
+      readings = JSON.parse(body);
+      stream.println(body);
+      if (!firstData)
+        firstData = true;
+      engOffPrevMillis = millis();
       displayData();
     }
     else if (respCode == 0xff)
     {
-      params = JSON.parse(msg);
-      testMode = (bool)params[7];
-      printSettings();
+      //Serial.println(body);
+      params = JSON.parse(body);
+      assignParams();
     }
   }
 }
