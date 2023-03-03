@@ -19,12 +19,24 @@
    0xfe - readings
    0xff - params
 */
-#define ver "5.0"
+#define RTES_VERSION "5.0"
 #define slave Serial2
 #define FORMAT_SPIFFS_IF_FAILED true
+#define WIFI_SSID "iRokiah"
+#define WIFI_PASSWORD "w1943sei"
+#define API_KEY "AIzaSyCi1wz8zPrEiqk_pBtu8G5jSPFr98EIYkg"
+#define USER_EMAIL "danish.shukor@outlook.com"
+#define USER_PASSWORD "w1943sei"
+#define STORAGE_BUCKET_ID "rtes-378707.appspot.com"
+
 #include<Arduino_JSON.h>
 #include "FS.h"
 #include "SPIFFS.h"
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
+#include <WiFi.h>
+#include <Firebase_ESP_Client.h>
+#include <addons/TokenHelper.h>
 
 //variables
 bool firstData = false;
@@ -33,6 +45,7 @@ bool testMode;
 bool changesMade = false;
 bool engOffStatusPrintOnce = false;
 bool fileManageMode = false;
+bool uploadCompleted = false;
 byte mode;
 unsigned int f2wPulseRatio;
 uint8_t engineOffTimeout;
@@ -48,19 +61,40 @@ unsigned long engOffPrevMillis;
 String cmd;
 File stream;
 JSONVar readings, params, fileConfig;
+FirebaseData fbdo;
+FirebaseAuth auth;
+FirebaseConfig config;
 void setup()
 {
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
   slave.begin(38400);
   Serial.begin(115200);
+  
   if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
     Serial.println("Failed to mount SPIFFS. Continuing...");
   else
     Serial.println("SPIFFS mounted");
   readConfigFile(SPIFFS);
-  //  pinMode(gnd, OUTPUT);
-  //  pinMode(vin, OUTPUT);
-  //  digitalWrite(gnd, LOW);
-  //  digitalWrite(vin, HIGH);
+  
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Connecting to WiFi: " + String(WIFI_SSID));
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.print('.');
+    delay(300);
+  }
+  Serial.print("\nConnected to " + String(WIFI_SSID) + " with IP: ");
+  Serial.println(WiFi.localIP());
+  Serial.println();
+  Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
+  config.api_key = API_KEY;
+  auth.user.email = USER_EMAIL;
+  auth.user.password = USER_PASSWORD;
+  config.token_status_callback = tokenStatusCallback;
+  Firebase.begin(&config, &auth);
+  Firebase.reconnectWiFi(true);
+  config.fcs.upload_buffer_size = 512;
+  
   slave.write(0x85);
   while (!slave.available()) {}
   if (slave.read() == 0xfb)

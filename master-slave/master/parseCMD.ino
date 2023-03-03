@@ -243,11 +243,10 @@ void parseCMD()
         short val = valStr.toInt();
         String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
         fileName = '/' + fileName.substring(1, fileName.length() - 1);
-        Serial.println(fileName);
-        short len = fileName.length() + 1;
-        char fileNameChar[len];
-        fileName.toCharArray(fileNameChar, len);
-        readFile(SPIFFS, fileNameChar);
+        //        short len = fileName.length() + 1;
+        //        char fileNameChar[len];
+        //        fileName.toCharArray(fileNameChar, len);
+        readFile(SPIFFS, fileName.c_str());
         spiffsMain();
         break;
       }
@@ -364,7 +363,7 @@ void parseCMD()
                   goto verifyChangesFail;
                 if (params[7] == prevParams[7])
                 {
-                  Serial.println("Verification completed");
+                  Serial.println("verification completed");
                   goto verifyChangesSuccess;
                 }
                 else {}

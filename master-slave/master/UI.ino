@@ -1,7 +1,7 @@
 void printSettings()
 {
   Serial.println("***************ALL SETTINGS***************");
-  Serial.println("RTES v" + String(ver));
+  Serial.println("RTES v" + String(RTES_VERSION));
   Serial.println("A - Water Percentage: " + String(waterPercentage) + "%");
   Serial.print("B - Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
   (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? Serial.println('s') : Serial.println();
@@ -27,10 +27,10 @@ void printSettings()
   if (mode)
     Serial.write(')');
   Serial.write('/');
-  if (mode==0)
+  if (mode == 0)
     Serial.write('(');
   Serial.print("RTES");
-  if (mode==0)
+  if (mode == 0)
     Serial.write(')');
   Serial.println(" Mode");
   Serial.println("******************************************");
@@ -39,7 +39,7 @@ void printSettings()
 bool timeoutUI(int8_t countDown)
 {
   unsigned long prev, prevCD;
-  Serial.print(": " + String(countDown) + (char)32);
+  Serial.print(": " + String(countDown) + ' ');
   prev = millis();
   do
   {
@@ -47,7 +47,7 @@ bool timeoutUI(int8_t countDown)
     {
       countDown--;
       if (countDown >= 0)
-        Serial.print(String(countDown) + (char)32);
+        Serial.print(String(countDown) + ' ');
       prev = millis();
     }
   } while (!Serial.available() && countDown >= 0);
