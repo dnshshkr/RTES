@@ -304,7 +304,7 @@ void parseCMD()
           //          short lenOld = oldName.length() + 1;
           //          char oldNameChar[lenOld];
           //          oldName.toCharArray(oldNameChar, lenOld);
-          newName += ".txt";
+          newName = '/' + newName + ".txt";
           //          short lenNew = newName.length() + 1;
           //          char newNameChar[lenNew];
           //          newName.toCharArray(newNameChar, lenNew);
@@ -432,7 +432,7 @@ verifyChangesSuccess:
 
             // MIME type should be valid to avoid the download problem.
             // The file systems for flash and SD/SDMMC can be changed in FirebaseFS.h.
-            if (!Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID /* Firebase Storage bucket id */, fileName /* path to local file */, mem_storage_type_flash /* memory storage type, mem_storage_type_flash and mem_storage_type_sd */, fileName.substring(1, fileName.length() - 1) /* path of remote file stored in the bucket */, "text/txt" /* mime type */, fcsUploadCallback /* callback function */))
+            if (!Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID /* Firebase Storage bucket id */, fileName.substring(1) /* path to local file */, mem_storage_type_flash /* memory storage type, mem_storage_type_flash and mem_storage_type_sd */, fileName.substring(1) /* path of remote file stored in the bucket */, "document/txt" /* mime type */, fcsUploadCallback /* callback function */))
               Serial.println(fbdo.errorReason());
           }
           uploadCompleted = false;
