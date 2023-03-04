@@ -1,15 +1,3 @@
-void spiffsMain()
-{
-  Serial.println("***************FILE BROWSER***************");
-  listDir(SPIFFS, "/", 0);
-  Serial.println("\nMenu:\nO - Open File");
-  Serial.println("R - Rename File");
-  Serial.println("D - Delete File");
-  Serial.println("U - Upload File");
-  Serial.println("E - Exit");
-  Serial.println("******************************************");
-}
-
 void readConfigFile(fs::FS &fs)
 {
   File file = fs.open("/config.txt", FILE_READ);
@@ -18,6 +6,8 @@ void readConfigFile(fs::FS &fs)
     Serial.println("- failed to open file for reading");
     return;
   }
+  else
+    Serial.println("Flash storage configured");
   String content;
   while (file.available())
     content += file.read();
@@ -28,7 +18,7 @@ void readConfigFile(fs::FS &fs)
 void writeConfigFile(fs::FS&fs)
 {
   File file = fs.open("/config.txt", FILE_WRITE);
-  if (file.println(fileConfig))
+  if (file.print(fileConfig))
     Serial.println("config file write successful");
   else
     Serial.println("config file write failed");
@@ -41,7 +31,7 @@ void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
   File root = fs.open(dirname);
   if (!root)
   {
-    Serial.println("Failed to open directory");
+    Serial.println("- failed to open directory");
     return;
   }
   if (!root.isDirectory())
@@ -57,7 +47,7 @@ void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
       Serial.print("  DIR : ");
       Serial.println(file.name());
       if (levels)
-        listDir(fs, file.path(), levels - 1);
+        listDir(fs, file.name(), levels - 1);
     }
     else if (file.name() != "/config.txt")
     {
@@ -140,7 +130,7 @@ void deleteFile(fs::FS &fs, const char *path)
 {
   Serial.printf("Deleting file: %s\r\n", path);
   if (fs.remove(path))
-    Serial.println(" - file deleted");
+    Serial.println("- file deleted");
   else
-    Serial.println(" - delete failed");
+    Serial.println("- delete failed");
 }

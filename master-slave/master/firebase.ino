@@ -1,4 +1,4 @@
-void fcsUploadCallBack(FCS_UploadStatusInfo info)
+void fcsUploadCallback(FCS_UploadStatusInfo info)
 {
   if (info.status == fb_esp_fcs_upload_status_init)
     Serial.printf("Uploading file %s (%d) to %s\n", info.localFileName.c_str(), info.fileSize, info.remoteFileName.c_str());

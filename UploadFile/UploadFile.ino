@@ -32,8 +32,8 @@
 #include <addons/SDHelper.h>
 
 /* 1. Define the WiFi credentials */
-#define WIFI_SSID "iRokiah"
-#define WIFI_PASSWORD "w1943sei"
+#define WIFI_SSID "Mesh_Amin"
+#define WIFI_PASSWORD "1234123456"
 
 /* 2. Define the API Key */
 #define API_KEY "AIzaSyCi1wz8zPrEiqk_pBtu8G5jSPFr98EIYkg"
@@ -166,7 +166,7 @@ void loop()
 
     // MIME type should be valid to avoid the download problem.
     // The file systems for flash and SD/SDMMC can be changed in FirebaseFS.h.
-    if (!Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID /* Firebase Storage bucket id */, "/mlem.txt" /* path to local file */, mem_storage_type_flash /* memory storage type, mem_storage_type_flash and mem_storage_type_sd */, "/mlem.txt" /* path of remote file stored in the bucket */, "text/txt" /* mime type */, fcsUploadCallback /* callback function */))
+    if (!Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID /* Firebase Storage bucket id */, "/photo.jpg" /* path to local file */, mem_storage_type_flash /* memory storage type, mem_storage_type_flash and mem_storage_type_sd */, "/photo.jpg" /* path of remote file stored in the bucket */, "image/jpg" /* mime type */, fcsUploadCallback /* callback function */))
       Serial.println(fbdo.errorReason());
   }
 }

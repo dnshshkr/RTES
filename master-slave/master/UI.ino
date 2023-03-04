@@ -36,10 +36,22 @@ void printSettings()
   Serial.println("******************************************");
 }
 
+void spiffsUI()
+{
+  Serial.println("***************FILE BROWSER***************");
+  listDir(SPIFFS, "/", 0);
+  Serial.println("\nMenu:\nO - Open File");
+  Serial.println("R - Rename File");
+  Serial.println("D - Delete File");
+  Serial.println("U - Upload File");
+  Serial.println("E - Exit");
+  Serial.println("******************************************");
+}
+
 bool timeoutUI(int8_t countDown)
 {
   unsigned long prev, prevCD;
-  Serial.print(": " + String(countDown) + ' ');
+  Serial.print(": " + String(countDown) + " ");
   prev = millis();
   do
   {
@@ -47,7 +59,7 @@ bool timeoutUI(int8_t countDown)
     {
       countDown--;
       if (countDown >= 0)
-        Serial.print(String(countDown) + ' ');
+        Serial.print(String(countDown) + " ");
       prev = millis();
     }
   } while (!Serial.available() && countDown >= 0);

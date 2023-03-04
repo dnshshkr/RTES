@@ -22,8 +22,8 @@
 #define RTES_VERSION "5.0"
 #define slave Serial2
 #define FORMAT_SPIFFS_IF_FAILED true
-#define WIFI_SSID "iRokiah"
-#define WIFI_PASSWORD "w1943sei"
+#define WIFI_SSID "Mesh_Amin"
+#define WIFI_PASSWORD "1234123456"
 #define API_KEY "AIzaSyCi1wz8zPrEiqk_pBtu8G5jSPFr98EIYkg"
 #define USER_EMAIL "danish.shukor@outlook.com"
 #define USER_PASSWORD "w1943sei"
