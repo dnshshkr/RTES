@@ -24,10 +24,11 @@ void parseCMD()
         else if (mode == 1)
         {
           float val = valStr.toFloat();
-          if (val > 0 && val < 3.4028235E38)
+          int32_t result = calculate_f2wPulseRatio(val, fuelPulseBias, waterPulseBias);
+          if (result > 0 && result < 65536)
           {
             params[5] = waterPercentage = val;
-            calculate_f2wPulseRatio();
+            f2wPulseRatio = result;
             params[0] = f2wPulseRatio;
             changesMade = true;
             printSettings();
@@ -43,17 +44,18 @@ void parseCMD()
           Serial.println("Press 's' to enter settings");
         else if (mode == 1)
         {
-          int val = valStr.toInt();
-          if (val > 0 && val < 65536)
+          int32_t val = valStr.toInt();
+          float result1 = calculate_denominator(val, fuelPulseBias, waterPulseBias);
+          int result2 = calculate_waterPercentage(waterPulseBias, result1);
+          if (val > 0 && val < 65536 && result2 > 0.0 && result2 <= 100.0)
           {
-            slave.write(RESET_COUNTERS);
+            slave.write(RESET_CYCLE_COUNT);
             while (!slave.available()) {}
-            if (slave.read() == NEW_PARAMS_RECEIVED) {}
+            if (slave.read() == CYCLE_COUNT_RESET) {}
             else
               Serial.println("Failed to reset cycle count");
             params[0] = f2wPulseRatio = val;
-            calculate_denominator();
-            calculate_waterPercentage();
+            waterPercentage = result2;
             params[5] = waterPercentage;
             changesMade = true;
             printSettings();
@@ -70,22 +72,25 @@ void parseCMD()
           Serial.println("Press 's' to enter settings");
           break;
         }
-        else if (mode == 2)
-          break;
-        float val = valStr.toFloat();
-        if (val >= 0 && val < 3.4028235E38)
+        else if (mode == 1)
         {
-          params[2] = flowRateBias = val;
-          calculate_f2wPulseRatio();
-          calculate_denominator();
-          calculate_waterPercentage();
-          params[0] = f2wPulseRatio;
-          params[5] = waterPercentage;
-          changesMade = true;
-          printSettings();
+          float val = valStr.toFloat();
+          int result1 = calculate_f2wPulseRatio(waterPercentage, val, waterPulseBias);
+          float result2 = calculate_denominator(f2wPulseRatio, val, waterPulseBias);
+          int result3 = calculate_waterPercentage(waterPulseBias, result2);
+          if (val >= 0 && val < 3.4028235E38 && result1 > 0 && result1 < 65536 && result3 > 0.0 && result3 <= 100.0)
+          {
+            params[2] = fuelPulseBias = val;
+            f2wPulseRatio = result1;
+            waterPercentage = result2;
+            params[0] = f2wPulseRatio;
+            params[5] = waterPercentage;
+            changesMade = true;
+            printSettings();
+          }
+          else
+            Serial.println("Input is out of range");
         }
-        else
-          Serial.println("Input is out of range");
         break;
       }
     case 'd': case 'D':
@@ -95,12 +100,14 @@ void parseCMD()
         else if (mode == 1)
         {
           float val = valStr.toFloat();
-          if (val > 0 && val < 3.4028235E38)
+          int32_t result1 = calculate_solOnTime(val);
+          int32_t result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, val);
+          if (val > 0 && val < 3.4028235E38 && result1 > 0 && result1 <= SOL_ON_TIME_LIMIT && result2 > 0)
           {
-            params[3] = solShotBias = val;
-            calculate_solOnTime();
-            calculate_f2wPulseRatio();
-            calculate_denominator();
+            params[3] = waterPulseBias = val;
+            solOnTime = result1;
+            f2wPulseRatio = result2;
+            denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
             params[4] = solOnTime;
             params[0] = f2wPulseRatio;
             changesMade = true;
@@ -141,33 +148,32 @@ void parseCMD()
     case 'e': case 'E':
       {
         if (mode == 0)
-        {
           Serial.println("Press 's' to enter settings");
-          break;
+        else if (mode == 1)
+        {
+          int32_t val = valStr.toInt();
+          float result1 = calculate_waterPulseBias(val);
+          int32_t result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, result1);
+          if (val > 0 && val <= SOL_ON_TIME_LIMIT && result1 > 0.0 && result2 > 0)
+          {
+            params[4] = solOnTime = val;
+            waterPulseBias = result1;
+            f2wPulseRatio = result2;
+            denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
+            params[3] = waterPulseBias;
+            params[0] = f2wPulseRatio;
+            changesMade = true;
+            printSettings();
+          }
+          else
+            Serial.println("Input is out of range");
         }
-        else if (mode == 2)
+        else //mode=2
         {
           mode = 1;
           writeConfigFile(SPIFFS);
           printSettings();
-          break;
         }
-        int val = valStr.toInt();
-        if (val > 0 && val < 65536)
-        {
-          params[4] = solOnTime = val;
-          calculate_solShotBias();
-          calculate_denominator();
-          calculate_waterPercentage();
-          calculate_f2wPulseRatio();
-          params[3] = solShotBias;
-          params[5] = waterPercentage;
-          params[0] = f2wPulseRatio;
-          changesMade = true;
-          printSettings();
-        }
-        else
-          Serial.println("Input is out of range");
         break;
       }
     case 'f': case 'F':
@@ -322,8 +328,8 @@ void parseCMD()
               JSONVar prevParams;
               prevParams[0] = f2wPulseRatio;
               prevParams[1] = engineOffTimeout;
-              prevParams[2] = flowRateBias;
-              prevParams[3] = solShotBias;
+              prevParams[2] = fuelPulseBias;
+              prevParams[3] = waterPulseBias;
               prevParams[4] = solOnTime;
               prevParams[5] = waterPercentage;
               prevParams[6] = checkpointPeriod;

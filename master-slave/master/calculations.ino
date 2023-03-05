@@ -1,27 +1,27 @@
-void calculate_f2wPulseRatio()
+int calculate_f2wPulseRatio(float waterPercentage,float fuelPulseBias,float waterPulseBias)
 {
-  f2wPulseRatio = floor((solShotBias * (1 - (waterPercentage / 100))) / (flowRateBias * (1 - (1 - (waterPercentage / 100))))) - 1;
+  return floor((waterPulseBias * (1 - (waterPercentage / 100))) / (fuelPulseBias * (1 - (1 - (waterPercentage / 100))))) - 1;
 }
 
-void calculate_solOnTime()
+int calculate_solOnTime(float waterPulseBias)
 {
   /*
      | based on our thorough experiments done on a repetition, it is concluded that for a 250 ms of solenoid trigger, the volume of water measured is about 0.81 mL
   */
-  solOnTime = (250 / 0.81) * solShotBias;
+  return (int)((250 / 0.81) * waterPulseBias);
 }
 
-void calculate_solShotBias()
+float calculate_waterPulseBias(int solOnTime)
 {
-  solShotBias = solOnTime / (250 / 0.81);
+  return (float)solOnTime / (250 / 0.81);
 }
 
-void calculate_denominator()  //calculation of the denominator of the fraction equation used to calculate the fuel-water ratio
+float calculate_denominator(int f2wPulseRatio,float fuelPulseBias,float waterPulseBias)  //calculation of the denominator of the fraction equation used to calculate the fuel-water ratio
 {
-  denominator = flowRateBias * (float)(f2wPulseRatio + 1) + solShotBias;
+  return fuelPulseBias * (float)(f2wPulseRatio + 1) + waterPulseBias;
 }
 
-void calculate_waterPercentage()
+float calculate_waterPercentage(float waterPulseBias,float denominator)
 {
-  waterPercentage = solShotBias / denominator * 100.0;
+  return waterPulseBias / denominator * 100.0;
 }

@@ -3,10 +3,10 @@ void printSettings()
   Serial.println("***************ALL SETTINGS***************");
   Serial.println("RTES v" + String(RTES_VERSION));
   Serial.println("A - Water Percentage: " + String(waterPercentage) + "%");
-  Serial.print("B - Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
+  Serial.print("B - Fuel Pulse Per Cycle: " + String(f2wPulseRatio + 1) + " pulse");
   (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? Serial.println('s') : Serial.println();
-  Serial.println("C - Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
-  Serial.println("D - Water Shot Bias: " + String(solShotBias) + " mL/pulse");
+  Serial.println("C - Fuel Flow Rate Bias: " + String(fuelPulseBias) + " mL/pulse");
+  Serial.println("D - Water Shot Bias: " + String(waterPulseBias) + " mL/pulse");
   Serial.println("E - Solenoid On Time: " + String(solOnTime) + " ms");
   Serial.print("F - Engine Off Timeout: " + String(engineOffTimeout) + " s");
   if (testMode)

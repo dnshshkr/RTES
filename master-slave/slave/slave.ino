@@ -6,7 +6,9 @@
 #define EXCLUSIVE_START_RTES 0x84
 #define EXCLUSIVE_STOP_RTES 0x85
 #define RESET_COUNTERS 0x86
+#define RESET_CYCLE_COUNT 0x87
 
+#define CYCLE_COUNT_RESET 0xf7
 #define ENGINE_OFF 0xf8
 #define NEW_PARAMS_RECEIVED 0xf9
 #define COUNTERS_RESET 0xfa
@@ -23,8 +25,8 @@ const uint8_t rx = A1, tx = A0;
 const uint8_t addr[9] = {0, 2, 3, 7, 11, 13, 17, 18, 19};
 
 volatile uint8_t cycleCount = 0;
-volatile double fuelFlowRate;
-volatile double fuelPulsePeriod;
+volatile float fuelFlowRate;
+volatile float fuelPulsePeriod;
 volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;
 volatile unsigned long engOffPrevMillis = 0;
@@ -76,7 +78,7 @@ void loop()
   {
     if (!engOffStatusPrintOnce)
     {
-      master.write(0xf8);
+      master.write(ENGINE_OFF);
       engOffStatusPrintOnce = true;
     }
   }

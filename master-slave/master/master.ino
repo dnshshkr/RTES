@@ -24,7 +24,9 @@
 #define EXCLUSIVE_START_RTES 0x84
 #define EXCLUSIVE_STOP_RTES 0x85
 #define RESET_COUNTERS 0x86
+#define RESET_CYCLE_COUNT 0x87
 
+#define CYCLE_COUNT_RESET 0xf7
 #define ENGINE_OFF 0xf8
 #define NEW_PARAMS_RECEIVED 0xf9
 #define COUNTERS_RESET 0xfa
@@ -43,6 +45,7 @@
 #define USER_EMAIL "danish44945@gmail.com"
 #define USER_PASSWORD "butokimak"
 #define STORAGE_BUCKET_ID "rtes-378707.appspot.com"
+#define SOL_ON_TIME_LIMIT 1000
 
 #include <Arduino_JSON.h>
 #include "FS.h"
@@ -62,8 +65,8 @@ bool fileManageMode = false;
 byte mode;
 unsigned int f2wPulseRatio;
 uint8_t engineOffTimeout;
-float flowRateBias;
-float solShotBias;
+float fuelPulseBias;
+float waterPulseBias;
 unsigned int solOnTime;
 float waterPercentage;
 float denominator;

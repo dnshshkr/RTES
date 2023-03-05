@@ -46,8 +46,9 @@ void parseMaster(uint8_t reqCode)
         runRTES = !runRTES;
         if (runRTES)
         {
-          engOffPrevMillis = pulseMeasurePrevMillis = millis();
+          calculate_denominator();
           master.write(RTES_STARTED);
+          engOffPrevMillis = pulseMeasurePrevMillis = millis();
         }
         else
           master.write(RTES_STOPPED);
@@ -56,8 +57,9 @@ void parseMaster(uint8_t reqCode)
     case EXCLUSIVE_START_RTES:
       {
         runRTES = true;
-        engOffPrevMillis = pulseMeasurePrevMillis = millis();
+        calculate_denominator();
         master.write(RTES_STARTED);
+        engOffPrevMillis = pulseMeasurePrevMillis = millis();
         break;
       }
     case EXCLUSIVE_STOP_RTES:
@@ -70,9 +72,14 @@ void parseMaster(uint8_t reqCode)
       {
         totalFuelPulse = 0;
         totalWaterPulse = 0;
-        cycleCount = 0;
+        cycleCount = 1;
         master.write(COUNTERS_RESET);
         break;
+      }
+    case RESET_CYCLE_COUNT:
+      {
+        cycleCount = 1;
+        master.write(CYCLE_COUNT_RESET);
       }
   }
 }
