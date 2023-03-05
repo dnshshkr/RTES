@@ -81,6 +81,7 @@ void setup()
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
   slave.begin(38400);
   Serial.begin(115200);
+  pinMode(LED_BUILTIN, OUTPUT);
 
   if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
     Serial.println("Failed to mount SPIFFS. Continuing...");
@@ -98,6 +99,7 @@ void setup()
   Serial.print("\nConnected to " + String(WIFI_SSID) + " with IP: ");
   Serial.println(WiFi.localIP());
   Serial.println();
+  digitalWrite(LED_BUILTIN, HIGH);
   Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
   config.api_key = API_KEY;
   auth.user.email = USER_EMAIL;
@@ -129,6 +131,10 @@ void loop()
     parseCMD();
   if (slave.available())
     parseSlave();
+  if (WiFi.status() == WL_CONNECTED)
+    digitalWrite(LED_BUILTIN, HIGH);
+  else
+    digitalWrite(LED_BUILTIN, LOW);
 }
 void flushSerial()
 {
