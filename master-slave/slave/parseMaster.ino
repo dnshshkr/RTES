@@ -2,7 +2,7 @@ void parseMaster(uint8_t reqCode)
 {
   switch (reqCode)
   {
-    case 0x80:
+    case REQUEST_PARAMS:
       {
         loadParams();
         params[0] = f2wPulseRatio;
@@ -14,16 +14,16 @@ void parseMaster(uint8_t reqCode)
         params[6] = checkpointPeriod;
         params[7] = testMode;
         params[8] = dieselMode;
-        master.write(0xff), master.println(params);
+        master.write(PARAMS), master.println(params);
         break;
       }
-    case 0x81:
+    case RESET_PARAMS:
       {
         resetParams();
-        master.write(0xfc);
+        master.write(PARAMS_RESET);
         break;
       }
-    case 0x82:
+    case SEND_NEW_PARAMS:
       {
         String body = master.readStringUntil('\r\n');
         body.trim();
@@ -38,41 +38,41 @@ void parseMaster(uint8_t reqCode)
         testMode = (bool)params[7];
         dieselMode = (bool)params[8];
         saveNewParams();
-        master.write(0xf7);
-        //Serial.println(params);
+        master.write(NEW_PARAMS_RECEIVED);
         break;
       }
-    case 0x83:
+    case TOGGLE_RTES:
       {
         runRTES = !runRTES;
         if (runRTES)
         {
-          pulseMeasurePrevMillis = millis();
-          master.write(0xfa);
+          engOffPrevMillis = pulseMeasurePrevMillis = millis();
+          master.write(RTES_STARTED);
         }
         else
-          master.write(0xfb);
+          master.write(RTES_STOPPED);
         break;
       }
-    case 0x84:
+    case EXCLUSIVE_START_RTES:
       {
         runRTES = true;
-        pulseMeasurePrevMillis = millis();
-        master.write(0xfa);
+        engOffPrevMillis = pulseMeasurePrevMillis = millis();
+        master.write(RTES_STARTED);
         break;
       }
-    case 0x85:
+    case EXCLUSIVE_STOP_RTES:
       {
         runRTES = false;
-        master.write(0xfb);
+        master.write(RTES_STOPPED);
         break;
       }
-    case 0x86:
+    case RESET_COUNTERS:
       {
         totalFuelPulse = 0;
         totalWaterPulse = 0;
         cycleCount = 0;
-        master.write(0xf9);
+        master.write(COUNTERS_RESET);
+        break;
       }
   }
 }

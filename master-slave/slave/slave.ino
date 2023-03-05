@@ -1,3 +1,4 @@
+
 #define REQUEST_PARAMS 0x80
 #define RESET_PARAMS 0x81
 #define SEND_NEW_PARAMS 0x82

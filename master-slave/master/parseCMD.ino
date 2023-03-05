@@ -10,7 +10,7 @@ void parseCMD()
       {
         if (mode == 1)
         {
-          slave.write(0x80);
+          slave.write(REQUEST_PARAMS);
           while (!slave.available()) {}
           parseSlave();
           printSettings();
@@ -46,9 +46,9 @@ void parseCMD()
           int val = valStr.toInt();
           if (val > 0 && val < 65536)
           {
-            slave.write(0x86);
+            slave.write(RESET_COUNTERS);
             while (!slave.available()) {}
-            if (slave.read() == 0xf8) {}
+            if (slave.read() == NEW_PARAMS_RECEIVED) {}
             else
               Serial.println("Failed to reset cycle count");
             params[0] = f2wPulseRatio = val;
@@ -111,19 +111,21 @@ void parseCMD()
         }
         else
         {
-          Serial.print("Are you sure you want to delete the file? (Y/N):");
+          Serial.print("Are you sure you want to delete the file? (Y/N)");
           bool wait = timeoutUI(5);
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')
           {
+            Serial.println();
             int val = valStr.toInt();
             String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
-            fileName = '/' + fileName.substring(1, fileName.length() - 1);
-            Serial.println(fileName);
-            short len = fileName.length() + 1;
-            char fileNameChar[len];
-            fileName.toCharArray(fileNameChar, len);
-            deleteFile(SPIFFS, fileNameChar);
+            fileName = fileName.substring(1, fileName.length() - 1);
+            //            fileName = '/' + fileName.substring(1, fileName.length() - 1);
+            //            Serial.println(fileName);
+            //            short len = fileName.length() + 1;
+            //            char fileNameChar[len];
+            //            fileName.toCharArray(fileNameChar, len);
+            deleteFile(SPIFFS, fileName.c_str());
           }
           else
           {
@@ -132,7 +134,7 @@ void parseCMD()
             Serial.println();
           }
           flushSerial();
-          spiffsMain();
+          spiffsUI();
         }
         break;
       }
@@ -209,12 +211,7 @@ void parseCMD()
         if (mode == 0)
           Serial.println("Press 's' to enter settings");
         else if (mode == 1)
-        {
-          slave.write(0x86);
-          while (!slave.available()) {}
-          if (slave.read() == 0xf9)
-            Serial.println("Counters have been reset");
-        }
+          slave.write(RESET_COUNTERS);
         break;
       }
     case 'i': case 'I':
@@ -232,8 +229,12 @@ void parseCMD()
       }
     case 'j': case 'J':
       {
-        mode = 2;
-        spiffsMain();
+        if (mode == 0) {}
+        else if (mode == 1)
+        {
+          mode = 2;
+          spiffsUI();
+        }
         break;
       }
     case 'o': case'O':
@@ -242,13 +243,15 @@ void parseCMD()
           break;
         short val = valStr.toInt();
         String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
-        fileName = '/' + fileName.substring(1, fileName.length() - 1);
+        fileName = fileName.substring(1, fileName.length() - 1);
         Serial.println(fileName);
-        short len = fileName.length() + 1;
-        char fileNameChar[len];
-        fileName.toCharArray(fileNameChar, len);
-        readFile(SPIFFS, fileNameChar);
-        spiffsMain();
+        //        fileName = '/' + fileName.substring(1, fileName.length() - 1);
+        //        short len = fileName.length() + 1;
+        //        char fileNameChar[len];
+        //        fileName.toCharArray(fileNameChar, len);
+        readFile(SPIFFS, fileName.c_str());
+        Serial.println();
+        spiffsUI();
         break;
       }
     case 'r': case 'R':
@@ -262,17 +265,13 @@ void parseCMD()
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')
           {
-            slave.write(0x81);
+            slave.write(RESET_PARAMS);
             while (!slave.available()) {}
-            if (slave.read() == 0xfc)
-            {
-              Serial.print("\nRestored to factory settings");
-              delay(1000);
-              Serial.println();
-              slave.write(0x80);
-              while (!slave.available()) {}
-              parseSlave();
-            }
+            parseSlave();
+            slave.write(REQUEST_PARAMS);
+            while (!slave.available()) {}
+            parseSlave();
+            printSettings();
           }
           else
           {
@@ -291,26 +290,24 @@ void parseCMD()
           newName.trim();
           short val = valStr.toInt();
           String oldName = JSON.stringify(fileConfig["contents"][val - 1]);
-          oldName = '/' + oldName.substring(1, oldName.length() - 1);
+          oldName = oldName.substring(1, oldName.length() - 1);
           Serial.println(oldName);
-          short lenOld = oldName.length() + 1;
-          char oldNameChar[lenOld];
-          oldName.toCharArray(oldNameChar, lenOld);
+          //          short lenOld = oldName.length() + 1;
+          //          char oldNameChar[lenOld];
+          //          oldName.toCharArray(oldNameChar, lenOld);
           newName = '/' + newName + ".txt";
-          short lenNew = newName.length() + 1;
-          char newNameChar[lenNew];
-          newName.toCharArray(newNameChar, lenNew);
-          renameFile(SPIFFS, oldNameChar, newNameChar);
-          spiffsMain();
+          //          short lenNew = newName.length() + 1;
+          //          char newNameChar[lenNew];
+          //          newName.toCharArray(newNameChar, lenNew);
+          renameFile(SPIFFS, oldName.c_str(), newName.c_str());
+          spiffsUI();
         }
         break;
       }
     case 's': case 'S':
       {
         if (mode == 0 || (mode == 1 && !changesMade))
-        {
-          slave.write(0x83);
-        }
+          slave.write(TOGGLE_RTES);
         else if (mode == 1 && changesMade)
         {
           Serial.print("Save changes? (Y/N)");
@@ -318,9 +315,9 @@ void parseCMD()
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')
           {
-            slave.write(0x82), slave.println(params);
+            slave.write(SEND_NEW_PARAMS), slave.println(params);
             while (!slave.available()) {}
-            if (slave.read() == 0xf7)
+            if (slave.read() == NEW_PARAMS_RECEIVED)
             {
               JSONVar prevParams;
               prevParams[0] = f2wPulseRatio;
@@ -332,66 +329,28 @@ void parseCMD()
               prevParams[6] = checkpointPeriod;
               prevParams[7] = testMode;
               Serial.println("\nChanges have been saved. Requesting new parameters to verify changes");
-              slave.write(0x80);
-              while (!slave.available()) {}
-              if (slave.read() == 0xff)
+              bool verify = verifyParams(prevParams);
+              if (!verify)
               {
-                String body = slave.readStringUntil('\r\n');
-                body.trim();
-                params = JSON.parse(body);
-                //Serial.print("prevParams: "), Serial.println(prevParams);
-                //Serial.print("newParams: "), Serial.println(params);
-                if (params[0] == prevParams[0]) {}
-                else
-                  goto verifyChangesFail;
-                if (params[1] == prevParams[1]) {}
-                else
-                  goto verifyChangesFail;
-                if (round2d((double)params[2]) == round2d((double)prevParams[2])) {}
-                else
-                  goto verifyChangesFail;
-                if (round2d((double)params[3]) == round2d((double)prevParams[3])) {}
-                else
-                  goto verifyChangesFail;
-                if (params[4] == prevParams[4]) {}
-                else
-                  goto verifyChangesFail;
-                if (round2d((double)params[5]) == round2d((double)prevParams[5])) {}
-                else
-                  goto verifyChangesFail;
-                if (params[6] == prevParams[6]) {}
-                else
-                  goto verifyChangesFail;
-                if (params[7] == prevParams[7])
-                {
-                  Serial.println("Verification completed");
-                  goto verifyChangesSuccess;
-                }
-                else {}
-verifyChangesFail:
                 Serial.println("Failed to verify changes, reverting to previous parameters");
                 params = prevParams;
                 assignParams();
-                printSettings();
+                changesMade = false;
               }
+              else
+                changesMade = false;
             }
-            else
-              Serial.println("Failed to save changes");
-verifyChangesSuccess:
-            changesMade = false;
-            printSettings();
           }
           else
           {
             Serial.print("\nChanges discarded");
-            slave.write(0x80);
-            while (!slave.available());
-            parseSlave();
+            slave.write(REQUEST_PARAMS);
             delay(1000);
             changesMade = false;
             Serial.println();
           }
           flushSerial();
+          printSettings();
         }
         break;
       }
@@ -408,7 +367,66 @@ verifyChangesSuccess:
         }
         break;
       }
+    case 'u': case 'U':
+      {
+        if (mode == 0 || mode == 1) {}
+        else
+        {
+          short val = valStr.toInt();
+          String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
+          fileName = fileName.substring(1, fileName.length() - 1);
+          if (Firebase.ready())
+          {
+            Serial.println("\nUpload file: \"" + fileName + "\"");
+            if (!Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID, fileName, mem_storage_type_flash, fileName.substring(1), "text/plain", fcsUploadCallback))
+              Serial.println(fbdo.errorReason());
+          }
+          spiffsUI();
+        }
+        break;
+      }
     default:
       Serial.println("Unknown command");
+  }
+}
+bool verifyParams(JSONVar prevParams)
+{
+  slave.write(REQUEST_PARAMS);
+  while (!slave.available()) {}
+  if (slave.read() == PARAMS)
+  {
+    String body = slave.readStringUntil('\r\n');
+    body.trim();
+    params = JSON.parse(body);
+    //Serial.print("prevParams: "), Serial.println(prevParams);
+    //Serial.print("newParams: "), Serial.println(params);
+    if (params[0] == prevParams[0]) {}
+    else
+      return false;
+    if (params[1] == prevParams[1]) {}
+    else
+      return false;
+    if (round2d((double)params[2]) == round2d((double)prevParams[2])) {}
+    else
+      return false;
+    if (round2d((double)params[3]) == round2d((double)prevParams[3])) {}
+    else
+      return false;
+    if (params[4] == prevParams[4]) {}
+    else
+      return false;
+    if (round2d((double)params[5]) == round2d((double)prevParams[5])) {}
+    else
+      return false;
+    if (params[6] == prevParams[6]) {}
+    else
+      return false;
+    if (params[7] == prevParams[7])
+    {
+      Serial.println("verification completed");
+      return true;
+    }
+    else
+      return true;
   }
 }

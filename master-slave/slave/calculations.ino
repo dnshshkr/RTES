@@ -26,7 +26,7 @@ void calculate_denominator()  //calculation of the denominator of the fraction e
 //  waterPercentage = round2d(solShotBias / denominator * 100.0);
 //}
 
-double round2d(double val)
+double round2d(float val)
 {
   return (int)(val * 100 + 0.5) / 100.0;
 }

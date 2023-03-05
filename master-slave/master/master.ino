@@ -1,3 +1,22 @@
+/*
+   request codes
+   REQUEST_PARAMS - request params
+   RESET_PARAMS - reset params
+   SEND_NEW_PARAMS - send new params
+   TOGGLE_RTES - toggle RTES
+   EXCLUSIVE_START_RTES - exclusive start RTES
+   EXCLUSIVE_STOP_RTES - exclusive stop RTES
+   RESET_COUNTERS - reset counters
+
+   response codes
+   NEW_PARAMS_RECEIVED - new params received
+   COUNTERS_RESET - counters are reset
+   RTES_STARTED - rtes started
+   RTES_STOPPED - rtes stopped
+   PARAMS_RESET - params are reset
+   READINGS - readings
+   PARAMS - params
+*/
 #define REQUEST_PARAMS 0x80
 #define RESET_PARAMS 0x81
 #define SEND_NEW_PARAMS 0x82
@@ -89,7 +108,7 @@ void setup()
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
   config.fcs.upload_buffer_size = 512;
-  //fbdo.setResponseSize(1024);
+  fbdo.setResponseSize(1024);
 
   slave.write(RESET_COUNTERS); //reset counters
   while (!slave.available()) {}
