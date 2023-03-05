@@ -1,32 +1,47 @@
 /*
    request codes
-   0x80 - request params
-   0x81 - reset params
-   0x82 - send new params
-   0x83 - toggle RTES
-   0x84 - exclusive start RTES
-   0x85 - exclusive stop RTES
-   0x86 - reset total pulses
-   0x87 - reset cycleCount
+   REQUEST_PARAMS - request params
+   RESET_PARAMS - reset params
+   SEND_NEW_PARAMS - send new params
+   TOGGLE_RTES - toggle RTES
+   EXCLUSIVE_START_RTES - exclusive start RTES
+   EXCLUSIVE_STOP_RTES - exclusive stop RTES
+   RESET_COUNTERS - reset counters
 
    response codes
-   0xf7 - new params received
-   0xf8 - cycleCount is reset
-   0xf9 - pulses are reset
-   0xfa - rtes started
-   0xfb - rtes stopped
-   0xfc - params are reset
-   0xfe - readings
-   0xff - params
+   NEW_PARAMS_RECEIVED - new params received
+   COUNTERS_RESET - counters are reset
+   RTES_STARTED - rtes started
+   RTES_STOPPED - rtes stopped
+   PARAMS_RESET - params are reset
+   READINGS - readings
+   PARAMS - params
 */
+#define REQUEST_PARAMS 0x80
+#define RESET_PARAMS 0x81
+#define SEND_NEW_PARAMS 0x82
+#define TOGGLE_RTES 0x83
+#define EXCLUSIVE_START_RTES 0x84
+#define EXCLUSIVE_STOP_RTES 0x85
+#define RESET_COUNTERS 0x86
+
+#define ENGINE_OFF 0xf8
+#define NEW_PARAMS_RECEIVED 0xf9
+#define COUNTERS_RESET 0xfa
+#define RTES_STARTED 0xfb
+#define RTES_STOPPED 0xfc
+#define PARAMS_RESET 0xfd
+#define READINGS 0xfe
+#define PARAMS 0xff
+
 #define RTES_VERSION "5.0"
 #define slave Serial2
 #define FORMAT_SPIFFS_IF_FAILED true
 #define WIFI_SSID "Mesh_Amin"
 #define WIFI_PASSWORD "1234123456"
 #define API_KEY "AIzaSyCi1wz8zPrEiqk_pBtu8G5jSPFr98EIYkg"
-#define USER_EMAIL "danish.shukor@outlook.com"
-#define USER_PASSWORD "w1943sei"
+#define USER_EMAIL "danish44945@gmail.com"
+#define USER_PASSWORD "butokimak"
 #define STORAGE_BUCKET_ID "rtes-378707.appspot.com"
 
 #include <Arduino_JSON.h>
@@ -43,9 +58,7 @@ bool firstData = false;
 bool dieselMode;
 bool testMode;
 bool changesMade = false;
-bool engOffStatusPrintOnce = false;
 bool fileManageMode = false;
-bool uploadCompleted = false;
 byte mode;
 unsigned int f2wPulseRatio;
 uint8_t engineOffTimeout;
@@ -57,7 +70,6 @@ float denominator;
 uint8_t checkpointPeriod;
 unsigned long solOnTimePrevMillis;
 unsigned long totalWaterPulse;
-unsigned long engOffPrevMillis;
 String cmd;
 File stream;
 JSONVar readings, params, fileConfig;
@@ -69,13 +81,13 @@ void setup()
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
   slave.begin(38400);
   Serial.begin(115200);
-  
+
   if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
     Serial.println("Failed to mount SPIFFS. Continuing...");
   else
     Serial.println("SPIFFS mounted");
   readConfigFile(SPIFFS);
-  
+
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Connecting to WiFi: " + String(WIFI_SSID));
   while (WiFi.status() != WL_CONNECTED)
@@ -94,19 +106,20 @@ void setup()
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
   config.fcs.upload_buffer_size = 512;
-  
-  slave.write(0x85);
+  fbdo.setResponseSize(1024);
+
+  slave.write(RESET_COUNTERS); //reset counters
   while (!slave.available()) {}
-  if (slave.read() == 0xfb)
-  {
+  parseSlave();
+  slave.write(EXCLUSIVE_STOP_RTES); //exclusive stop RTES
+  while (!slave.available()) {}
+  if (slave.read() == RTES_STOPPED)
     mode = 1;
-    slave.write(0x80);
-  }
+  slave.write(REQUEST_PARAMS);
   while (!slave.available()) {}
   parseSlave();
   Serial.println("RTES initialized");
-  engOffPrevMillis = millis();
-  slave.write(0x84);
+  slave.write(EXCLUSIVE_START_RTES);
   while (!slave.available()) {}
   parseSlave();
 }
@@ -116,16 +129,6 @@ void loop()
     parseCMD();
   if (slave.available())
     parseSlave();
-  if (millis() - engOffPrevMillis >= engineOffTimeout * 1000 && mode == 0)
-  {
-    if (!engOffStatusPrintOnce)
-    {
-      Serial.println("*Engine is off");
-      engOffStatusPrintOnce = true;
-    }
-  }
-  else
-    engOffStatusPrintOnce = false;
 }
 void flushSerial()
 {

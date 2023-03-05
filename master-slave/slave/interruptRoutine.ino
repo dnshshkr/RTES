@@ -7,5 +7,5 @@ void interruptRoutine() {
   cycleCount++;
   if (cycleCount >= f2wPulseRatio + 2)
     cycleCount = 1;
-  pulseDataPrint = true;
+  pushData();
 }

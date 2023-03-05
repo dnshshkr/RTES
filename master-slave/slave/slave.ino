@@ -1,33 +1,30 @@
-/*
-   request codes
-   0x80 - request params
-   0x81 - reset params
-   0x82 - send new params
-   0x83 - toggle RTES
-   0x84 - exclusive stop RTES
-   0x85 - reset total pulses
-   0x86 - reset cycleCount
 
-   response codes
-   0xf7 - new params received
-   0xf8 - cycleCount is reset
-   0xf9 - pulses are reset
-   0xfa - rtes run
-   0xfb - rtes stopped
-   0xfc - params are reset
-   0xfe - readings
-   0xff - params
-*/
+#define REQUEST_PARAMS 0x80
+#define RESET_PARAMS 0x81
+#define SEND_NEW_PARAMS 0x82
+#define TOGGLE_RTES 0x83
+#define EXCLUSIVE_START_RTES 0x84
+#define EXCLUSIVE_STOP_RTES 0x85
+#define RESET_COUNTERS 0x86
+
+#define ENGINE_OFF 0xf8
+#define NEW_PARAMS_RECEIVED 0xf9
+#define COUNTERS_RESET 0xfa
+#define RTES_STARTED 0xfb
+#define RTES_STOPPED 0xfc
+#define PARAMS_RESET 0xfd
+#define READINGS 0xfe
+#define PARAMS 0xff
+
 #include<Arduino_JSON.h>
 #include<SoftwareSerial.h>
 #include<EEPROM.h>
 const uint8_t rx = A1, tx = A0;
 const uint8_t addr[9] = {0, 2, 3, 7, 11, 13, 17, 18, 19};
 
-volatile bool pulseDataPrint = false;
 volatile uint8_t cycleCount = 0;
-volatile float fuelFlowRate;
-volatile float fuelPulsePeriod;
+volatile double fuelFlowRate;
+volatile double fuelPulsePeriod;
 volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;
 volatile unsigned long engOffPrevMillis = 0;
@@ -45,6 +42,7 @@ bool runRTES = true;
 bool sprayStarted = false;
 bool sprayedOnce = false;
 bool sprayCompleted = false;
+bool engOffStatusPrintOnce = false;
 unsigned long solOnTimePrevMillis;
 unsigned long totalWaterPulse = 0;
 
@@ -74,15 +72,21 @@ void setup()
 }
 void loop()
 {
+  if (millis() - engOffPrevMillis >= engineOffTimeout * 1000 && runRTES)
+  {
+    if (!engOffStatusPrintOnce)
+    {
+      master.write(0xf8);
+      engOffStatusPrintOnce = true;
+    }
+  }
+  else
+    engOffStatusPrintOnce = false;
   if (master.available())
   {
     uint8_t reqCode = master.read();
     parseMaster(reqCode);
   }
   if (runRTES)
-  {
     RTES();
-    if (pulseDataPrint)
-      pushData();
-  }
 }

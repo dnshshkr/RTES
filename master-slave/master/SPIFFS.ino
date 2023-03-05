@@ -49,16 +49,19 @@ void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
       if (levels)
         listDir(fs, file.name(), levels - 1);
     }
-    else if (file.name() != "/config.txt")
+    else
     {
       String fileName = file.name();
-      Serial.println(String(index + 1) + ". " + fileName + "\tSIZE: " + String(file.size()));
-      //      Serial.print(fileName);
-      //      Serial.print("\tSIZE: ");
-      //      Serial.println(file.size());
-      fileConfig["content_length"] = index + 1;
-      fileConfig["contents"][index] = fileName;
-      index++;
+      if (fileName != "/config.txt")
+      {
+        Serial.println(String(index + 1) + ". " + fileName + "\tSIZE: " + String(file.size()));
+        //      Serial.print(fileName);
+        //      Serial.print("\tSIZE: ");
+        //      Serial.println(file.size());
+        fileConfig["content_length"] = index + 1;
+        fileConfig["contents"][index] = fileName;
+        index++;
+      }
     }
     file = root.openNextFile();
   }

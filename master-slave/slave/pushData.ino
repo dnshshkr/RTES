@@ -4,18 +4,17 @@ void pushData()
   if (cycleCount <= f2wPulseRatio)
     waterPercentage = 0.0;
   else
-    waterPercentage = (solShotBias / denominator) * 100.0;
-  float fuelPercentage = ((flowRateBias * (float)cycleCount) / denominator) * 100.0;
+    waterPercentage = round1d((solShotBias / denominator) * 100.0);
+  float fuelPercentage = round1d(((flowRateBias * (float)cycleCount) / denominator) * 100.0);
 
   readings[0] = cycleCount;
   readings[1] = totalFuelPulse;
-  readings[2] = fuelPulsePeriod;
-  readings[3] = fuelFlowRate;
+  readings[2] = round2d(fuelPulsePeriod);
+  readings[3] = round2d(fuelFlowRate);
   readings[4] = totalWaterPulse;
   readings[5] = waterPercentage;
   readings[6] = fuelPercentage;
   master.write(0xfe), master.println(readings);
-  pulseDataPrint = false;
   //
   //  Serial.print(String(totalFuelPulse) + " total fuel pulse \t");
   //  Serial.print(String(fuelPulsePeriod) + " s\t");

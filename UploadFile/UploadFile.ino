@@ -14,14 +14,10 @@
 
 // If SD Card used for storage, assign SD card type and FS used in src/FirebaseFS.h and
 // change the config for that card interfaces in src/addons/SDHelper.h
-#include"soc/soc.h"
-#include"soc/rtc_cntl_reg.h"
+
 #include <Arduino.h>
-#if defined(ESP32) || defined(ARDUINO_RASPBERRY_PI_PICO_W)
+#include "FS.h"
 #include <WiFi.h>
-#elif defined(ESP8266)
-#include <ESP8266WiFi.h>
-#endif
 
 #include <Firebase_ESP_Client.h>
 
@@ -39,8 +35,8 @@
 #define API_KEY "AIzaSyCi1wz8zPrEiqk_pBtu8G5jSPFr98EIYkg"
 
 /* 3. Define the user Email and password that alreadey registerd or added in your project */
-#define USER_EMAIL "danish.shukor@outlook.com"
-#define USER_PASSWORD "w1943sei"
+#define USER_EMAIL "danish44945@gmail.com"
+#define USER_PASSWORD "butokimak"
 
 /* 4. Define the Firebase storage bucket ID e.g bucket-name.appspot.com */
 #define STORAGE_BUCKET_ID "rtes-378707.appspot.com"
@@ -53,21 +49,13 @@ FirebaseConfig config;
 
 bool taskCompleted = false;
 
-#if defined(ARDUINO_RASPBERRY_PI_PICO_W)
-WiFiMulti multi;
-#endif
-
 void setup()
 {
-  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
+
   Serial.begin(115200);
 
-#if defined(ARDUINO_RASPBERRY_PI_PICO_W)
-  multi.addAP(WIFI_SSID, WIFI_PASSWORD);
-  multi.run();
-#else
+
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-#endif
 
   Serial.print("Connecting to Wi-Fi");
   unsigned long ms = millis();
@@ -75,10 +63,6 @@ void setup()
   {
     Serial.print(".");
     delay(300);
-#if defined(ARDUINO_RASPBERRY_PI_PICO_W)
-    if (millis() - ms > 10000)
-      break;
-#endif
   }
   Serial.println();
   Serial.print("Connected with IP: ");
@@ -96,18 +80,9 @@ void setup()
 
   // The WiFi credentials are required for Pico W
   // due to it does not have reconnect feature.
-#if defined(ARDUINO_RASPBERRY_PI_PICO_W)
-  config.wifi.clearAP();
-  config.wifi.addAP(WIFI_SSID, WIFI_PASSWORD);
-#endif
 
   /* Assign the callback function for the long running token generation task */
   config.token_status_callback = tokenStatusCallback; // see addons/TokenHelper.h
-
-#if defined(ESP8266)
-  // required for large file data, increase Tx size as needed.
-  fbdo.setBSSLBufferSize(1024 /* Rx buffer size in bytes from 512 - 16384 */, 1024 /* Tx buffer size in bytes from 512 - 16384 */);
-#endif
 
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
@@ -118,7 +93,7 @@ void setup()
   config.fcs.upload_buffer_size = 512;
 
   // if use SD card, mount it.
-  SD_Card_Mounting(); // See src/addons/SDHelper.h
+  //SD_Card_Mounting(); // See src/addons/SDHelper.h
 }
 
 // The Firebase Storage upload callback function
@@ -161,12 +136,55 @@ void loop()
   if (Firebase.ready() && !taskCompleted)
   {
     taskCompleted = true;
-
+    listDir(SPIFFS, "/", 0);
+    String fileName = "/run1.txt";
+    File file = DEFAULT_FLASH_FS.open("/run1.txt", FILE_READ);
+    if (!file)
+      Serial.println("cant read");
+    else
+    {
+      while (file.available())
+        Serial.write(file.read());
+    }
     Serial.println("\nUpload file...\n");
 
     // MIME type should be valid to avoid the download problem.
     // The file systems for flash and SD/SDMMC can be changed in FirebaseFS.h.
-    if (!Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID /* Firebase Storage bucket id */, "/photo.jpg" /* path to local file */, mem_storage_type_flash /* memory storage type, mem_storage_type_flash and mem_storage_type_sd */, "/photo.jpg" /* path of remote file stored in the bucket */, "image/jpg" /* mime type */, fcsUploadCallback /* callback function */))
+    if (!Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID /* Firebase Storage bucket id */, "/run1.txt" /* path to local file */, mem_storage_type_flash /* memory storage type, mem_storage_type_flash and mem_storage_type_sd */, "run1.txt" /* path of remote stored in the bucket */, "text/plain" /* mime type */, fcsUploadCallback /* callback function */))
       Serial.println(fbdo.errorReason());
+  }
+}
+
+void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
+{
+  byte index = 0;
+  Serial.printf("Storage list: %s\r\n", dirname);
+  File root = fs.open(dirname);
+  if (!root)
+  {
+    Serial.println("- failed to open directory");
+    return;
+  }
+  if (!root.isDirectory())
+  {
+    Serial.println("Not a directory");
+    return;
+  }
+  File file = root.openNextFile();
+  while (file)
+  {
+    if (file.isDirectory())
+    {
+      Serial.print("  DIR : ");
+      Serial.println(file.name());
+      if (levels)
+        listDir(fs, file.name(), levels - 1);
+    }
+    else if (file.name())
+    {
+      String fileName = file.name();
+      Serial.println(String(index + 1) + ". " + fileName + "\tSIZE: " + String(file.size()));
+    }
+    file = root.openNextFile();
   }
 }
