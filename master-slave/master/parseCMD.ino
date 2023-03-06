@@ -116,7 +116,7 @@ void parseCMD()
           else
             Serial.println("Input is out of range");
         }
-        else
+        else if (mode == 2)
         {
           Serial.print("Are you sure you want to delete the file? (Y/N)");
           bool wait = timeoutUI(5);
@@ -125,13 +125,8 @@ void parseCMD()
           {
             Serial.println();
             int val = valStr.toInt();
-            String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
-            fileName = fileName.substring(1, fileName.length() - 1);
-            //            fileName = '/' + fileName.substring(1, fileName.length() - 1);
-            //            Serial.println(fileName);
-            //            short len = fileName.length() + 1;
-            //            char fileNameChar[len];
-            //            fileName.toCharArray(fileNameChar, len);
+            String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
+            fileName = '/' + fileName.substring(1, fileName.length() - 1);
             deleteFile(SPIFFS, fileName.c_str());
           }
           else
@@ -168,10 +163,16 @@ void parseCMD()
           else
             Serial.println("Input is out of range");
         }
-        else //mode=2
+        else if (mode == 2)
         {
           mode = 1;
           writeConfigFile(SPIFFS);
+          printSettings();
+        }
+        else
+        {
+          mode = 1;
+          fbdo.fileList()->items.clear();
           printSettings();
         }
         break;
@@ -235,29 +236,34 @@ void parseCMD()
       }
     case 'j': case 'J':
       {
-        if (mode == 0) {}
-        else if (mode == 1)
+        if (mode == 1)
         {
           mode = 2;
           spiffsUI();
         }
         break;
       }
-    case 'o': case'O':
+    case 'k': case 'K':
       {
-        if (mode != 2)
-          break;
-        short val = valStr.toInt();
-        String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
-        fileName = fileName.substring(1, fileName.length() - 1);
-        Serial.println(fileName);
-        //        fileName = '/' + fileName.substring(1, fileName.length() - 1);
-        //        short len = fileName.length() + 1;
-        //        char fileNameChar[len];
-        //        fileName.toCharArray(fileNameChar, len);
-        readFile(SPIFFS, fileName.c_str());
-        Serial.println();
-        spiffsUI();
+        if (mode == 1)
+        {
+          mode = 3;
+          firebaseUI();
+        }
+        break;
+      }
+    case 'o': case 'O':
+      {
+        if (mode == 2)
+        {
+          short val = valStr.toInt();
+          String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
+          fileName = '/' + fileName.substring(1, fileName.length() - 1);
+          Serial.println(fileName);
+          readFile(SPIFFS, fileName.c_str());
+          Serial.println();
+          spiffsUI();
+        }
         break;
       }
     case 'r': case 'R':
@@ -295,16 +301,10 @@ void parseCMD()
           String newName = Serial.readStringUntil('\r\n');
           newName.trim();
           short val = valStr.toInt();
-          String oldName = JSON.stringify(fileConfig["contents"][val - 1]);
-          oldName = oldName.substring(1, oldName.length() - 1);
+          String oldName = JSON.stringify(localFileConfig["contents"][val - 1]);
+          oldName = '/' + oldName.substring(1, oldName.length() - 1);
           Serial.println(oldName);
-          //          short lenOld = oldName.length() + 1;
-          //          char oldNameChar[lenOld];
-          //          oldName.toCharArray(oldNameChar, lenOld);
           newName = '/' + newName + ".txt";
-          //          short lenNew = newName.length() + 1;
-          //          char newNameChar[lenNew];
-          //          newName.toCharArray(newNameChar, lenNew);
           renameFile(SPIFFS, oldName.c_str(), newName.c_str());
           spiffsUI();
         }
@@ -375,12 +375,11 @@ void parseCMD()
       }
     case 'u': case 'U':
       {
-        if (mode == 0 || mode == 1) {}
-        else
+        short val = valStr.toInt();
+        if (mode == 2)
         {
-          short val = valStr.toInt();
-          String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
-          fileName = fileName.substring(1, fileName.length() - 1);
+          String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
+          fileName = '/' + fileName.substring(1, fileName.length() - 1);
           if (Firebase.ready())
           {
             Serial.println("\nUpload file: \"" + fileName + "\"");
@@ -389,10 +388,26 @@ void parseCMD()
           }
           spiffsUI();
         }
+        else if (mode == 3)
+        {
+          String fileName = String(remoteFiles->items[val].name.c_str());
+          if (Firebase.ready())
+          {
+            Serial.println("\nDownload file...\n");
+            if (!Firebase.Storage.download(&fbdo, STORAGE_BUCKET_ID, fileName, '/' + fileName, mem_storage_type_flash, fcsDownloadCallback))
+              Serial.println(fbdo.errorReason());
+          }
+          firebaseUI();
+        }
         break;
       }
     default:
-      Serial.println("Unknown command");
+      {
+        if (mode == 0)
+          Serial.println("Press 's' to enter settings");
+        else
+          Serial.println("Unknown command");
+      }
   }
 }
 bool verifyParams(JSONVar prevParams)

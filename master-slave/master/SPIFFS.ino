@@ -11,14 +11,14 @@ void readConfigFile(fs::FS &fs)
   String content;
   while (file.available())
     content += file.read();
-  fileConfig = JSON.parse(content);
+  localFileConfig = JSON.parse(content);
   file.close();
 }
 
 void writeConfigFile(fs::FS&fs)
 {
-  File file = fs.open("/config.txt", FILE_WRITE);
-  if (file.print(fileConfig))
+  File file = fs.open("/localConfig.txt", FILE_WRITE);
+  if (file.print(localFileConfig))
     Serial.println("config file write successful");
   else
     Serial.println("config file write failed");
@@ -52,14 +52,14 @@ void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
     else
     {
       String fileName = file.name();
-      if (fileName != "/config.txt")
+      if (fileName != "/localConfig.txt")
       {
         Serial.println(String(index + 1) + ". " + fileName + "\tSIZE: " + String(file.size()));
         //      Serial.print(fileName);
         //      Serial.print("\tSIZE: ");
         //      Serial.println(file.size());
-        fileConfig["content_length"] = index + 1;
-        fileConfig["contents"][index] = fileName;
+        localFileConfig["content_length"] = index + 1;
+        localFileConfig["contents"][index] = fileName;
         index++;
       }
     }

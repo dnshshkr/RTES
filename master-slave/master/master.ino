@@ -75,10 +75,11 @@ unsigned long solOnTimePrevMillis;
 unsigned long totalWaterPulse;
 String cmd;
 File stream;
-JSONVar readings, params, fileConfig;
+JSONVar readings, params, localFileConfig, remoteFileConfig;
 FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
+FileList *remoteFiles;
 void setup()
 {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);

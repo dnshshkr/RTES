@@ -15,7 +15,8 @@ void printSettings()
   Serial.println("H - Reset Total Fuel Pulse Counter");
   Serial.print("I - Toggle Diesel-only Mode: ");
   dieselMode ? Serial.println("ON") : Serial.println("OFF");
-  Serial.println("J - Browse Storage");
+  Serial.println("J - Browse Local Storage");
+  Serial.println("K - Browse Cloud Storage");
   Serial.print("T - Toggle Test Mode: ");
   testMode ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("R - Reset to Factory Settings");
@@ -33,19 +34,29 @@ void printSettings()
   if (mode == 0)
     Serial.write(')');
   Serial.println(" Mode");
-  Serial.println("******************************************");
+  Serial.println("*******************************************");
 }
 
 void spiffsUI()
 {
-  Serial.println("***************FILE BROWSER***************");
+  Serial.println("***************LOCAL STORAGE***************");
   listDir(SPIFFS, "/", 0);
   Serial.println("\nMenu:\nO - Open File");
   Serial.println("R - Rename File");
   Serial.println("D - Delete File");
   Serial.println("U - Upload File");
   Serial.println("E - Exit");
-  Serial.println("******************************************");
+  Serial.println("*******************************************");
+}
+
+void firebaseUI()
+{
+  Serial.println("***************CLOUD STORAGE***************");
+  listRemoteFiles();
+  Serial.println("\nMenu:\nU - Download File");
+  Serial.println("D - Delete File");
+  Serial.println("E - Exit");
+  Serial.println("*******************************************");
 }
 
 bool timeoutUI(int8_t countDown)
