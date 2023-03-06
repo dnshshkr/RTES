@@ -1,6 +1,6 @@
 void readConfigFile(fs::FS &fs)
 {
-  File file = fs.open("/config.txt", FILE_READ);
+  File file = fs.open("/localConfig.txt", FILE_READ);
   if (!file || file.isDirectory())
   {
     Serial.println("- failed to open file for reading");
@@ -49,19 +49,16 @@ void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
       if (levels)
         listDir(fs, file.name(), levels - 1);
     }
-    else
+    else if (file.name() != "/localConfig.txt" && file.name() != "localConfig.txt")
     {
       String fileName = file.name();
-      if (fileName != "/localConfig.txt")
-      {
-        Serial.println(String(index + 1) + ". " + fileName + "\tSIZE: " + String(file.size()));
-        //      Serial.print(fileName);
-        //      Serial.print("\tSIZE: ");
-        //      Serial.println(file.size());
-        localFileConfig["content_length"] = index + 1;
-        localFileConfig["contents"][index] = fileName;
-        index++;
-      }
+      Serial.println(String(index + 1) + ". " + fileName + "\tSIZE: " + String(file.size()));
+      //      Serial.print(fileName);
+      //      Serial.print("\tSIZE: ");
+      //      Serial.println(file.size());
+      localFileConfig["content_length"] = index + 1;
+      localFileConfig["contents"][index] = fileName;
+      index++;
     }
     file = root.openNextFile();
   }
@@ -114,10 +111,44 @@ void appendFile(fs::FS &fs, const char *path, const char *message)
   file.close();
 }
 
-bool renameFile(fs::FS &fs, const char *oldPath, const char *newPath)
+bool renameFile(fs::FS &fs, const char *oldPath)
 {
-  Serial.printf("Renaming file %s to %s\r\n", oldPath, newPath);
-  if (fs.rename(oldPath, newPath))
+  //  Serial.printf("Renaming file %s to %s\r\n", oldPath, newPath);
+  //  if (fs.rename(oldPath, newPath))
+  //  {
+  //    Serial.println("- file renamed");
+  //    return true;
+  //  }
+  //  else
+  //  {
+  //    Serial.println("- rename failed");
+  //    return false;
+  //  }
+
+  while (!Serial.available()) {}
+  String newPath = Serial.readStringUntil('\r\n');
+  newPath.trim();
+  newPath = '/' + newPath + ".txt";
+  if (fs.exists(newPath.c_str()))
+  {
+    Serial.println("The file already exists. Do you want to replace it?");
+    while (!Serial.available()) {}
+    char choice = Serial.read();
+    if (choice == 'y' || choice == 'Y')
+    {
+      fs.remove(oldPath);
+      fs.rename(oldPath, newPath.c_str());
+      return true;
+    }
+    else
+      return false;
+  }
+  else if (newPath == "localConfig")
+  {
+    Serial.println("- invalid file name");
+    return false;
+  }
+  else if (fs.rename(oldPath, newPath.c_str()))
   {
     Serial.println("- file renamed");
     return true;
@@ -125,8 +156,9 @@ bool renameFile(fs::FS &fs, const char *oldPath, const char *newPath)
   else
   {
     Serial.println("- rename failed");
-    return false;
+    return true;
   }
+
 }
 
 void deleteFile(fs::FS &fs, const char *path)

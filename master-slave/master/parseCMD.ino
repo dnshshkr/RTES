@@ -138,6 +138,26 @@ void parseCMD()
           flushSerial();
           spiffsUI();
         }
+        else //mode=3
+        {
+          size_t val = valStr.toInt();
+          if (val <= remoteFiles->items.size())
+          {
+            Serial.print("Are you sure you want to delete this remote file? (Y/N)");
+            bool wait = timeoutUI(5);
+            char choice = Serial.read();
+            if (choice == 'Y' || choice == 'y')
+              Serial.printf("Delete file... %s\n", Firebase.Storage.deleteFile(&fbdo, STORAGE_BUCKET_ID, String(remoteFiles->items[val - 1].name.c_str())) ? "ok" : fbdo.errorReason().c_str());
+            else
+            {
+              Serial.print("\Remote file deletion aborted");
+              delay(1000);
+              Serial.println();
+            }
+            flushSerial();
+            firebaseUI();
+          }
+        }
         break;
       }
     case 'e': case 'E':
@@ -259,7 +279,6 @@ void parseCMD()
           short val = valStr.toInt();
           String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
           fileName = '/' + fileName.substring(1, fileName.length() - 1);
-          Serial.println(fileName);
           readFile(SPIFFS, fileName.c_str());
           Serial.println();
           spiffsUI();
@@ -296,16 +315,22 @@ void parseCMD()
         }
         else
         {
-          Serial.println("Enter the file new name");
-          while (!Serial.available()) {}
-          String newName = Serial.readStringUntil('\r\n');
-          newName.trim();
           short val = valStr.toInt();
-          String oldName = JSON.stringify(localFileConfig["contents"][val - 1]);
-          oldName = '/' + oldName.substring(1, oldName.length() - 1);
-          Serial.println(oldName);
-          newName = '/' + newName + ".txt";
-          renameFile(SPIFFS, oldName.c_str(), newName.c_str());
+          String oldPath = JSON.stringify(localFileConfig["contents"][val - 1]);
+          oldPath = '/' + oldPath.substring(1, oldPath.length() - 1);
+          do
+          {
+            Serial.println("Enter the file new name");
+          } while (!renameFile(SPIFFS, oldPath.c_str()));
+          //          while (!Serial.available()) {}
+          //          String newName = Serial.readStringUntil('\r\n');
+          //          newName.trim();
+          //          short val = valStr.toInt();
+          //          String oldName = JSON.stringify(localFileConfig["contents"][val - 1]);
+          //          oldName = '/' + oldName.substring(1, oldName.length() - 1);
+          //          Serial.println(oldName);
+          //          newName = '/' + newName + ".txt";
+          //          renameFile(SPIFFS, oldName.c_str(), newName.c_str());
           spiffsUI();
         }
         break;

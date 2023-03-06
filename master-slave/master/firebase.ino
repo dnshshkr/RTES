@@ -8,7 +8,7 @@ void listRemoteFiles()
     {
       remoteFiles = fbdo.fileList();
       for (size_t i = 0; i < remoteFiles->items.size(); i++)
-        Serial.printf("%d. %s, bucket: %s\n", i, remoteFiles->items[i].name.c_str(), remoteFiles->items[i].bucket.c_str());
+        Serial.printf("%d. %s, bucket: %s\n", i + 1, remoteFiles->items[i].name.c_str(), remoteFiles->items[i].bucket.c_str());
     }
 
     // To clear file list
