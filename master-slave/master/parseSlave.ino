@@ -7,7 +7,7 @@ void parseSlave()
       {
         mode = 0;
         stream = SPIFFS.open("/stream.txt", FILE_WRITE);
-        printSettings();
+        mainMenuUI();
         Serial.print("RTES mode entered");
         if (dieselMode)
           Serial.println(" (Diesel-only mode)");
@@ -33,7 +33,7 @@ void parseSlave()
           SPIFFS.remove("/stream.txt");
         }
         mode = 1;
-        printSettings();
+        mainMenuUI();
         Serial.println("Settings mode entered");
         break;
       }

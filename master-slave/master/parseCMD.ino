@@ -13,7 +13,7 @@ void parseCMD()
           slave.write(REQUEST_PARAMS);
           while (!slave.available()) {}
           parseSlave();
-          printSettings();
+          mainMenuUI();
         }
         break;
       }
@@ -31,7 +31,7 @@ void parseCMD()
             f2wPulseRatio = result;
             params[0] = f2wPulseRatio;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
@@ -58,7 +58,7 @@ void parseCMD()
             waterPercentage = result2;
             params[5] = waterPercentage;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
@@ -86,7 +86,7 @@ void parseCMD()
             params[0] = f2wPulseRatio;
             params[5] = waterPercentage;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
@@ -111,7 +111,7 @@ void parseCMD()
             params[4] = solOnTime;
             params[0] = f2wPulseRatio;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
@@ -180,7 +180,7 @@ void parseCMD()
             params[3] = waterPulseBias;
             params[0] = f2wPulseRatio;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
@@ -189,13 +189,13 @@ void parseCMD()
         {
           mode = 1;
           writeConfigFile(SPIFFS);
-          printSettings();
+          mainMenuUI();
         }
         else
         {
           mode = 1;
           fbdo.fileList()->items.clear();
-          printSettings();
+          mainMenuUI();
         }
         break;
       }
@@ -210,7 +210,7 @@ void parseCMD()
           {
             params[1] = engineOffTimeout = val;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
@@ -228,7 +228,7 @@ void parseCMD()
           {
             params[6] = checkpointPeriod = val;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
@@ -252,7 +252,7 @@ void parseCMD()
           dieselMode = !dieselMode;
           params[8] = dieselMode;
           changesMade = true;
-          printSettings();
+          mainMenuUI();
         }
         break;
       }
@@ -309,7 +309,7 @@ void parseCMD()
             slave.write(REQUEST_PARAMS);
             while (!slave.available()) {}
             parseSlave();
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("\nFactory reset aborted");
@@ -388,7 +388,7 @@ void parseCMD()
             Serial.println();
           }
           flushSerial();
-          printSettings();
+          mainMenuUI();
         }
         break;
       }
@@ -401,7 +401,7 @@ void parseCMD()
           testMode = !testMode;
           params[7] = testMode;
           changesMade = true;
-          printSettings();
+          mainMenuUI();
         }
         break;
       }

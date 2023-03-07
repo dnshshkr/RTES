@@ -1,3 +1,23 @@
+void updateParamsFb()
+{
+  //!Firebase.RTDB.getJSON(&fbdo, "/update") ? Serial.println(fbdo.errorReason()) : Serial.print("");
+  if (Firebase.ready() && Firebase.RTDB.getJSON(&fbdo, "/update") && (bool)JSON.parse(fbdo.to<FirebaseJson>().raw())["change"])
+  {
+    Serial.println("Wireless parameter update received. Assigning new parameters");
+    if (Firebase.RTDB.getJSON(&fbdo, "/params"))
+    {
+      params = JSON.parse(fbdo.to<FirebaseJson>().raw());
+      FirebaseJson resp;
+      resp.add("change", false);
+      Firebase.RTDB.setJSON(&fbdo, "/update", &resp);
+      assignParamsFb();
+      mainMenuUI();
+    }
+    else
+      Serial.println(fbdo.errorReason() + " Retrying...");
+  }
+}
+
 void listRemoteFiles()
 {
   if (Firebase.ready())

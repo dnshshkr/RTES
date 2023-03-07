@@ -1,6 +1,6 @@
-void printSettings()
+void mainMenuUI()
 {
-  Serial.println("***************ALL SETTINGS***************");
+  Serial.println("*****************MAIN MENU*****************");
   Serial.println("RTES v" + String(RTES_VERSION));
   Serial.println("A - Water Percentage: " + String(waterPercentage) + "%");
   Serial.print("B - Fuel Pulse Per Cycle: " + String(f2wPulseRatio + 1) + " pulse");

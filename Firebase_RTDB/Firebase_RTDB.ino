@@ -11,11 +11,11 @@
 */
 
 #include <Arduino.h>
-#include <FirebaseESP32.h>
+//#include <FirebaseESP32.h>
 #include <WiFi.h>
 #include <Arduino_JSON.h>
 
-//#include <Firebase_ESP_Client.h>
+#include <Firebase_ESP_Client.h>
 
 // Provide the token generation process info.
 #include <addons/TokenHelper.h>
@@ -44,12 +44,11 @@ FirebaseData fbdo;
 
 FirebaseAuth auth;
 FirebaseConfig config;
-JSONVar params;
+JSONVar params, change;
 
 unsigned long sendDataPrevMillis = 0;
 
 unsigned long count = 0;
-bool change = false;
 
 void setup()
 {
@@ -99,23 +98,22 @@ void loop()
   // in all Firebase and FirebaseJson functions, unless F() macro is not supported.
 
   //Firebase.ready() should be called repeatedly to handle authentication tasks.
-  if (Firebase.getBool(fbdo, FPSTR("/change")))
-    change = fbdo.to<bool>();
-  else
-    Serial.println("failed to enquire change");
-  if (change && Firebase.ready())
+  if (Firebase.ready() && Firebase.RTDB.getJSON(&fbdo, "/update") && (bool)JSON.parse(fbdo.to<FirebaseJson>().raw())["change"])
   {
-    FirebaseJson json;
     if (Firebase.RTDB.getJSON(&fbdo, "/params"))
     {
       params = JSON.parse(fbdo.to<FirebaseJson>().raw());
       Serial.println(params);
-      change = false;
-      Firebase.setBool(fbdo, F("/change"), change);
+      FirebaseJson resp;
+      resp.add("change", false);
+      resp.add("last update", count);
+      Firebase.RTDB.setJSON(&fbdo, "/update", &resp);
     }
     else
       Serial.println(fbdo.errorReason() + " Retrying...");
+    count++;
   }
+
   //  if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0))
   //  {
   //    long prevmillis = 0;
@@ -127,11 +125,11 @@ void loop()
   //
   //    Serial.printf("Set json... % s\n", Firebase.RTDB.setJSON(&fbdo, " / test / json", &json) ? "ok" : fbdo.errorReason().c_str());
   //    prevmillis = millis();
-  //    Serial.printf("Get json... % s, time taken: %d ms\n", Firebase.RTDB.getJSON(&fbdo, " / test / json") ? fbdo.to<FirebaseJson>().raw() : fbdo.errorReason().c_str(), millis() - prevmillis);
+  //    Serial.printf("Get json... % s, time taken: % d ms\n", Firebase.RTDB.getJSON(&fbdo, " / test / json") ? fbdo.to<FirebaseJson>().raw() : fbdo.errorReason().c_str(), millis() - prevmillis);
   //
   //    prevmillis = millis();
   //    FirebaseJson jVal;
-  //    Serial.printf("Get json ref... % s, time takenL %d ms\n", Firebase.RTDB.getJSON(&fbdo, " / test / json", &jVal) ? jVal.raw() : fbdo.errorReason().c_str(), millis() - prevmillis);
+  //    Serial.printf("Get json ref... % s, time takenL % d ms\n", Firebase.RTDB.getJSON(&fbdo, " / test / json", &jVal) ? jVal.raw() : fbdo.errorReason().c_str(), millis() - prevmillis);
   //
   //    FirebaseJsonArray arr;
   //    arr.setFloatDigits(2);

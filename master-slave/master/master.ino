@@ -45,6 +45,7 @@
 #define USER_EMAIL "danish44945@gmail.com"
 #define USER_PASSWORD "1sampai8"
 #define STORAGE_BUCKET_ID "rtes-378707.appspot.com"
+#define DATABASE_URL "rtes-378707-default-rtdb.asia-southeast1.firebasedatabase.app"
 #define SOL_ON_TIME_LIMIT 1000
 
 #include <Arduino_JSON.h>
@@ -107,12 +108,13 @@ void setup()
   digitalWrite(LED_BUILTIN, HIGH);
   Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
   config.api_key = API_KEY;
+  config.database_url = DATABASE_URL;
   auth.user.email = USER_EMAIL;
   auth.user.password = USER_PASSWORD;
   config.token_status_callback = tokenStatusCallback;
+  config.fcs.upload_buffer_size = 512;
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
-  config.fcs.upload_buffer_size = 512;
   fbdo.setResponseSize(1024);
 
   slave.write(RESET_COUNTERS); //reset counters
@@ -140,6 +142,8 @@ void loop()
     digitalWrite(LED_BUILTIN, HIGH);
   else
     digitalWrite(LED_BUILTIN, LOW);
+  if (mode == 1)
+    updateParamsFb();
 }
 void flushSerial()
 {

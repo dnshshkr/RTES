@@ -10,3 +10,16 @@ void assignParams()
   testMode = (bool)params[7];
   dieselMode = (bool)params[8];
 }
+
+void assignParamsFb()
+{
+  f2wPulseRatio = (int)params["f2wPulseRatio"];
+  engineOffTimeout = (int)params["engineOffTimeout"];
+  fuelPulseBias = (double)params["fuelPulseBias"];
+  waterPulseBias = (double)params["waterPulseBias"];
+  solOnTime = (int)params["solOnTime"];
+  waterPercentage = (double)params["waterPercentage"];
+  checkpointPeriod = (int)params["checkpointPeriod"];
+  testMode = (double)params["testMode"];
+  dieselMode = (bool)params["dieselMode"];
+}
