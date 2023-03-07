@@ -125,7 +125,7 @@ void parseCMD()
           {
             String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
             fileName = '/' + fileName.substring(1, fileName.length() - 1);
-            Serial.print("Are you sure you want to delete the file \"" + fileName + "\"? (Y / N)");
+            Serial.print("Are you sure you want to delete the file \"" + fileName + "\"? (Y/N)");
             bool wait = timeoutUI(5);
             char choice = Serial.read();
             if (choice == 'Y' || choice == 'y')
@@ -147,7 +147,7 @@ void parseCMD()
           else
           {
             String fileName = String(remoteFiles->items[val - 1].name.c_str());
-            Serial.print("Are you sure you want to delete the remote file \"" + fileName + "\"? (Y / N)");
+            Serial.print("Are you sure you want to delete the remote file \"" + fileName + "\"? (Y/N)");
             bool wait = timeoutUI(5);
             char choice = Serial.read();
             if (choice == 'Y' || choice == 'y')
@@ -298,7 +298,7 @@ void parseCMD()
           Serial.println("Press 's' to enter settings");
         else if (mode == 1)
         {
-          Serial.print("Are you sure you want to reset to factory settings ? (Y / N)");
+          Serial.print("Are you sure you want to reset to factory settings ? (Y/N)");
           bool wait = timeoutUI(10);
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')
@@ -348,7 +348,7 @@ void parseCMD()
           slave.write(TOGGLE_RTES);
         else if (mode == 1 && changesMade)
         {
-          Serial.print("Save changes ? (Y / N)");
+          Serial.print("Save changes ? (Y/N)");
           bool wait = timeoutUI(5);
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')

@@ -52,16 +52,14 @@ void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
     else
     {
       String fileName = file.name();
-      if (fileName == "localConfig.txt");
+      if (fileName != "localConfig.txt")
       {
         Serial.println(String(index + 1) + ". " + fileName + "\tSIZE: " + String(file.size()));
-        //      Serial.print(fileName);
-        //      Serial.print("\tSIZE: ");
-        //      Serial.println(file.size());
         localFileConfig["content_length"] = index + 1;
         localFileConfig["contents"][index] = fileName;
         index++;
       }
+      else {}
     }
     file = root.openNextFile();
   }

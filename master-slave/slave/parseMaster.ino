@@ -72,13 +72,13 @@ void parseMaster(uint8_t reqCode)
       {
         totalFuelPulse = 0;
         totalWaterPulse = 0;
-        cycleCount = 1;
+        cycleCount = 0;
         master.write(COUNTERS_RESET);
         break;
       }
     case RESET_CYCLE_COUNT:
       {
-        cycleCount = 1;
+        cycleCount = 0;
         master.write(CYCLE_COUNT_RESET);
       }
   }
