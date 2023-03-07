@@ -118,44 +118,46 @@ void parseCMD()
         }
         else if (mode == 2)
         {
-          Serial.print("Are you sure you want to delete the file? (Y/N)");
-          bool wait = timeoutUI(5);
-          char choice = Serial.read();
-          if (choice == 'Y' || choice == 'y')
-          {
-            Serial.println();
-            int val = valStr.toInt();
-            String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
-            fileName = '/' + fileName.substring(1, fileName.length() - 1);
-            deleteFile(SPIFFS, fileName.c_str());
-          }
+          int val = valStr.toInt();
+          if (val < 1 || val > (int)localFileConfig["content_length"])
+            Serial.println("Input is out of range");
           else
           {
-            Serial.print("\nFile deletion aborted");
-            delay(1000);
-            Serial.println();
+            String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
+            fileName = '/' + fileName.substring(1, fileName.length() - 1);
+            Serial.print("Are you sure you want to delete the file \"" + fileName + "\"? (Y / N)");
+            bool wait = timeoutUI(5);
+            char choice = Serial.read();
+            if (choice == 'Y' || choice == 'y')
+            {
+              Serial.println();
+              deleteFile(SPIFFS, fileName.c_str());
+              spiffsUI();
+            }
+            else
+              Serial.println("\nFile deletion aborted");
+            flushSerial();
           }
-          flushSerial();
-          spiffsUI();
         }
         else //mode=3
         {
           size_t val = valStr.toInt();
-          if (val <= remoteFiles->items.size())
+          if (val < 1 || val > remoteFiles->items.size())
+            Serial.println("Input is out of range");
+          else
           {
-            Serial.print("Are you sure you want to delete this remote file? (Y/N)");
+            String fileName = String(remoteFiles->items[val - 1].name.c_str());
+            Serial.print("Are you sure you want to delete the remote file \"" + fileName + "\"? (Y / N)");
             bool wait = timeoutUI(5);
             char choice = Serial.read();
             if (choice == 'Y' || choice == 'y')
-              Serial.printf("Delete file... %s\n", Firebase.Storage.deleteFile(&fbdo, STORAGE_BUCKET_ID, String(remoteFiles->items[val - 1].name.c_str())) ? "ok" : fbdo.errorReason().c_str());
-            else
             {
-              Serial.print("\Remote file deletion aborted");
-              delay(1000);
-              Serial.println();
+              Serial.printf("Delete file... % s\n", Firebase.Storage.deleteFile(&fbdo, STORAGE_BUCKET_ID, fileName) ? "ok" : fbdo.errorReason().c_str());
+              firebaseUI();
             }
+            else
+              Serial.println("\nRemote file deletion aborted");
             flushSerial();
-            firebaseUI();
           }
         }
         break;
@@ -277,11 +279,16 @@ void parseCMD()
         if (mode == 2)
         {
           short val = valStr.toInt();
-          String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
-          fileName = '/' + fileName.substring(1, fileName.length() - 1);
-          readFile(SPIFFS, fileName.c_str());
-          Serial.println();
-          spiffsUI();
+          if (val < 1 || val > (int)localFileConfig["content_length"])
+            Serial.println("Input is out of range");
+          else
+          {
+            String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
+            fileName = '/' + fileName.substring(1, fileName.length() - 1);
+            readFile(SPIFFS, fileName.c_str());
+            Serial.println();
+            spiffsUI();
+          }
         }
         break;
       }
@@ -291,7 +298,7 @@ void parseCMD()
           Serial.println("Press 's' to enter settings");
         else if (mode == 1)
         {
-          Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
+          Serial.print("Are you sure you want to reset to factory settings ? (Y / N)");
           bool wait = timeoutUI(10);
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')
@@ -305,33 +312,33 @@ void parseCMD()
             printSettings();
           }
           else
-          {
-            Serial.print("\nFactory reset aborted");
-            delay(1000);
-            Serial.println();
-            printSettings();
-          }
+            Serial.println("\nFactory reset aborted");
           flushSerial();
         }
         else
         {
           short val = valStr.toInt();
-          String oldPath = JSON.stringify(localFileConfig["contents"][val - 1]);
-          oldPath = '/' + oldPath.substring(1, oldPath.length() - 1);
-          do
+          if (val < 1 || val > (int)localFileConfig["content_length"])
+            Serial.println("Input is out of range");
+          else
           {
-            Serial.println("Enter the file new name");
-          } while (!renameFile(SPIFFS, oldPath.c_str()));
-          //          while (!Serial.available()) {}
-          //          String newName = Serial.readStringUntil('\r\n');
-          //          newName.trim();
-          //          short val = valStr.toInt();
-          //          String oldName = JSON.stringify(localFileConfig["contents"][val - 1]);
-          //          oldName = '/' + oldName.substring(1, oldName.length() - 1);
-          //          Serial.println(oldName);
-          //          newName = '/' + newName + ".txt";
-          //          renameFile(SPIFFS, oldName.c_str(), newName.c_str());
-          spiffsUI();
+            String oldPath = JSON.stringify(localFileConfig["contents"][val - 1]);
+            oldPath = '/' + oldPath.substring(1, oldPath.length() - 1);
+            do
+            {
+              Serial.println("Enter the file new name");
+            } while (!renameFile(SPIFFS, oldPath.c_str()));
+            //          while (!Serial.available()) {}
+            //          String newName = Serial.readStringUntil('\r\n');
+            //          newName.trim();
+            //          short val = valStr.toInt();
+            //          String oldName = JSON.stringify(localFileConfig["contents"][val - 1]);
+            //          oldName = '/' + oldName.substring(1, oldName.length() - 1);
+            //          Serial.println(oldName);
+            //          newName = '/' + newName + ".txt";
+            //          renameFile(SPIFFS, oldName.c_str(), newName.c_str());
+            spiffsUI();
+          }
         }
         break;
       }
@@ -341,7 +348,7 @@ void parseCMD()
           slave.write(TOGGLE_RTES);
         else if (mode == 1 && changesMade)
         {
-          Serial.print("Save changes? (Y/N)");
+          Serial.print("Save changes ? (Y / N)");
           bool wait = timeoutUI(5);
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')
@@ -403,26 +410,36 @@ void parseCMD()
         short val = valStr.toInt();
         if (mode == 2)
         {
-          String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
-          fileName = '/' + fileName.substring(1, fileName.length() - 1);
-          if (Firebase.ready())
+          if (val < 1 || val > (int)localFileConfig["content_length"])
+            Serial.println("Input is out of range");
+          else
           {
-            Serial.println("\nUpload file: \"" + fileName + "\"");
-            if (!Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID, fileName, mem_storage_type_flash, fileName.substring(1), "text/plain", fcsUploadCallback))
-              Serial.println(fbdo.errorReason());
+            String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
+            fileName = '/' + fileName.substring(1, fileName.length() - 1);
+            if (Firebase.ready())
+            {
+              Serial.println("\nUpload file : \"" + fileName + "\"");
+              if (!Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID, fileName, mem_storage_type_flash, fileName.substring(1), "text/plain", fcsUploadCallback))
+                Serial.println(fbdo.errorReason());
+            }
+            spiffsUI();
           }
-          spiffsUI();
         }
         else if (mode == 3)
         {
-          String fileName = String(remoteFiles->items[val].name.c_str());
-          if (Firebase.ready())
+          if (val < 1 || val > remoteFiles->items.size())
+            Serial.println("Input is out of range");
+          else
           {
-            Serial.println("\nDownload file...\n");
-            if (!Firebase.Storage.download(&fbdo, STORAGE_BUCKET_ID, fileName, '/' + fileName, mem_storage_type_flash, fcsDownloadCallback))
-              Serial.println(fbdo.errorReason());
+            String fileName = String(remoteFiles->items[val - 1].name.c_str());
+            if (Firebase.ready())
+            {
+              Serial.println("\nDownload file: \"" + fileName + "\"");
+              if (!Firebase.Storage.download(&fbdo, STORAGE_BUCKET_ID, fileName, '/' + fileName, mem_storage_type_flash, fcsDownloadCallback))
+                Serial.println(fbdo.errorReason());
+            }
+            firebaseUI();
           }
-          firebaseUI();
         }
         break;
       }

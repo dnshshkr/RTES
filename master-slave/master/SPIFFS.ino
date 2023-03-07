@@ -49,16 +49,19 @@ void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
       if (levels)
         listDir(fs, file.name(), levels - 1);
     }
-    else if (file.name() != "/localConfig.txt" && file.name() != "localConfig.txt")
+    else
     {
       String fileName = file.name();
-      Serial.println(String(index + 1) + ". " + fileName + "\tSIZE: " + String(file.size()));
-      //      Serial.print(fileName);
-      //      Serial.print("\tSIZE: ");
-      //      Serial.println(file.size());
-      localFileConfig["content_length"] = index + 1;
-      localFileConfig["contents"][index] = fileName;
-      index++;
+      if (fileName == "localConfig.txt");
+      {
+        Serial.println(String(index + 1) + ". " + fileName + "\tSIZE: " + String(file.size()));
+        //      Serial.print(fileName);
+        //      Serial.print("\tSIZE: ");
+        //      Serial.println(file.size());
+        localFileConfig["content_length"] = index + 1;
+        localFileConfig["contents"][index] = fileName;
+        index++;
+      }
     }
     file = root.openNextFile();
   }
@@ -129,7 +132,12 @@ bool renameFile(fs::FS &fs, const char *oldPath)
   String newPath = Serial.readStringUntil('\r\n');
   newPath.trim();
   newPath = '/' + newPath + ".txt";
-  if (fs.exists(newPath.c_str()))
+  if (newPath == "/localConfig.txt")
+  {
+    Serial.println("- invalid file name");
+    return false;
+  }
+  else if (fs.exists(newPath.c_str()))
   {
     Serial.println("The file already exists. Do you want to replace it?");
     while (!Serial.available()) {}
@@ -138,15 +146,14 @@ bool renameFile(fs::FS &fs, const char *oldPath)
     {
       fs.remove(oldPath);
       fs.rename(oldPath, newPath.c_str());
+      flushSerial();
       return true;
     }
     else
+    {
+      flushSerial();
       return false;
-  }
-  else if (newPath == "localConfig")
-  {
-    Serial.println("- invalid file name");
-    return false;
+    }
   }
   else if (fs.rename(oldPath, newPath.c_str()))
   {

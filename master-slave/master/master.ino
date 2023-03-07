@@ -53,6 +53,7 @@
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 #include <WiFi.h>
+//#include <FirebaseESP32.h>
 #include <Firebase_ESP_Client.h>
 #include <addons/TokenHelper.h>
 
@@ -75,7 +76,7 @@ unsigned long solOnTimePrevMillis;
 unsigned long totalWaterPulse;
 String cmd;
 File stream;
-JSONVar readings, params, localFileConfig, remoteFileConfig;
+JSONVar readings, params, localFileConfig;
 FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
