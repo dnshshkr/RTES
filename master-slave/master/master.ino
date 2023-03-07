@@ -43,7 +43,7 @@
 #define WIFI_PASSWORD "1234123456"
 #define API_KEY "AIzaSyCi1wz8zPrEiqk_pBtu8G5jSPFr98EIYkg"
 #define USER_EMAIL "danish44945@gmail.com"
-#define USER_PASSWORD "butokimak"
+#define USER_PASSWORD "1sampai8"
 #define STORAGE_BUCKET_ID "rtes-378707.appspot.com"
 #define SOL_ON_TIME_LIMIT 1000
 
