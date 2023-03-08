@@ -1,6 +1,6 @@
 void startEmulsion()
 {
-  if (!dieselMode)
+  if (!dieselMode && runRTES)
   {
     digitalWrite(solenoid, HIGH);
     digitalWrite(waterPump, HIGH);

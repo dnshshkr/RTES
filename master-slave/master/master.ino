@@ -142,8 +142,8 @@ void loop()
     digitalWrite(LED_BUILTIN, HIGH);
   else
     digitalWrite(LED_BUILTIN, LOW);
-  if (mode == 1)
-    updateParamsFb();
+  if (Firebase.ready())
+    updateFirebase();
 }
 void flushSerial()
 {
