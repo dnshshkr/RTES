@@ -1,20 +1,23 @@
 void factoryReset()  //factory reset
 {
-  EEPROM.put(addr[0], 4);       //0x0
-  EEPROM.update(addr[1], 15);   //0x2
-  EEPROM.put(addr[2], 1.45);    //0x3
-  EEPROM.put(addr[3], 0.81);    //0x7
-  EEPROM.put(addr[4], 250);     //0x11
-  EEPROM.put(addr[5], 10.0);    //0x13
-  EEPROM.update(addr[6], 5);    //0x17
-  EEPROM.update(addr[7], 0);    //0x18
-  EEPROM.update(addr[8], 0);    //0x19
-  for (byte i = 20; i < 256; i++)
+  EEPROM.put(addr[0], 4);       //0
+  EEPROM.update(addr[1], 15);   //2
+  EEPROM.put(addr[2], 1.45);    //3
+  EEPROM.put(addr[3], 0.81);    //7
+  EEPROM.put(addr[4], 250);     //11
+  EEPROM.put(addr[5], 10.0);    //13
+  EEPROM.update(addr[6], 5);    //17
+  EEPROM.update(addr[7], 0);    //18
+  EEPROM.update(addr[8], 0);    //19
+  word remaining = EEPROM.length() - 20;
+  Serial.println("\nResetting the rest " + String(remaining) + " bytes of unused memory cells");
+  bt.println("\nResetting the rest " + String(remaining) + " bytes of unused memory cells");
+  for (word i = 20; i < EEPROM.length(); i++)
     EEPROM.update(i, 0xff);
   loadSettings();
   cycleCount = 0;
-  Serial.println("\nRestored to factory settings");
-  bt.println("\nRestored to factory settings");
+  Serial.println("Restored to factory settings");
+  bt.println("Restored to factory settings");
   delay(1000);
 }
 

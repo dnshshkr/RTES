@@ -161,7 +161,7 @@ void setup()
   if (!validTime)
   {
     mode = true;
-    printSettings();
+    //printSettings();
     Serial.println("Settings mode entered");
     bt.println("Settings mode entered");
   }
@@ -187,7 +187,7 @@ startRTES1:
     }
     Serial.println();
     bt.println();
-    displayLegend();
+    //displayLegend();
   }
 }
 

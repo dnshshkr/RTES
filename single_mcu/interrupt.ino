@@ -16,7 +16,6 @@ void interruptRoutine()
     {
       displayClock12(true);
       Serial.print(" -> ");
-      //if(bt)
       bt.println();
       lastMinute = accumMinute;
       firstRowData = false;

@@ -15,7 +15,7 @@ void printSettings()
   Serial.println("H - Reset Total Fuel Pulse Counter");
   Serial.print("I - Diesel-only Mode: ");
   dieselMode ? Serial.println("ON") : Serial.println("OFF");
-  Serial.print("J - Toggle Test Mode: ");
+  Serial.print("T - Toggle Test Mode: ");
   testMode ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("R - Reset to Factory Settings");
   //Serial.println("M: Enter Admin Settings");
@@ -98,10 +98,11 @@ bool timeoutUI()
     return true;
 }
 
-void displayLegend()
-{
-  Serial.println("Cycle | Total Fuel Pulse | Fuel Pulse Period (s) | Fuel Flow Rate (mL/min) | Total Water Pulse | Water Percentage (%/cycle) | Fuel Percentage (%/cycle)");
-}
+//void displayLegend()
+//{
+//  Serial.println("Cycle | Total Fuel Pulse | Fuel Pulse Period (s) | Fuel Flow Rate (mL/min) | Total Water Pulse | Water Percentage (%/cycle) | Fuel Percentage (%/cycle)");
+//  bt.println("Total Fuel Pulse, Total Water Pulse, Fuel Pulse Period (s), Fuel Flow Rate (mL/min), Cycle Count, Water Percentage (%), Fuel Percentage (%)");
+//}
 //void adminSettings() {
 //  Serial.println("***************************ADMIN MODE*************************");
 //  Serial.println("Manual Mode RTES v" + String(ver));
