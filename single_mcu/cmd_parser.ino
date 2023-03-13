@@ -313,7 +313,7 @@ startRTES2:
         printSettings();
         break;
       }
-    case 'J': case 'j':
+    case 'T': case 't':
       {
         if (!mode)
         {

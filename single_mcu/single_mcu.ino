@@ -1,4 +1,4 @@
-#define ver "4.1.0"
+#define ver "5.0"
 /*===============================================================================================================
   ; Title:  RTES V4.0 Serial Interface
   ; Authors: Wan Ahmad V3.08v2 V3.09 V4.0 V4.0.1 (wahmad.wazhar@gmail.com) & Syamiladnin V3.07 (syamiladnin@gmail.com) & Danish V4.1.x (danish.shukor@outlook.com)
@@ -54,15 +54,15 @@
    | EEPROM memory address
 */
 const uint8_t addr[9] = {0, 2, 3, 7, 11, 13, 17, 18, 19};
-//#define addr0 0   //2 bytes
-//#define addr1 2   //1 byte
-//#define addr2 3   //4 bytes
-//#define addr3 7   //4 bytes
-//#define addr4 11  //2 bytes
-//#define addr5 13  //4 bytes
-//#define addr6 17  //1 byte
-//#define addr7 18  //1 byte
-//char pwd_default[6];
+//addr[0]: 2 bytes
+//addr[1]: 1 byte
+//addr[2]: 4 bytes
+//addr[3]: 4 bytes
+//addr[4]: 2 bytes
+//addr[5]: 4 bytes
+//addr[6]: 1 byte
+//addr[7]: 1 byte
+//addr[8]: 1 byte
 
 /*
    | I/O pins

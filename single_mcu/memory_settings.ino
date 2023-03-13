@@ -9,15 +9,13 @@ void factoryReset()  //factory reset
   EEPROM.update(addr[6], 5);    //0x17
   EEPROM.update(addr[7], 0);    //0x18
   EEPROM.update(addr[8], 0);    //0x19
+  for (byte i = 20; i < 256; i++)
+    EEPROM.update(i, 0xff);
   loadSettings();
   cycleCount = 0;
-  Serial.print("\nRestored to factory settings");
-  //if(bt)
-  bt.print("\nRestored to factory settings");
+  Serial.println("\nRestored to factory settings");
+  bt.println("\nRestored to factory settings");
   delay(1000);
-  Serial.println();
-  //if(bt)
-  bt.println();
 }
 
 //void saveSettings() {
