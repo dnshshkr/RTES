@@ -160,6 +160,7 @@ void setup()
     goto startRTES1;
   if (!validTime)
   {
+    digitalWrite(waterPump, LOW);
     mode = true;
     //printSettings();
     Serial.println("Settings mode entered");
@@ -173,6 +174,7 @@ startRTES1:
     //printSettings();
     waterPercentageDuringEmulsion = (waterPulseBias / denominator) * 100.0;
     engOffPrevMillis = pulseMeasurePrevMillis = millis();
+    digitalWrite(waterPump, HIGH);
     Serial.print("RTES mode entered");
     if (dieselMode)
       Serial.print(" (Diesel-only mode)");

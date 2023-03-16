@@ -23,6 +23,7 @@ void cmdParser() {
         if (mode)  //if setting mode is entered
         {
 invalidTime:
+          digitalWrite(waterPump, LOW);
           printSettings();
           Serial.println("Setting mode entered");
           bt.println("Setting mode entered");
@@ -46,6 +47,7 @@ startRTES2:
             denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
             waterPercentageDuringEmulsion = (waterPulseBias / denominator) * 100.0;
             engOffPrevMillis = pulseMeasurePrevMillis = millis();
+            digitalWrite(waterPunp, HIGH);
             Serial.print("RTES mode entered");
             if (dieselMode)
               Serial.print(" (Diesel-only mode)");
