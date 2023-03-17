@@ -76,8 +76,8 @@ const byte solenoid = 9;
 const byte waterPump = 10;
 const byte btrx = 12;
 const byte bttx = 11;
-const byte btState = 5;
-const byte button = 4;
+//const byte btState = 5;
+//const byte button = 4;
 
 /*
    | current amperage - not in use
@@ -143,9 +143,9 @@ void setup()
   pinMode(waterPump, OUTPUT);
   pinMode(solenoid, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(btState, INPUT);
-  pinMode(button, OUTPUT);
-  digitalWrite(button, LOW);
+  //  pinMode(btState, INPUT);
+  //  pinMode(button, OUTPUT);
+  //  digitalWrite(button, LOW);
   attachInterrupt(digitalPinToInterrupt(flowrateSensor), interruptRoutine, FALLING);
   loadSettings();
   mode = false;
@@ -174,13 +174,16 @@ startRTES1:
     //printSettings();
     waterPercentageDuringEmulsion = (waterPulseBias / denominator) * 100.0;
     engOffPrevMillis = pulseMeasurePrevMillis = millis();
-    digitalWrite(waterPump, HIGH);
     Serial.print("RTES mode entered");
-    if (dieselMode)
-      Serial.print(" (Diesel-only mode)");
     bt.print("RTES mode entered");
     if (dieselMode)
+    {
+      digitalWrite(waterPump, LOW);
+      Serial.print(" (Diesel-only mode)");
       bt.print(" (Diesel-only mode)");
+    }
+    else
+      digitalWrite(waterPump, HIGH);
     if (testMode)
     {
       Serial.print(" at ");

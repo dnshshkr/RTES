@@ -47,13 +47,16 @@ startRTES2:
             denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
             waterPercentageDuringEmulsion = (waterPulseBias / denominator) * 100.0;
             engOffPrevMillis = pulseMeasurePrevMillis = millis();
-            digitalWrite(waterPunp, HIGH);
             Serial.print("RTES mode entered");
-            if (dieselMode)
-              Serial.print(" (Diesel-only mode)");
             bt.print("RTES mode entered");
             if (dieselMode)
+            {
+              digitalWrite(waterPump, LOW);
+              Serial.print(" (Diesel-only mode)");
               bt.print(" (Diesel-only mode)");
+            }
+            else
+              digitalWrite(waterPump, HIGH);
             if (testMode)
             {
               Serial.print(" at ");
