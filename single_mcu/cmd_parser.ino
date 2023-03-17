@@ -43,7 +43,7 @@ invalidTime:
               lastMinute = accumMinute = 0;
             }
 startRTES2:
-            //printSettings();
+            printSettings();
             denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
             waterPercentageDuringEmulsion = (waterPulseBias / denominator) * 100.0;
             engOffPrevMillis = pulseMeasurePrevMillis = millis();

@@ -162,7 +162,7 @@ void setup()
   {
     digitalWrite(waterPump, LOW);
     mode = true;
-    //printSettings();
+    printSettings();
     Serial.println("Settings mode entered");
     bt.println("Settings mode entered");
   }
