@@ -4,7 +4,7 @@ void factoryReset()  //factory reset
   EEPROM.update(addr[1], 15);   //2
   EEPROM.put(addr[2], 1.45);    //3
   EEPROM.put(addr[3], 0.81);    //7
-  EEPROM.put(addr[4], 250);     //11
+  EEPROM.put(addr[4], 13);     //11
   EEPROM.put(addr[5], 10.0);    //13
   EEPROM.update(addr[6], 5);    //17
   EEPROM.update(addr[7], 0);    //18
