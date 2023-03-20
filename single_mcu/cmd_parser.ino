@@ -96,23 +96,21 @@ startRTES2:
         {
           Serial.println("Press 's' to enter settings");
           bt.println("Press 's' to enter settings");
-          break;
-        }
-        float val = valStr.toFloat();
-        int32_t result = calculate_f2wPulseRatio(val, fuelPulseBias, waterPulseBias);
-        //Serial.println(result);
-        if (result > 0 && result < 65536)
-        {
-          waterPercentage = val;
-          f2wPulseRatio = result;
-          EEPROM.put(addr[5], waterPercentage);
-          EEPROM.put(addr[0], f2wPulseRatio);
-          printSettings();
         }
         else
         {
-          Serial.println("Input is out of range");
-          bt.println("Input is out of range");
+          float val = valStr.toFloat();
+          int32_t result = calculate_f2wPulseRatio(val, fuelPulseBias, waterPulseBias);
+          if (result > 0 && result < 65536)
+          {
+            waterPercentage = val;
+            f2wPulseRatio = result;
+            EEPROM.put(addr[5], waterPercentage);
+            EEPROM.put(addr[0], f2wPulseRatio);
+            printSettings();
+          }
+          else
+            goto inputOutOfRange;
         }
         break;
       }
@@ -122,26 +120,23 @@ startRTES2:
         {
           Serial.println("Press 's' to enter settings");
           bt.println("Press 's' to enter settings");
-          break;
-        }
-        int32_t val = valStr.toInt();
-        float result1 = calculate_denominator(val, fuelPulseBias, waterPulseBias);
-        int result2 = calculate_waterPercentage(waterPulseBias, result1);
-        //        Serial.println(result1);
-        //        Serial.println(result2);
-        if (val > 0 && val < 65536 && result2 > 0.0 && result2 <= 100.0)
-        {
-          cycleCount = 1;
-          f2wPulseRatio = val;
-          EEPROM.put(addr[0], f2wPulseRatio);
-          waterPercentage = result2;
-          EEPROM.put(addr[5], waterPercentage);
-          printSettings();
         }
         else
         {
-          Serial.println("Input is out of range");
-          bt.println("Input is out of range");
+          int32_t val = valStr.toInt();
+          float result1 = calculate_denominator(val, fuelPulseBias, waterPulseBias);
+          int result2 = calculate_waterPercentage(waterPulseBias, result1);
+          if (val > 0 && val < 65536 && result2 > 0.0 && result2 <= 100.0)
+          {
+            cycleCount = 1;
+            f2wPulseRatio = val;
+            EEPROM.put(addr[0], f2wPulseRatio);
+            waterPercentage = result2;
+            EEPROM.put(addr[5], waterPercentage);
+            printSettings();
+          }
+          else
+            goto inputOutOfRange;
         }
         break;
       }
@@ -151,171 +146,197 @@ startRTES2:
         {
           Serial.println("Press 's' to enter settings");
           bt.println("Press 's' to enter settings");
-          break;
-        }
-        float val = valStr.toFloat();
-        int result1 = calculate_f2wPulseRatio(waterPercentage, val, waterPulseBias);
-        float result2 = calculate_denominator(f2wPulseRatio, val, waterPulseBias);
-        int result3 = calculate_waterPercentage(waterPulseBias, result2);
-        //        Serial.println(result1);
-        //        Serial.println(result2);
-        //        Serial.println(result3);
-        if (val >= 0 && val < 3.4028235E38 && result1 > 0 && result1 < 65536 && result3 > 0.0 && result3 <= 100.0)
-        {
-          fuelPulseBias = val;
-          EEPROM.put(addr[2], fuelPulseBias);
-          f2wPulseRatio = result1;
-          waterPercentage = result2;
-          EEPROM.put(addr[0], f2wPulseRatio);
-          EEPROM.put(addr[5], waterPercentage);
-          printSettings();
         }
         else
         {
-          Serial.println("Input is out of range");
-          bt.println("Input is out of range");
+          float val = valStr.toFloat();
+          int result1 = calculate_f2wPulseRatio(waterPercentage, val, waterPulseBias);
+          float result2 = calculate_denominator(f2wPulseRatio, val, waterPulseBias);
+          int result3 = calculate_waterPercentage(waterPulseBias, result2);
+          if (val >= 0 && val < 3.4028235E38 && result1 > 0 && result1 < 65536 && result3 > 0.0 && result3 <= 100.0)
+          {
+            fuelPulseBias = val;
+            EEPROM.put(addr[2], fuelPulseBias);
+            f2wPulseRatio = result1;
+            waterPercentage = result2;
+            EEPROM.put(addr[0], f2wPulseRatio);
+            EEPROM.put(addr[5], waterPercentage);
+            printSettings();
+          }
+          else
+            goto inputOutOfRange;
         }
         break;
       }
-    case 'D': case 'd': //solenoid shot bias
+    case 'D': case 'd':
       {
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
           bt.println("Press 's' to enter settings");
-          break;
-        }
-        float val = valStr.toFloat();
-        int32_t result1 = calculate_solOnTime(val);
-        int32_t result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, val);
-        //        Serial.println(result1);
-        //        Serial.println(result2);
-        if (val > 0 && val < 3.4028235E38 && result1 > 0 && result1 <= 1000 && result2 > 0)
-        {
-          waterPulseBias = val;
-          EEPROM.put(addr[3], waterPulseBias);
-          solOnTime = result1;
-          f2wPulseRatio = result2;
-          denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
-          EEPROM.put(addr[4], solOnTime);
-          EEPROM.put(addr[0], f2wPulseRatio);
-          printSettings();
         }
         else
         {
-          Serial.println("Input is out of range");
-          bt.println("Input is out of range");
+          float val, dom;
+          byte nom;
+          if (valStr.indexOf('/') != -1)
+          {
+            nom = valStr.substring(0, valStr.indexOf('/') + 1).toInt();
+            dom = valStr.substring(valStr.indexOf('/') + 1).toFloat();
+            val = (float)nom / dom;
+          }
+          else
+          {
+            val = valStr.toFloat();
+            int32_t result = calculate_solOnTime(val, waterPulseBias);
+            if (result > 0 && result <= 1000)
+            {
+              solConst = val;
+              EEPROM.put(addr[9], solConst);
+              solOnTime = result;
+              EEPROM.put(addr[4], solOnTime);
+              printSettings();
+            }
+            else
+              goto inputOutOfRange;
+          }
         }
         break;
       }
-    case 'E': case 'e': //solenoid on time
+    case 'E': case 'e': //solenoid shot bias
       {
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
           bt.println("Press 's' to enter settings");
-          break;
-        }
-        int32_t val = valStr.toInt();
-        float result1 = calculate_waterPulseBias(val);
-        int32_t result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, result1);
-        //        Serial.println(result1);
-        //        Serial.println(result2);
-        if (val > 0 && val <= 1000 && result1 > 0.0 && result2 > 0)
-        {
-          solOnTime = val;
-          waterPulseBias = result1;
-          f2wPulseRatio = result2;
-          denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
-          EEPROM.put(addr[4], solOnTime);
-          EEPROM.put(addr[3], waterPulseBias);
-          EEPROM.put(addr[0], f2wPulseRatio);
-          printSettings();
         }
         else
         {
-          Serial.println("Input is out of range");
-          bt.println("Input is out of range");
+          float val = valStr.toFloat();
+          int32_t result1 = calculate_solOnTime(solConst, val);
+          int32_t result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, val);
+          if (val > 0 && val < 3.4028235E38 && result1 > 0 && result1 <= 1000 && result2 > 0)
+          {
+            waterPulseBias = val;
+            EEPROM.put(addr[3], waterPulseBias);
+            solOnTime = result1;
+            f2wPulseRatio = result2;
+            denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
+            EEPROM.put(addr[4], solOnTime);
+            EEPROM.put(addr[0], f2wPulseRatio);
+            printSettings();
+          }
+          else
+            goto inputOutOfRange;
         }
         break;
       }
-    case 'F': case 'f': //engine off time
+    case 'F': case 'f': //solenoid on time
       {
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
           bt.println("Press 's' to enter settings");
-          break;
-        }
-        int val = valStr.toInt();
-        if (val > 0 && val < 256)
-        {
-          engineOffTimeout = val;
-          EEPROM.update(addr[1], engineOffTimeout);
-          printSettings();
         }
         else
         {
-          Serial.println("Input is out of range");
-          bt.println("Input is out of range");
+          int32_t val = valStr.toInt();
+          float result1 = calculate_waterPulseBias(val);
+          int32_t result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, result1);
+          if (val > 0 && val <= 1000 && result1 > 0.0 && result2 > 0)
+          {
+            solOnTime = val;
+            waterPulseBias = result1;
+            f2wPulseRatio = result2;
+            denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
+            EEPROM.put(addr[4], solOnTime);
+            EEPROM.put(addr[3], waterPulseBias);
+            EEPROM.put(addr[0], f2wPulseRatio);
+            printSettings();
+          }
+          else
+            goto inputOutOfRange;
         }
         break;
       }
-    case 'G': case 'g': //checkpoint period
+    case 'G': case 'g': //engine off time
       {
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
           bt.println("Press 's' to enter settings");
-          break;
         }
-        else if (!testMode)
+        else
+        {
+          int val = valStr.toInt();
+          if (val > 0 && val < 256)
+          {
+            engineOffTimeout = val;
+            EEPROM.update(addr[1], engineOffTimeout);
+            printSettings();
+          }
+          else
+            goto inputOutOfRange;
+        }
+        break;
+      }
+    case 'H': case 'h': //checkpoint period
+      {
+        if (!mode)
+        {
+          Serial.println("Press 's' to enter settings");
+          bt.println("Press 's' to enter settings");
+        }
+        else if (mode && !testMode)
         {
           Serial.println("Please turn on test mode first");
           bt.println("Please turn on test mode first");
-          break;
-        }
-        int val = valStr.toInt();
-        if (val > 0 && val < 256)
-        {
-          checkpointPeriod = val;
-          EEPROM.update(addr[6], checkpointPeriod);
-          printSettings();
         }
         else
         {
-          Serial.println("Input is out of range");
-          bt.println("Input is out of range");
+          int val = valStr.toInt();
+          if (val > 0 && val < 256)
+          {
+            checkpointPeriod = val;
+            EEPROM.update(addr[6], checkpointPeriod);
+            printSettings();
+          }
+          else
+            goto inputOutOfRange;
         }
         break;
       }
-    case 'H': case 'h': //reset counters
+    case 'I': case 'i': //reset counters
       {
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
           bt.println("Press 's' to enter settings");
-          break;
         }
-        totalFuelPulse = 0;
-        totalWaterPulse = 0;
-        cycleCount = 0;
-        Serial.println("Counters have been reset");
-        bt.println("Counters have been reset");
+        else
+        {
+          totalFuelPulse = 0;
+          totalWaterPulse = 0;
+          cycleCount = 0;
+          Serial.println("Counters have been reset");
+          bt.println("Counters have been reset");
+        }
         break;
       }
-    case 'I': case 'i': //diesel mode
+    case 'J': case 'j': //diesel mode
       {
         if (!mode)
         {
           Serial.println("Press 's' to enter settings");
           bt.println("Press 's' to enter settings");
-          break;
         }
-        dieselMode = !dieselMode;
-        totalWaterPulse = 0;
-        EEPROM.update(addr[8], dieselMode);
-        printSettings();
+        else
+        {
+          dieselMode = !dieselMode;
+          totalWaterPulse = 0;
+          EEPROM.update(addr[8], dieselMode);
+          printSettings();
+        }
         break;
       }
     case 'T': case 't':
@@ -324,11 +345,13 @@ startRTES2:
         {
           Serial.println("Press 's' to enter settings");
           bt.println("Press 's' to enter settings");
-          break;
         }
-        testMode = !testMode;
-        EEPROM.update(addr[7], testMode);
-        printSettings();
+        else
+        {
+          testMode = !testMode;
+          EEPROM.update(addr[7], testMode);
+          printSettings();
+        }
         break;
       }
     //    case 'M': case 'm': //admin mode
@@ -377,27 +400,29 @@ startRTES2:
         {
           Serial.println("Press 's' to enter settings");
           bt.println("Press 's' to enter settings");
-          break;
         }
-        Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
-        bt.print("Are you sure you want to reset to factory settings? (Y/N)");
-        bool wait = timeoutUI();
-        char choice = Serial.read();
-        if (bt.available())  //here
-          choice = bt.read();
-        if (choice == 'Y' || choice == 'y')
-          factoryReset();
         else
         {
-          Serial.print("\nFactory reset aborted");
-          bt.print("\nFactory reset aborted");
-          delay(1000);
-          Serial.println();
-          bt.println();
+          Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
+          bt.print("Are you sure you want to reset to factory settings? (Y/N)");
+          bool wait = timeoutUI();
+          char choice = Serial.read();
+          if (bt.available())  //here
+            choice = bt.read();
+          if (choice == 'Y' || choice == 'y')
+            factoryReset();
+          else
+          {
+            Serial.print("\nFactory reset aborted");
+            bt.print("\nFactory reset aborted");
+            delay(1000);
+            Serial.println();
+            bt.println();
+          }
+          //adminSettings();
+          printSettings();
+          flushSerial();
         }
-        //adminSettings();
-        printSettings();
-        flushSerial();
         break;
       }
     //    case 'T': case 't':
@@ -499,6 +524,10 @@ startRTES2:
       {
         Serial.println("Unknown command");
         bt.println("Unknown command");
+        break;
+inputOutOfRange:
+        Serial.println("Input is out of range");
+        bt.println("Input is out of range");
         //        if (cmd[0] == 0x6c && cmd[1] == 0x65 && cmd[2] == 0x70 && cmd[3] == 0x72 && cmd[4] == 0x65 && cmd[5] == 0x63 && cmd[6] == 0x68 && cmd[7] == 0x61 && cmd[8] == 0x75 && cmd[9] == 0x6e) {
         //          EEPROM.write(17, 0x39);
         //          EEPROM.write(18, 0x39);

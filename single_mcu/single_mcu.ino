@@ -53,7 +53,7 @@
 /*
    | EEPROM memory address
 */
-const uint8_t addr[9] = {0, 2, 3, 7, 11, 13, 17, 18, 19};
+const uint8_t addr[10] = {0, 2, 3, 7, 11, 13, 17, 18, 19, 20};
 //addr[0]: 2 bytes
 //addr[1]: 1 byte
 //addr[2]: 4 bytes
@@ -63,6 +63,7 @@ const uint8_t addr[9] = {0, 2, 3, 7, 11, 13, 17, 18, 19};
 //addr[6]: 1 byte
 //addr[7]: 1 byte
 //addr[8]: 1 byte
+//addr[9]: 4 bytes
 
 /*
    | I/O pins
@@ -77,7 +78,7 @@ const byte waterPump = 10;
 const byte btrx = 12;
 const byte bttx = 11;
 //const byte btState = 5;
-//const byte button = 4;
+const byte button = 4;
 
 /*
    | current amperage - not in use
@@ -127,6 +128,7 @@ float waterPercentageDuringEmulsion;
 //float waterPumpAmpLimit = 5.0 //set limit current motor water
 float fuelPulseBias;
 float waterPulseBias;
+float solConst;
 unsigned long solOnTimePrevMillis;
 unsigned long prevMillisRTESStopwatch;
 unsigned long totalWaterPulse = 0;
@@ -137,15 +139,15 @@ SoftwareSerial bt(btrx, bttx);  //bluetooth module
 void setup()
 {
   //EEPROM.get(addr6, pwd_default);  //admin password
-  Serial.begin(9600);
+  Serial.begin(115200);
   bt.begin(38400);
   pinMode(flowrateSensor, INPUT_PULLUP);  //fuel flowrate sensor
   pinMode(waterPump, OUTPUT);
   pinMode(solenoid, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   //  pinMode(btState, INPUT);
-  //  pinMode(button, OUTPUT);
-  //  digitalWrite(button, LOW);
+  pinMode(button, OUTPUT);
+  digitalWrite(button, LOW);
   attachInterrupt(digitalPinToInterrupt(flowrateSensor), interruptRoutine, FALLING);
   loadSettings();
   mode = false;

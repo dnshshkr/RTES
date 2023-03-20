@@ -1,18 +1,20 @@
 void factoryReset()  //factory reset
 {
-  EEPROM.put(addr[0], 4);       //0
-  EEPROM.update(addr[1], 15);   //2
-  EEPROM.put(addr[2], 1.45);    //3
-  EEPROM.put(addr[3], 0.81);    //7
-  EEPROM.put(addr[4], 13);     //11
-  EEPROM.put(addr[5], 10.0);    //13
-  EEPROM.update(addr[6], 5);    //17
-  EEPROM.update(addr[7], 0);    //18
-  EEPROM.update(addr[8], 0);    //19
-  word remaining = EEPROM.length() - 20;
+  EEPROM.put(addr[0], 4);           //0~1
+  EEPROM.update(addr[1], 15);       //2
+  EEPROM.put(addr[2], 1.45);        //3~6
+  EEPROM.put(addr[3], 0.81);        //7~10
+  EEPROM.put(addr[4], 13);          //11~12
+  EEPROM.put(addr[5], 10.0);        //13~16
+  EEPROM.update(addr[6], 5);        //17
+  EEPROM.update(addr[7], 0);        //18
+  EEPROM.update(addr[8], 0);        //19
+  EEPROM.put(addr[9], (13 / 0.81)); //20~23
+  byte usedLen = 24;
+  word remaining = EEPROM.length() - usedLen;
   Serial.println("\nResetting the rest " + String(remaining) + " bytes of unused memory cells");
   bt.println("\nResetting the rest " + String(remaining) + " bytes of unused memory cells");
-  for (word i = 20; i < EEPROM.length(); i++)
+  for (word i = usedLen; i < EEPROM.length(); i++)
     EEPROM.update(i, 0xff);
   loadSettings();
   cycleCount = 0;
@@ -42,6 +44,7 @@ void loadSettings()
   EEPROM.get(addr[6], checkpointPeriod);
   EEPROM.get(addr[7], testMode);
   EEPROM.get(addr[8], dieselMode);
+  EEPROM.get(addr[9], solConst);
   //  calculate_f2wPulseRatio();
   //  calculate_solOnTime();
   denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
