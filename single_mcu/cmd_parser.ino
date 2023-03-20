@@ -184,6 +184,23 @@ startRTES2:
             nom = valStr.substring(0, valStr.indexOf('/') + 1).toInt();
             dom = valStr.substring(valStr.indexOf('/') + 1).toFloat();
             val = (float)nom / dom;
+            word result1 = nom;
+            float result2 = dom;
+            int32_t result3 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, result2);
+            if (result3 > 0)
+            {
+              solConst = val;
+              solOnTime = result1;
+              waterPulseBias = result2;
+              f2wPulseRatio = result3;
+              EEPROM.put(addr[0], f2wPulseRatio);
+              EEPROM.put(addr[3], waterPulseBias);
+              EEPROM.put(addr[4], solOnTime);
+              EEPROM.put(addr[9], solConst);
+              printSettings();
+            }
+            else
+              goto inputOutOfRange;
           }
           else
           {
@@ -192,9 +209,9 @@ startRTES2:
             if (result > 0 && result <= 1000)
             {
               solConst = val;
-              EEPROM.put(addr[9], solConst);
               solOnTime = result;
               EEPROM.put(addr[4], solOnTime);
+              EEPROM.put(addr[9], solConst);
               printSettings();
             }
             else
@@ -218,12 +235,12 @@ startRTES2:
           if (val > 0 && val < 3.4028235E38 && result1 > 0 && result1 <= 1000 && result2 > 0)
           {
             waterPulseBias = val;
-            EEPROM.put(addr[3], waterPulseBias);
             solOnTime = result1;
             f2wPulseRatio = result2;
             denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
-            EEPROM.put(addr[4], solOnTime);
             EEPROM.put(addr[0], f2wPulseRatio);
+            EEPROM.put(addr[3], waterPulseBias);
+            EEPROM.put(addr[4], solOnTime);
             printSettings();
           }
           else
@@ -249,9 +266,9 @@ startRTES2:
             waterPulseBias = result1;
             f2wPulseRatio = result2;
             denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
-            EEPROM.put(addr[4], solOnTime);
-            EEPROM.put(addr[3], waterPulseBias);
             EEPROM.put(addr[0], f2wPulseRatio);
+            EEPROM.put(addr[3], waterPulseBias);
+            EEPROM.put(addr[4], solOnTime);
             printSettings();
           }
           else
