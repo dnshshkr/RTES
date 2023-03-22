@@ -177,22 +177,21 @@ startRTES2:
         }
         else
         {
-          float val, dom;
-          byte nom;
+          float nom, val;
+          word dom;
           if (valStr.indexOf('/') != -1)
           {
-            nom = valStr.substring(0, valStr.indexOf('/') + 1).toInt();
-            dom = valStr.substring(valStr.indexOf('/') + 1).toFloat();
-            val = (float)nom / dom;
-            word result1 = nom;
-            float result2 = dom;
-            int32_t result3 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, result2);
-            if (result3 > 0)
+            nom = valStr.substring(0, valStr.indexOf('/') + 1).toFloat(); //volume
+            dom = valStr.substring(valStr.indexOf('/') + 1).toInt(); //time
+            val = nom / (float)dom;
+            int32_t result = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, nom);
+            Serial.println(nom);
+            if (nom > 0 && dom > 0 && dom <= 1000 && result > 0)
             {
               solConst = val;
-              solOnTime = result1;
-              waterPulseBias = result2;
-              f2wPulseRatio = result3;
+              solOnTime = dom;
+              waterPulseBias = nom;
+              f2wPulseRatio = result;
               EEPROM.put(addr[0], f2wPulseRatio);
               EEPROM.put(addr[3], waterPulseBias);
               EEPROM.put(addr[4], solOnTime);

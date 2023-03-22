@@ -9,7 +9,7 @@ void factoryReset()  //factory reset
   EEPROM.update(addr[6], 5);        //17
   EEPROM.update(addr[7], 0);        //18
   EEPROM.update(addr[8], 0);        //19
-  EEPROM.put(addr[9], (13 / 0.81)); //20~23
+  EEPROM.put(addr[9], (0.81 / 13)); //20~23
   byte usedLen = 24;
   word remaining = EEPROM.length() - usedLen;
   Serial.println("\nResetting the rest " + String(remaining) + " bytes of unused memory cells");

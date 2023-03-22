@@ -6,7 +6,7 @@ void printSettings()
   Serial.print("B - Fuel Pulse(s) Per Cycle: " + String(f2wPulseRatio + 1) + " pulse");
   (f2wPulseRatio + 1 == 0 || f2wPulseRatio + 1 > 1) ? Serial.println('s') : Serial.println();
   Serial.println("C - Fuel Flow Rate Bias: " + String(fuelPulseBias) + " mL/pulse");
-  Serial.println("D - Solenoid Constant: " + String(solConst) + " mL/ms");
+  Serial.println("D - Solenoid Constant: " + String(solConst * 1000) + " µL/ms");
   Serial.println("E - Water Shot Bias: " + String(waterPulseBias) + " mL/pulse");
   Serial.println("F - Solenoid On Time: " + String(solOnTime) + " ms");
   Serial.print("G - Engine Off Timeout: " + String(engineOffTimeout) + " s");
@@ -43,7 +43,7 @@ void printSettings()
   bt.print("B - Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
   (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? bt.println('s') : bt.println();
   bt.println("C - Fuel Flow Rate Bias: " + String(fuelPulseBias) + " mL / pulse");
-  bt.println("D - Solenoid Constant: " + String(solConst) + " mL/ms");
+  bt.println("D - Solenoid Constant: " + String(solConst * 1000) + " µL/ms");
   bt.println("E - Water Shot Bias: " + String(waterPulseBias) + " mL / pulse");
   bt.println("F - Solenoid On Time: " + String(solOnTime) + " ms");
   bt.print("G - Engine Off Timeout: " + String(engineOffTimeout) + " s");
