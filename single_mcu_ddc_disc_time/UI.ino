@@ -9,7 +9,7 @@ void printSettings()
   Serial.println("D - Solenoid Constant: " + String(solConst * 1000) + " µL/ms");
   Serial.println("E - Water Shot Bias: " + String(waterPulseBias) + " mL/pulse");
   Serial.println("F - Solenoid On Time: " + String(solOnTime) + " ms");
-  Serial.print("G - Engine Off Timeout: " + String(engineOffTimeout) + " s");
+  Serial.println("G - Engine Off Timeout: " + String(engineOffTimeout) + " s");
   //  if (testMode)
   //    Serial.print("\nH - Checkpoint Period: " + String(checkpointPeriod) + " minute");
   //  (checkpointPeriod > 1 && testMode) ? Serial.println('s') : Serial.println();
@@ -52,7 +52,7 @@ void printSettings()
   bt.println("D - Solenoid Constant: " + String(solConst * 1000) + " µL/ms");
   bt.println("E - Water Shot Bias: " + String(waterPulseBias) + " mL / pulse");
   bt.println("F - Solenoid On Time: " + String(solOnTime) + " ms");
-  bt.print("G - Engine Off Timeout: " + String(engineOffTimeout) + " s");
+  bt.println("G - Engine Off Timeout: " + String(engineOffTimeout) + " s");
   //  if (testMode)
   //    bt.print("\nH - Checkpoint Period: " + String(checkpointPeriod) + " minute");
   //  (checkpointPeriod > 1 && testMode) ? bt.println('s') : bt.println();
