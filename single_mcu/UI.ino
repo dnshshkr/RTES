@@ -23,16 +23,20 @@ void printSettings()
   Serial.println("$ - Refresh Settings");
   Serial.print("S - Enter ");
   if (mode)
-    Serial.write('(');
-  Serial.print("Settings");
-  if (mode)
-    Serial.write(')');
-  Serial.write('/');
-  if (!mode)
-    Serial.write('(');
-  Serial.print("RTES");
-  if (!mode)
-    Serial.write(')');
+    Serial.print("(Settings)/RTES");
+  else
+    Serial.print("Settings/(RTES)");
+  //  if (mode)
+  //    Serial.write('(');
+  //  Serial.print("Settings");
+  //  if (mode)
+  //    Serial.write(')');
+  //  Serial.write('/');
+  //  if (!mode)
+  //    Serial.write('(');
+  //  Serial.print("RTES");
+  //  if (!mode)
+  //    Serial.write(')');
   Serial.println(" Mode");
   Serial.println("***************************************************************");
 
@@ -40,8 +44,8 @@ void printSettings()
   bt.println("***ALL SETTINGS***");
   bt.println("RTES v" + String(ver));
   bt.println("A - Water Percentage: " + String(waterPercentage) + " % ");
-  bt.print("B - Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
-  (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? bt.println('s') : bt.println();
+  bt.print("B - Fuel Pulse(s) Per Cycle: " + String(f2wPulseRatio + 1) + " pulse");
+  (f2wPulseRatio + 1 == 0 || f2wPulseRatio + 1 > 1) ? bt.println('s') : bt.println();
   bt.println("C - Fuel Flow Rate Bias: " + String(fuelPulseBias) + " mL / pulse");
   bt.println("D - Solenoid Constant: " + String(solConst * 1000) + " µL/ms");
   bt.println("E - Water Shot Bias: " + String(waterPulseBias) + " mL / pulse");
@@ -60,16 +64,20 @@ void printSettings()
   bt.println("$ - Refresh Settings");
   bt.print("S - Enter ");
   if (mode)
-    bt.write('(');
-  bt.print("Settings");
-  if (mode)
-    bt.write(')');
-  bt.write('/');
-  if (!mode)
-    bt.write('(');
-  bt.print("RTES");
-  if (!mode)
-    bt.write(')');
+    bt.print("(Settings)/RTES");
+  else
+    bt.print("Settings/(RTES)");
+  //  if (mode)
+  //    bt.write('(');
+  //  bt.print("Settings");
+  //  if (mode)
+  //    bt.write(')');
+  //  bt.write('/');
+  //  if (!mode)
+  //    bt.write('(');
+  //  bt.print("RTES");
+  //  if (!mode)
+  //    bt.write(')');
   bt.println(" Mode");
   bt.println("******************");
 }
