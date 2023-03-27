@@ -101,7 +101,7 @@ startRTES2:
         {
           float val = valStr.toFloat();
           int32_t result = calculate_f2wPulseRatio(val, fuelPulseBias, waterPulseBias);
-          if (result > 0 && result < 65536)
+          if (result > 0 && result <= 65535)
           {
             waterPercentage = val;
             f2wPulseRatio = result;
@@ -126,7 +126,7 @@ startRTES2:
           int32_t val = valStr.toInt();
           float result1 = calculate_denominator(val, fuelPulseBias, waterPulseBias);
           int result2 = calculate_waterPercentage(waterPulseBias, result1);
-          if (val > 0 && val < 65536 && result2 > 0.0 && result2 <= 100.0)
+          if (val > 0 && val <= 65535 && result2 > 0.0 && result2 <= 100.0)
           {
             cycleCount = 1;
             f2wPulseRatio = val;
@@ -153,7 +153,7 @@ startRTES2:
           int result1 = calculate_f2wPulseRatio(waterPercentage, val, waterPulseBias);
           float result2 = calculate_denominator(f2wPulseRatio, val, waterPulseBias);
           int result3 = calculate_waterPercentage(waterPulseBias, result2);
-          if (val >= 0 && val < 3.4028235E38 && result1 > 0 && result1 < 65536 && result3 > 0.0 && result3 <= 100.0)
+          if (val >= 0 && val < 3.4028235E38 && result1 > 0 && result1 <= 65535 && result3 > 0.0 && result3 <= 100.0)
           {
             fuelPulseBias = val;
             EEPROM.put(addr[2], fuelPulseBias);
@@ -285,7 +285,7 @@ startRTES2:
         else
         {
           int val = valStr.toInt();
-          if (val > 0 && val < 256)
+          if (val > 0 && val <= 255)
           {
             engineOffTimeout = val;
             EEPROM.update(addr[1], engineOffTimeout);
@@ -311,7 +311,7 @@ startRTES2:
         else
         {
           int val = valStr.toInt();
-          if (val > 0 && val < 256)
+          if (val > 0 && val <= 255)
           {
             checkpointPeriod = val;
             EEPROM.update(addr[6], checkpointPeriod);

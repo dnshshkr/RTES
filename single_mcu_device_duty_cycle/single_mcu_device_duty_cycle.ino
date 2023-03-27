@@ -1,4 +1,4 @@
-#define ver "5.0"
+#define ver "5.1"
 /*===============================================================================================================
   ; Title:  RTES V4.0 Serial Interface
   ; Authors: Wan Ahmad V3.08v2 V3.09 V4.0 V4.0.1 (wahmad.wazhar@gmail.com) & Syamiladnin V3.07 (syamiladnin@gmail.com) & Danish V4.1.x (danish.shukor@outlook.com)
@@ -53,7 +53,7 @@
 /*
    | EEPROM memory address
 */
-const uint8_t addr[10] = {0, 2, 3, 7, 11, 13, 17, 18, 19, 20};
+const uint8_t addr[12] = {0, 2, 3, 7, 11, 13, 17, 18, 19, 20, 24, 25};
 //addr[0]: 2 bytes
 //addr[1]: 1 byte
 //addr[2]: 4 bytes
@@ -64,6 +64,8 @@ const uint8_t addr[10] = {0, 2, 3, 7, 11, 13, 17, 18, 19, 20};
 //addr[7]: 1 byte
 //addr[8]: 1 byte
 //addr[9]: 4 bytes
+//addr[10]: 1 byte
+//addr[11]: 1 byte
 
 /*
    | I/O pins
@@ -72,7 +74,7 @@ const byte flowrateSensor = 2;
 //const uint8_t fuelMotorCurrentPin = A3;
 //const uint8_t solenoidCurrentPin = A2;
 //const uint8_t waterPumpCurrentPin = A4;
-//const uint8_t motorFuel = 8;
+const byte deviceMotor = 8;
 const byte solenoid = 9;
 const byte waterPump = 10;
 const byte btrx = 12;
@@ -110,6 +112,7 @@ bool firstRowData = true;
 //bool toggleAllState = false;
 bool mode;  //0 - RTES, 1 - settings, 2 - admin
 bool dieselMode;
+bool deviceState;
 byte engineOffTimeout;
 byte hour = 0;
 byte minute = 0;
@@ -118,9 +121,10 @@ byte checkpointPeriod;
 //uint8_t currentSensorType = 1; //0 - ACS713, 1 - ACS712
 byte lastMinute;
 byte accumMinute;
+byte devicePeriod, deviceOnTime, deviceOffTime;
 word f2wPulseRatio;  //fuel pulses per cycle
 word solOnTime;
-float denominator;  //fraction denominatorinator for fuel-water percentage calculation
+float denominator;  //fraction denominator for fuel-water percentage calculation
 float waterPercentage;
 float waterPercentageDuringEmulsion;
 //float motorFuelAmpLim = 5.0 //set limit current motor feul pump
@@ -132,6 +136,7 @@ float solConst;
 unsigned long solOnTimePrevMillis;
 unsigned long prevMillisRTESStopwatch;
 unsigned long totalWaterPulse = 0;
+unsigned long devicePrevMillis;
 String cmd;
 
 SoftwareSerial bt(btrx, bttx);  //bluetooth module

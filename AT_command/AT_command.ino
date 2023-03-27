@@ -1,5 +1,5 @@
 #include<SoftwareSerial.h>
-const int state=A5,tx=A4,rx=A3,gnd=A2,vcc=A1,en=A0;
+const int state=A5,tx=11,rx=12,gnd=A2,vcc=A1,en=A0;
 SoftwareSerial bt(rx,tx);
 void setup()
 {
