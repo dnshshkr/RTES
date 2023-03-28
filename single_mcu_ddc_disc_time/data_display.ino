@@ -1,6 +1,7 @@
 void printData()
 {
   float waterPercentage, P_f;
+  static unsigned long prevTotalWaterPulse;
   if (cycleCount <= f2wPulseRatio)
   {
     waterPercentage = 0.0;
@@ -27,7 +28,7 @@ void printData()
   Serial.print(totalFuelPulse), Serial.write((char)9);
   Serial.print(fuelPulsePeriod), Serial.write((char)9);
   Serial.print(fuelFlowRate), Serial.write((char)9);
-  Serial.print(totalWaterPulse), Serial.write((char)9);
+  totalWaterPulse != prevTotalWaterPulse ? Serial.print(totalWaterPulse) : Serial.print("idle"), Serial.write((char)9);
   Serial.print(waterPercentage), Serial.write((char)9);
   Serial.print(P_f), Serial.write((char)9); Serial.write((char)10);
 
@@ -42,15 +43,16 @@ void printData()
   //  bt.print(P_f, 1);
   //  bt.println("% fuel");
 
-  bt.print(String(totalFuelPulse) + ",");
-  bt.print(String(totalWaterPulse) + ",");
-  bt.print(String(fuelPulsePeriod) + ",");
+  bt.print(String(totalFuelPulse) + ',');
+  totalWaterPulse != prevTotalWaterPulse ? bt.print(String(totalWaterPulse)) : bt.print("idle"), bt.write((char)44);
+  bt.print(String(fuelPulsePeriod) + ',');
   bt.print(fuelFlowRate, 3);
-  bt.print(",");
-  bt.print(String(cycleCount) + ",");
+  bt.print(',');
+  bt.print(String(cycleCount) + ',');
   bt.print(waterPercentage, 1);
-  bt.print(",");
+  bt.print(',');
   bt.print(P_f, 1);
   bt.println();
   // pulseDataPrint = false;  //change to false after printing the data and wait for next fuel pulse
+  prevTotalWaterPulse = totalWaterPulse;
 }
