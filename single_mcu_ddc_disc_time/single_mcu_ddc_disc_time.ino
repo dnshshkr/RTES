@@ -103,14 +103,14 @@ bool cmdAvailable;
 bool engOffStatusPrintOnce;
 bool sprayStarted = false;
 bool sprayCompleted = false;
-bool testMode;
+//bool testMode;
 //bool firstRowData = true;
 //bool solenoidManualState = false;
 //bool waterPumpManualState = false;
 //bool toggleAllState = false;
 bool mode;  //0 - RTES, 1 - settings, 2 - admin
 bool dieselMode;
-bool deviceState;
+byte deviceState;
 byte engineOffTimeout;
 //byte hour = 0;
 //byte minute = 0;
@@ -148,6 +148,7 @@ void setup()
   pinMode(waterPump, OUTPUT);
   pinMode(solenoid, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(deviceMotor, OUTPUT);
   //  pinMode(btState, INPUT);
   pinMode(button, OUTPUT);
   digitalWrite(button, LOW);

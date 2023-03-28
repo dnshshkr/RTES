@@ -8,19 +8,21 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(sensor), measure, FALLING);
   prevMillis = millis();
 }
-void loop(){}
+void loop() {}
 void measure()
 {
-  static volatile byte index = 0;
+  static volatile byte index = 1;
   period = millis() - prevMillis;
   sum += period;
   prevMillis = millis();
+  Serial.print(String(index) + ". ");
   Serial.println(period);
   index++;
-  if (index == len)
+  if (index == len + 1)
   {
     avrg = sum / len;
     Serial.println("average: " + String(avrg) + " ms");
-    index = 0;
+    index = 1;
+    sum = 0;
   }
 }

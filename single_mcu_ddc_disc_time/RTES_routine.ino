@@ -79,14 +79,14 @@ void RTES() {
   }
 
   //mixer device control
-  if (!deviceState && millis() - devicePrevMillis >= deviceOffTime * 1000)
+  if (deviceState == HIGH && millis() - devicePrevMillis >= deviceOffTime * 1000)
   {
-    deviceState = true;
+    deviceState = LOW;
     devicePrevMillis = millis();
   }
-  else if (deviceState && millis() - devicePrevMillis >= deviceOnTime * 1000)
+  else if (deviceState == LOW && millis() - devicePrevMillis >= deviceOnTime * 1000)
   {
-    deviceState = false;
+    deviceState = HIGH;
     devicePrevMillis = millis();
   }
   digitalWrite(deviceMotor, deviceState);
