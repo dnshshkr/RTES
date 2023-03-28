@@ -4,7 +4,7 @@ void printSettings()
   Serial.println("RTES v" + String(ver));
   Serial.println("A - Water Percentage: " + String(waterPercentage) + " %");
   Serial.print("B - Fuel Pulse(s) Per Cycle: " + String(f2wPulseRatio + 1) + " pulse");
-  (f2wPulseRatio + 1 == 0 || f2wPulseRatio + 1 > 1) ? Serial.println('s') : Serial.println();
+  (f2wPulseRatio + 1 > 1) ? Serial.println('s') : Serial.println();
   Serial.println("C - Fuel Flow Rate Bias: " + String(fuelPulseBias) + " mL/pulse");
   Serial.println("D - Solenoid Constant: " + String(solConst * 1000) + " µL/ms");
   Serial.println("E - Water Shot Bias: " + String(waterPulseBias) + " mL/pulse");
@@ -18,6 +18,7 @@ void printSettings()
   dieselMode ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("J - Mixer Device Period: " + String(devicePeriod) + " s");
   Serial.println("K - Mixer Device On Time: " + String(deviceOnTime) + " s");
+  Serial.println("L - System Idle Time: " + String(idleTime) + " s");
   //  Serial.print("T - Toggle Test Mode: ");
   //  testMode ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("R - Reset to Factory Settings");
@@ -47,7 +48,7 @@ void printSettings()
   bt.println("RTES v" + String(ver));
   bt.println("A - Water Percentage: " + String(waterPercentage) + " %");
   bt.print("B - Fuel Pulse(s) Per Cycle: " + String(f2wPulseRatio + 1) + " pulse");
-  (f2wPulseRatio + 1 == 0 || f2wPulseRatio + 1 > 1) ? bt.println('s') : bt.println();
+  (f2wPulseRatio + 1 > 1) ? bt.println('s') : bt.println();
   bt.println("C - Fuel Flow Rate Bias: " + String(fuelPulseBias) + " mL / pulse");
   bt.println("D - Solenoid Constant: " + String(solConst * 1000) + " µL/ms");
   bt.println("E - Water Shot Bias: " + String(waterPulseBias) + " mL / pulse");
@@ -61,6 +62,7 @@ void printSettings()
   dieselMode ? bt.println("ON") : bt.println("OFF");
   bt.println("J - Mixer Device Period: " + String(devicePeriod) + " s");
   bt.println("K - Mixer Device On Time: " + String(deviceOnTime) + " s");
+  bt.println("L - System Idle Time: " + String(idleTime) + " s");
   //  bt.print("T - Toggle Test Mode: ");
   //  testMode ? bt.println("ON") : bt.println("OFF");
   bt.println("R - Reset to Factory Settings");

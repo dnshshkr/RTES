@@ -7,8 +7,12 @@ void interruptRoutine()
   pulseMeasurePrevMillis = millis();
   totalFuelPulse++;
   cycleCount++;
+  fuelPulsePeriodSum += fuelPulsePeriod;
   if (cycleCount >= f2wPulseRatio + 2)
+  {
     cycleCount = 1;
+    fuelPulsePeriodSum = 0;
+  }
   //pulseDataPrint = true;
   if (!mode)
   {

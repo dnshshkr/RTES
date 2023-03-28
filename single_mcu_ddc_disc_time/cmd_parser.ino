@@ -364,6 +364,24 @@ void cmdParser() {
         }
         return;
       }
+    case 'L': case 'l':
+      {
+        if (!mode)
+          goto modeError;
+        else
+        {
+          int val = valStr.toInt();
+          if (val > 0 && val <= 255)
+          {
+            idleTime = val;
+            EEPROM.update(addr[10], idleTime);
+            printSettings();
+          }
+          else
+            goto inputOutOfRange;
+        }
+        return;
+      }
     //    case 'T': case 't':
     //      {
     //        if (!mode)

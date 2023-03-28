@@ -53,7 +53,7 @@
 /*
    | EEPROM memory address
 */
-const uint8_t addr[10] = {0, 2, 3, 7, 11, 13, 17, 18, 22, 23};
+const uint8_t addr[11] = {0, 2, 3, 7, 11, 13, 17, 18, 22, 23, 24};
 //addr[0]: 2 bytes
 //addr[1]: 1 byte,
 //addr[2]: 4 bytes
@@ -64,6 +64,7 @@ const uint8_t addr[10] = {0, 2, 3, 7, 11, 13, 17, 18, 22, 23};
 //addr[7]: 4 bytes
 //addr[8]: 1 byte
 //addr[9]: 1 byte
+//addr[10]: 1 byte
 
 /*
    | I/O pins
@@ -78,7 +79,7 @@ const byte waterPump = 10;
 const byte btrx = 12;
 const byte bttx = 11;
 //const byte btState = 5;
-const byte button = 4;
+//const byte button = 4;
 
 /*
    | current amperage - not in use
@@ -97,6 +98,7 @@ volatile float fuelPulsePeriod;
 volatile unsigned long totalFuelPulse = 0;
 volatile unsigned long pulseMeasurePrevMillis = 0;
 volatile unsigned long engOffPrevMillis = 0;
+volatile float fuelPulsePeriodSum;
 //bool btConnectedOnce = false;
 //bool manualPrintData = false;
 bool cmdAvailable;
@@ -112,6 +114,7 @@ bool mode;  //0 - RTES, 1 - settings, 2 - admin
 bool dieselMode;
 byte deviceState;
 byte engineOffTimeout;
+byte idleTime;
 //byte hour = 0;
 //byte minute = 0;
 //byte second = 0;
@@ -150,8 +153,8 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(deviceMotor, OUTPUT);
   //  pinMode(btState, INPUT);
-  pinMode(button, OUTPUT);
-  digitalWrite(button, LOW);
+  //  pinMode(button, OUTPUT);
+  //  digitalWrite(button, LOW);
   attachInterrupt(digitalPinToInterrupt(flowrateSensor), interruptRoutine, FALLING);
   loadSettings();
   mode = false;
