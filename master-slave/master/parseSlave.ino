@@ -7,7 +7,7 @@ void parseSlave()
       {
         mode = 0;
         stream = SPIFFS.open("/stream.txt", FILE_WRITE);
-        printSettings();
+        mainMenuUI();
         Serial.print("RTES mode entered");
         if (dieselMode)
           Serial.println(" (Diesel-only mode)");
@@ -19,29 +19,11 @@ void parseSlave()
         if (firstData)
         {
           stream.close();
-rename_file:
-          Serial.println("Enter a name for the log file");
-          while (!Serial.available()) {}
-          String fileName = Serial.readStringUntil('\r\n');
-          fileName.trim();
-          fileName = '/' + fileName + ".txt";
-          while (SPIFFS.exists(fileName.c_str()))
+          do
           {
-            Serial.println("The file already exists. Do you want to replace it?");
-            while (!Serial.available()) {}
-            char choice = Serial.read();
-            if (choice == 'y' || choice == 'Y')
-              SPIFFS.remove(fileName.c_str());
-            else
-              goto rename_file;
-          }
-          //      short len = fileName.length() + 1;
-          //      char fileNameChar[len];
-          //      fileName.toCharArray(fileNameChar, len);
-          if (SPIFFS.rename("/stream.txt", fileName.c_str()))
-            Serial.println("Log file saved successfully");
-          else
-            Serial.println("Failed to save log file");
+            Serial.println("Enter a name for the log file");
+          } while (!renameFile(SPIFFS, "/stream.txt"));
+          Serial.println("Log file saved successfully");
           firstData = false;
           flushSerial();
         }
@@ -51,7 +33,7 @@ rename_file:
           SPIFFS.remove("/stream.txt");
         }
         mode = 1;
-        printSettings();
+        mainMenuUI();
         Serial.println("Settings mode entered");
         break;
       }

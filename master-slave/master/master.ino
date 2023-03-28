@@ -24,7 +24,9 @@
 #define EXCLUSIVE_START_RTES 0x84
 #define EXCLUSIVE_STOP_RTES 0x85
 #define RESET_COUNTERS 0x86
+#define RESET_CYCLE_COUNT 0x87
 
+#define CYCLE_COUNT_RESET 0xf7
 #define ENGINE_OFF 0xf8
 #define NEW_PARAMS_RECEIVED 0xf9
 #define COUNTERS_RESET 0xfa
@@ -41,8 +43,10 @@
 #define WIFI_PASSWORD "1234123456"
 #define API_KEY "AIzaSyCi1wz8zPrEiqk_pBtu8G5jSPFr98EIYkg"
 #define USER_EMAIL "danish44945@gmail.com"
-#define USER_PASSWORD "butokimak"
+#define USER_PASSWORD "1sampai8"
 #define STORAGE_BUCKET_ID "rtes-378707.appspot.com"
+#define DATABASE_URL "rtes-378707-default-rtdb.asia-southeast1.firebasedatabase.app"
+#define SOL_ON_TIME_LIMIT 1000
 
 #include <Arduino_JSON.h>
 #include "FS.h"
@@ -50,6 +54,7 @@
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 #include <WiFi.h>
+//#include <FirebaseESP32.h>
 #include <Firebase_ESP_Client.h>
 #include <addons/TokenHelper.h>
 
@@ -62,8 +67,8 @@ bool fileManageMode = false;
 byte mode;
 unsigned int f2wPulseRatio;
 uint8_t engineOffTimeout;
-float flowRateBias;
-float solShotBias;
+float fuelPulseBias;
+float waterPulseBias;
 unsigned int solOnTime;
 float waterPercentage;
 float denominator;
@@ -72,10 +77,11 @@ unsigned long solOnTimePrevMillis;
 unsigned long totalWaterPulse;
 String cmd;
 File stream;
-JSONVar readings, params, fileConfig;
+JSONVar readings, params, localFileConfig;
 FirebaseData fbdo;
 FirebaseAuth auth;
 FirebaseConfig config;
+FileList *remoteFiles;
 void setup()
 {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
@@ -102,12 +108,13 @@ void setup()
   digitalWrite(LED_BUILTIN, HIGH);
   Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
   config.api_key = API_KEY;
+  config.database_url = DATABASE_URL;
   auth.user.email = USER_EMAIL;
   auth.user.password = USER_PASSWORD;
   config.token_status_callback = tokenStatusCallback;
+  config.fcs.upload_buffer_size = 512;
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
-  config.fcs.upload_buffer_size = 512;
   fbdo.setResponseSize(1024);
 
   slave.write(RESET_COUNTERS); //reset counters
@@ -135,6 +142,8 @@ void loop()
     digitalWrite(LED_BUILTIN, HIGH);
   else
     digitalWrite(LED_BUILTIN, LOW);
+  if (Firebase.ready())
+    updateFirebase();
 }
 void flushSerial()
 {

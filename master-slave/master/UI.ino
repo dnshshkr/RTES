@@ -1,12 +1,12 @@
-void printSettings()
+void mainMenuUI()
 {
-  Serial.println("***************ALL SETTINGS***************");
+  Serial.println("*****************MAIN MENU*****************");
   Serial.println("RTES v" + String(RTES_VERSION));
   Serial.println("A - Water Percentage: " + String(waterPercentage) + "%");
-  Serial.print("B - Fuel Pulse Count: " + String(f2wPulseRatio) + " pulse");
+  Serial.print("B - Fuel Pulse Per Cycle: " + String(f2wPulseRatio + 1) + " pulse");
   (f2wPulseRatio == 0 || f2wPulseRatio > 1) ? Serial.println('s') : Serial.println();
-  Serial.println("C - Fuel Flow Rate Bias: " + String(flowRateBias) + " mL/pulse");
-  Serial.println("D - Water Shot Bias: " + String(solShotBias) + " mL/pulse");
+  Serial.println("C - Fuel Flow Rate Bias: " + String(fuelPulseBias) + " mL/pulse");
+  Serial.println("D - Water Shot Bias: " + String(waterPulseBias) + " mL/pulse");
   Serial.println("E - Solenoid On Time: " + String(solOnTime) + " ms");
   Serial.print("F - Engine Off Timeout: " + String(engineOffTimeout) + " s");
   if (testMode)
@@ -15,7 +15,8 @@ void printSettings()
   Serial.println("H - Reset Total Fuel Pulse Counter");
   Serial.print("I - Toggle Diesel-only Mode: ");
   dieselMode ? Serial.println("ON") : Serial.println("OFF");
-  Serial.println("J - Browse Storage");
+  Serial.println("J - Browse Local Storage");
+  Serial.println("K - Browse Cloud Storage");
   Serial.print("T - Toggle Test Mode: ");
   testMode ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("R - Reset to Factory Settings");
@@ -33,19 +34,29 @@ void printSettings()
   if (mode == 0)
     Serial.write(')');
   Serial.println(" Mode");
-  Serial.println("******************************************");
+  Serial.println("*******************************************");
 }
 
 void spiffsUI()
 {
-  Serial.println("***************FILE BROWSER***************");
+  Serial.println("***************LOCAL STORAGE***************");
   listDir(SPIFFS, "/", 0);
   Serial.println("\nMenu:\nO - Open File");
   Serial.println("R - Rename File");
   Serial.println("D - Delete File");
   Serial.println("U - Upload File");
   Serial.println("E - Exit");
-  Serial.println("******************************************");
+  Serial.println("*******************************************");
+}
+
+void firebaseUI()
+{
+  Serial.println("***************CLOUD STORAGE***************");
+  listRemoteFiles();
+  Serial.println("\nMenu:\nU - Download File");
+  Serial.println("D - Delete File");
+  Serial.println("E - Exit");
+  Serial.println("*******************************************");
 }
 
 bool timeoutUI(int8_t countDown)

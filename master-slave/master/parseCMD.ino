@@ -13,7 +13,7 @@ void parseCMD()
           slave.write(REQUEST_PARAMS);
           while (!slave.available()) {}
           parseSlave();
-          printSettings();
+          mainMenuUI();
         }
         break;
       }
@@ -24,13 +24,14 @@ void parseCMD()
         else if (mode == 1)
         {
           float val = valStr.toFloat();
-          if (val > 0 && val < 3.4028235E38)
+          int32_t result = calculate_f2wPulseRatio(val, fuelPulseBias, waterPulseBias);
+          if (result > 0 && result < 65536)
           {
             params[5] = waterPercentage = val;
-            calculate_f2wPulseRatio();
+            f2wPulseRatio = result;
             params[0] = f2wPulseRatio;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
@@ -43,20 +44,21 @@ void parseCMD()
           Serial.println("Press 's' to enter settings");
         else if (mode == 1)
         {
-          int val = valStr.toInt();
-          if (val > 0 && val < 65536)
+          int32_t val = valStr.toInt();
+          float result1 = calculate_denominator(val, fuelPulseBias, waterPulseBias);
+          int result2 = calculate_waterPercentage(waterPulseBias, result1);
+          if (val > 0 && val < 65536 && result2 > 0.0 && result2 <= 100.0)
           {
-            slave.write(RESET_COUNTERS);
+            slave.write(RESET_CYCLE_COUNT);
             while (!slave.available()) {}
-            if (slave.read() == NEW_PARAMS_RECEIVED) {}
+            if (slave.read() == CYCLE_COUNT_RESET) {}
             else
               Serial.println("Failed to reset cycle count");
             params[0] = f2wPulseRatio = val;
-            calculate_denominator();
-            calculate_waterPercentage();
+            waterPercentage = result2;
             params[5] = waterPercentage;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
@@ -70,22 +72,25 @@ void parseCMD()
           Serial.println("Press 's' to enter settings");
           break;
         }
-        else if (mode == 2)
-          break;
-        float val = valStr.toFloat();
-        if (val >= 0 && val < 3.4028235E38)
+        else if (mode == 1)
         {
-          params[2] = flowRateBias = val;
-          calculate_f2wPulseRatio();
-          calculate_denominator();
-          calculate_waterPercentage();
-          params[0] = f2wPulseRatio;
-          params[5] = waterPercentage;
-          changesMade = true;
-          printSettings();
+          float val = valStr.toFloat();
+          int result1 = calculate_f2wPulseRatio(waterPercentage, val, waterPulseBias);
+          float result2 = calculate_denominator(f2wPulseRatio, val, waterPulseBias);
+          int result3 = calculate_waterPercentage(waterPulseBias, result2);
+          if (val >= 0 && val < 3.4028235E38 && result1 > 0 && result1 < 65536 && result3 > 0.0 && result3 <= 100.0)
+          {
+            params[2] = fuelPulseBias = val;
+            f2wPulseRatio = result1;
+            waterPercentage = result2;
+            params[0] = f2wPulseRatio;
+            params[5] = waterPercentage;
+            changesMade = true;
+            mainMenuUI();
+          }
+          else
+            Serial.println("Input is out of range");
         }
-        else
-          Serial.println("Input is out of range");
         break;
       }
     case 'd': case 'D':
@@ -95,79 +100,103 @@ void parseCMD()
         else if (mode == 1)
         {
           float val = valStr.toFloat();
-          if (val > 0 && val < 3.4028235E38)
+          int32_t result1 = calculate_solOnTime(val);
+          int32_t result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, val);
+          if (val > 0 && val < 3.4028235E38 && result1 > 0 && result1 <= SOL_ON_TIME_LIMIT && result2 > 0)
           {
-            params[3] = solShotBias = val;
-            calculate_solOnTime();
-            calculate_f2wPulseRatio();
-            calculate_denominator();
+            params[3] = waterPulseBias = val;
+            solOnTime = result1;
+            f2wPulseRatio = result2;
+            denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
             params[4] = solOnTime;
             params[0] = f2wPulseRatio;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
         }
-        else
+        else if (mode == 2)
         {
-          Serial.print("Are you sure you want to delete the file? (Y/N)");
-          bool wait = timeoutUI(5);
-          char choice = Serial.read();
-          if (choice == 'Y' || choice == 'y')
-          {
-            Serial.println();
-            int val = valStr.toInt();
-            String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
-            fileName = fileName.substring(1, fileName.length() - 1);
-            //            fileName = '/' + fileName.substring(1, fileName.length() - 1);
-            //            Serial.println(fileName);
-            //            short len = fileName.length() + 1;
-            //            char fileNameChar[len];
-            //            fileName.toCharArray(fileNameChar, len);
-            deleteFile(SPIFFS, fileName.c_str());
-          }
+          int val = valStr.toInt();
+          if (val < 1 || val > (int)localFileConfig["content_length"])
+            Serial.println("Input is out of range");
           else
           {
-            Serial.print("\nFile deletion aborted");
-            delay(1000);
-            Serial.println();
+            String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
+            fileName = '/' + fileName.substring(1, fileName.length() - 1);
+            Serial.print("Are you sure you want to delete the file \"" + fileName + "\"? (Y/N)");
+            bool wait = timeoutUI(5);
+            char choice = Serial.read();
+            if (choice == 'Y' || choice == 'y')
+            {
+              Serial.println();
+              deleteFile(SPIFFS, fileName.c_str());
+              spiffsUI();
+            }
+            else
+              Serial.println("\nFile deletion aborted");
+            flushSerial();
           }
-          flushSerial();
-          spiffsUI();
+        }
+        else //mode=3
+        {
+          size_t val = valStr.toInt();
+          if (val < 1 || val > remoteFiles->items.size())
+            Serial.println("Input is out of range");
+          else
+          {
+            String fileName = String(remoteFiles->items[val - 1].name.c_str());
+            Serial.print("Are you sure you want to delete the remote file \"" + fileName + "\"? (Y/N)");
+            bool wait = timeoutUI(5);
+            char choice = Serial.read();
+            if (choice == 'Y' || choice == 'y')
+            {
+              Serial.printf("Delete file... % s\n", Firebase.Storage.deleteFile(&fbdo, STORAGE_BUCKET_ID, fileName) ? "ok" : fbdo.errorReason().c_str());
+              firebaseUI();
+            }
+            else
+              Serial.println("\nRemote file deletion aborted");
+            flushSerial();
+          }
         }
         break;
       }
     case 'e': case 'E':
       {
         if (mode == 0)
-        {
           Serial.println("Press 's' to enter settings");
-          break;
+        else if (mode == 1)
+        {
+          int32_t val = valStr.toInt();
+          float result1 = calculate_waterPulseBias(val);
+          int32_t result2 = calculate_f2wPulseRatio(waterPercentage, fuelPulseBias, result1);
+          if (val > 0 && val <= SOL_ON_TIME_LIMIT && result1 > 0.0 && result2 > 0)
+          {
+            params[4] = solOnTime = val;
+            waterPulseBias = result1;
+            f2wPulseRatio = result2;
+            denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
+            params[3] = waterPulseBias;
+            params[0] = f2wPulseRatio;
+            changesMade = true;
+            mainMenuUI();
+          }
+          else
+            Serial.println("Input is out of range");
         }
         else if (mode == 2)
         {
           mode = 1;
           writeConfigFile(SPIFFS);
-          printSettings();
-          break;
-        }
-        int val = valStr.toInt();
-        if (val > 0 && val < 65536)
-        {
-          params[4] = solOnTime = val;
-          calculate_solShotBias();
-          calculate_denominator();
-          calculate_waterPercentage();
-          calculate_f2wPulseRatio();
-          params[3] = solShotBias;
-          params[5] = waterPercentage;
-          params[0] = f2wPulseRatio;
-          changesMade = true;
-          printSettings();
+          mainMenuUI();
         }
         else
-          Serial.println("Input is out of range");
+        {
+          mode = 1;
+          fbdo.fileList()->items.clear();
+          mainMenuUI();
+        }
         break;
       }
     case 'f': case 'F':
@@ -181,7 +210,7 @@ void parseCMD()
           {
             params[1] = engineOffTimeout = val;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
@@ -199,7 +228,7 @@ void parseCMD()
           {
             params[6] = checkpointPeriod = val;
             changesMade = true;
-            printSettings();
+            mainMenuUI();
           }
           else
             Serial.println("Input is out of range");
@@ -223,35 +252,44 @@ void parseCMD()
           dieselMode = !dieselMode;
           params[8] = dieselMode;
           changesMade = true;
-          printSettings();
+          mainMenuUI();
         }
         break;
       }
     case 'j': case 'J':
       {
-        if (mode == 0) {}
-        else if (mode == 1)
+        if (mode == 1)
         {
           mode = 2;
           spiffsUI();
         }
         break;
       }
-    case 'o': case'O':
+    case 'k': case 'K':
       {
-        if (mode != 2)
-          break;
-        short val = valStr.toInt();
-        String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
-        fileName = fileName.substring(1, fileName.length() - 1);
-        Serial.println(fileName);
-        //        fileName = '/' + fileName.substring(1, fileName.length() - 1);
-        //        short len = fileName.length() + 1;
-        //        char fileNameChar[len];
-        //        fileName.toCharArray(fileNameChar, len);
-        readFile(SPIFFS, fileName.c_str());
-        Serial.println();
-        spiffsUI();
+        if (mode == 1)
+        {
+          mode = 3;
+          firebaseUI();
+        }
+        break;
+      }
+    case 'o': case 'O':
+      {
+        if (mode == 2)
+        {
+          short val = valStr.toInt();
+          if (val < 1 || val > (int)localFileConfig["content_length"])
+            Serial.println("Input is out of range");
+          else
+          {
+            String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
+            fileName = '/' + fileName.substring(1, fileName.length() - 1);
+            readFile(SPIFFS, fileName.c_str());
+            Serial.println();
+            spiffsUI();
+          }
+        }
         break;
       }
     case 'r': case 'R':
@@ -260,7 +298,7 @@ void parseCMD()
           Serial.println("Press 's' to enter settings");
         else if (mode == 1)
         {
-          Serial.print("Are you sure you want to reset to factory settings? (Y/N)");
+          Serial.print("Are you sure you want to reset to factory settings ? (Y/N)");
           bool wait = timeoutUI(10);
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')
@@ -271,36 +309,36 @@ void parseCMD()
             slave.write(REQUEST_PARAMS);
             while (!slave.available()) {}
             parseSlave();
-            printSettings();
+            mainMenuUI();
           }
           else
-          {
-            Serial.print("\nFactory reset aborted");
-            delay(1000);
-            Serial.println();
-            printSettings();
-          }
+            Serial.println("\nFactory reset aborted");
           flushSerial();
         }
         else
         {
-          Serial.println("Enter the file new name");
-          while (!Serial.available()) {}
-          String newName = Serial.readStringUntil('\r\n');
-          newName.trim();
           short val = valStr.toInt();
-          String oldName = JSON.stringify(fileConfig["contents"][val - 1]);
-          oldName = oldName.substring(1, oldName.length() - 1);
-          Serial.println(oldName);
-          //          short lenOld = oldName.length() + 1;
-          //          char oldNameChar[lenOld];
-          //          oldName.toCharArray(oldNameChar, lenOld);
-          newName = '/' + newName + ".txt";
-          //          short lenNew = newName.length() + 1;
-          //          char newNameChar[lenNew];
-          //          newName.toCharArray(newNameChar, lenNew);
-          renameFile(SPIFFS, oldName.c_str(), newName.c_str());
-          spiffsUI();
+          if (val < 1 || val > (int)localFileConfig["content_length"])
+            Serial.println("Input is out of range");
+          else
+          {
+            String oldPath = JSON.stringify(localFileConfig["contents"][val - 1]);
+            oldPath = '/' + oldPath.substring(1, oldPath.length() - 1);
+            do
+            {
+              Serial.println("Enter the file new name");
+            } while (!renameFile(SPIFFS, oldPath.c_str()));
+            //          while (!Serial.available()) {}
+            //          String newName = Serial.readStringUntil('\r\n');
+            //          newName.trim();
+            //          short val = valStr.toInt();
+            //          String oldName = JSON.stringify(localFileConfig["contents"][val - 1]);
+            //          oldName = '/' + oldName.substring(1, oldName.length() - 1);
+            //          Serial.println(oldName);
+            //          newName = '/' + newName + ".txt";
+            //          renameFile(SPIFFS, oldName.c_str(), newName.c_str());
+            spiffsUI();
+          }
         }
         break;
       }
@@ -310,7 +348,7 @@ void parseCMD()
           slave.write(TOGGLE_RTES);
         else if (mode == 1 && changesMade)
         {
-          Serial.print("Save changes? (Y/N)");
+          Serial.print("Save changes ? (Y/N)");
           bool wait = timeoutUI(5);
           char choice = Serial.read();
           if (choice == 'Y' || choice == 'y')
@@ -322,8 +360,8 @@ void parseCMD()
               JSONVar prevParams;
               prevParams[0] = f2wPulseRatio;
               prevParams[1] = engineOffTimeout;
-              prevParams[2] = flowRateBias;
-              prevParams[3] = solShotBias;
+              prevParams[2] = fuelPulseBias;
+              prevParams[3] = waterPulseBias;
               prevParams[4] = solOnTime;
               prevParams[5] = waterPercentage;
               prevParams[6] = checkpointPeriod;
@@ -350,7 +388,7 @@ void parseCMD()
             Serial.println();
           }
           flushSerial();
-          printSettings();
+          mainMenuUI();
         }
         break;
       }
@@ -363,30 +401,55 @@ void parseCMD()
           testMode = !testMode;
           params[7] = testMode;
           changesMade = true;
-          printSettings();
+          mainMenuUI();
         }
         break;
       }
     case 'u': case 'U':
       {
-        if (mode == 0 || mode == 1) {}
-        else
+        short val = valStr.toInt();
+        if (mode == 2)
         {
-          short val = valStr.toInt();
-          String fileName = JSON.stringify(fileConfig["contents"][val - 1]);
-          fileName = fileName.substring(1, fileName.length() - 1);
-          if (Firebase.ready())
+          if (val < 1 || val > (int)localFileConfig["content_length"])
+            Serial.println("Input is out of range");
+          else
           {
-            Serial.println("\nUpload file: \"" + fileName + "\"");
-            if (!Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID, fileName, mem_storage_type_flash, fileName.substring(1), "text/plain", fcsUploadCallback))
-              Serial.println(fbdo.errorReason());
+            String fileName = JSON.stringify(localFileConfig["contents"][val - 1]);
+            fileName = '/' + fileName.substring(1, fileName.length() - 1);
+            if (Firebase.ready())
+            {
+              Serial.println("\nUpload file : \"" + fileName + "\"");
+              if (!Firebase.Storage.upload(&fbdo, STORAGE_BUCKET_ID, fileName, mem_storage_type_flash, fileName.substring(1), "text/plain", fcsUploadCallback))
+                Serial.println(fbdo.errorReason());
+            }
+            spiffsUI();
           }
-          spiffsUI();
+        }
+        else if (mode == 3)
+        {
+          if (val < 1 || val > remoteFiles->items.size())
+            Serial.println("Input is out of range");
+          else
+          {
+            String fileName = String(remoteFiles->items[val - 1].name.c_str());
+            if (Firebase.ready())
+            {
+              Serial.println("\nDownload file: \"" + fileName + "\"");
+              if (!Firebase.Storage.download(&fbdo, STORAGE_BUCKET_ID, fileName, '/' + fileName, mem_storage_type_flash, fcsDownloadCallback))
+                Serial.println(fbdo.errorReason());
+            }
+            firebaseUI();
+          }
         }
         break;
       }
     default:
-      Serial.println("Unknown command");
+      {
+        if (mode == 0)
+          Serial.println("Press 's' to enter settings");
+        else
+          Serial.println("Unknown command");
+      }
   }
 }
 bool verifyParams(JSONVar prevParams)
