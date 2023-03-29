@@ -2,12 +2,13 @@ import csv
 import openpyxl
 import pathlib
 #*** insert your text file path here ***
-text_file='logs\sample-20022023.txt'
+text_file=r'C:\Users\default.DESKTOP-D34KQKE\Desktop\RTES\logs\sample-20022023.txt'
 #***************************************
 header=['Total Fuel Pulses','Total Water Pulses','Fuel Pulse Period (s)','Fuel Flowrate (mL/min)','Cycle Position (/5)','Water Percentage (%)','Fuel Percentage (%)']
 text_file.replace('\\','/')
 parent_dir=pathlib.Path(text_file).parent
-xlsx_file=parent_dir.joinpath('sample-20022023.xlsx')
+xlsx_file=pathlib.Path(text_file).stem
+xlsx_file=parent_dir.joinpath(xlsx_file+'.xlsx')
 wb=openpyxl.Workbook()
 ws=wb.worksheets[0]
 with open(text_file, 'r') as txt_file:
