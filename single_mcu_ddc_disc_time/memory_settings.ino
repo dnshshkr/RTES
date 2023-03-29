@@ -50,4 +50,5 @@ void loadSettings()
   //  calculate_f2wPulseRatio();
   //  calculate_solOnTime();
   denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);
+  deviceOffTime = devicePeriod - deviceOnTime;
 }

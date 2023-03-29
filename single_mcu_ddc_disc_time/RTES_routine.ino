@@ -80,11 +80,15 @@ void RTES() {
   if (deviceState == HIGH && millis() - devicePrevMillis >= deviceOffTime * 1000)
   {
     deviceState = LOW;
+    Serial.println("device turned on");
+    bt.println("device turned on");
     devicePrevMillis = millis();
   }
   else if (deviceState == LOW && millis() - devicePrevMillis >= deviceOnTime * 1000)
   {
     deviceState = HIGH;
+    Serial.println("device turned off");
+    bt.println("device turned off");
     devicePrevMillis = millis();
   }
   digitalWrite(deviceMotor, deviceState);
