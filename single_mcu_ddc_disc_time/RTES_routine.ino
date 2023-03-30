@@ -58,7 +58,7 @@ void RTES() {
   //solenoid control
   if (!sprayStarted && !sprayCompleted && cycleCount > f2wPulseRatio)
   {
-    if (fuelPulsePeriodSum / f2wPulseRatio <= idleTime)
+    if (idleMode && fuelPulsePeriodSum / f2wPulseRatio <= idleTime)
       startEmulsion();
     solOnTimePrevMillis = millis();
     //      if (!dieselMode)
@@ -80,15 +80,15 @@ void RTES() {
   if (deviceState == HIGH && millis() - devicePrevMillis >= deviceOffTime * 1000)
   {
     deviceState = LOW;
-    Serial.println("device turned on");
-    bt.println("device turned on");
+    Serial.println("motor on");
+    bt.println("motor on");
     devicePrevMillis = millis();
   }
   else if (deviceState == LOW && millis() - devicePrevMillis >= deviceOnTime * 1000)
   {
     deviceState = HIGH;
-    Serial.println("device turned off");
-    bt.println("device turned off");
+    Serial.println("motor off");
+    bt.println("motor off");
     devicePrevMillis = millis();
   }
   digitalWrite(deviceMotor, deviceState);

@@ -1,4 +1,4 @@
-#define ver "5.2"
+#define ver "5.2.1"
 /*===============================================================================================================
   ; Title:  RTES V4.0 Serial Interface
   ; Authors: Wan Ahmad V3.08v2 V3.09 V4.0 V4.0.1 (wahmad.wazhar@gmail.com) & Syamiladnin V3.07 (syamiladnin@gmail.com) & Danish V4.1.x (danish.shukor@outlook.com)
@@ -53,9 +53,9 @@
 /*
    | EEPROM memory address
 */
-const uint8_t addr[11] = {0, 2, 3, 7, 11, 13, 17, 18, 22, 23, 24};
+const uint8_t addr[12] = {0, 2, 3, 7, 11, 13, 17, 18, 22, 23, 24, 25};
 //addr[0]: 2 bytes
-//addr[1]: 1 byte,
+//addr[1]: 1 byte
 //addr[2]: 4 bytes
 //addr[3]: 4 bytes
 //addr[4]: 2 bytes
@@ -65,6 +65,7 @@ const uint8_t addr[11] = {0, 2, 3, 7, 11, 13, 17, 18, 22, 23, 24};
 //addr[8]: 1 byte
 //addr[9]: 1 byte
 //addr[10]: 1 byte
+//addr[11]: 1 byte
 
 /*
    | I/O pins
@@ -112,6 +113,7 @@ bool sprayCompleted = false;
 //bool toggleAllState = false;
 bool mode;  //0 - RTES, 1 - settings, 2 - admin
 bool dieselMode;
+bool idleMode;
 byte deviceState;
 byte engineOffTimeout;
 byte idleTime;

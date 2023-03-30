@@ -79,14 +79,18 @@ void RTES() {
   }
 
   //mixer device control
-  if (!deviceState && millis() - devicePrevMillis >= deviceOffTime * 1000)
+  if (deviceState == LOW && millis() - devicePrevMillis >= deviceOffTime * 1000)
   {
-    deviceState = true;
+    deviceState = HIGH;
+    Serial.println("motor on");
+    bt.println("motor on");
     devicePrevMillis = millis();
   }
-  else if (deviceState && millis() - devicePrevMillis >= deviceOnTime * 1000)
+  else if (deviceState == HIGH && millis() - devicePrevMillis >= deviceOnTime * 1000)
   {
-    deviceState = false;
+    deviceState = LOW;
+    Serial.println("motor off");
+    bt.println("motor off");
     devicePrevMillis = millis();
   }
   digitalWrite(deviceMotor, deviceState);

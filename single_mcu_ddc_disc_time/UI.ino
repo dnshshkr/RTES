@@ -16,9 +16,12 @@ void printSettings()
   Serial.println("H - Reset Total Fuel Pulse Counter");
   Serial.print("I - Diesel-only Mode: ");
   dieselMode ? Serial.println("ON") : Serial.println("OFF");
-  Serial.println("J - Mixer Device Period: " + String(devicePeriod) + " s");
-  Serial.println("K - Mixer Device On Time: " + String(deviceOnTime) + " s");
-  Serial.println("L - System Idle Time: " + String(idleTime) + " s");
+  Serial.println("J - Device Motor Period: " + String(devicePeriod) + " s");
+  Serial.println("K - Device Motor On Time: " + String(deviceOnTime) + " s");
+  Serial.print("L - System Idle Mode: ");
+  idleMode ? Serial.println("ON") : Serial.println("OFF");
+  if (idleMode)
+    Serial.println("M - System Idle Time: " + String(idleTime) + " s");
   //  Serial.print("T - Toggle Test Mode: ");
   //  testMode ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("R - Reset to Factory Settings");
@@ -60,9 +63,12 @@ void printSettings()
   bt.println("H - Reset Total Fuel Pulse Counter");
   bt.print("I - Diesel-only Mode: ");
   dieselMode ? bt.println("ON") : bt.println("OFF");
-  bt.println("J - Mixer Device Period: " + String(devicePeriod) + " s");
-  bt.println("K - Mixer Device On Time: " + String(deviceOnTime) + " s");
-  bt.println("L - System Idle Time: " + String(idleTime) + " s");
+  bt.println("J - Device Motor Period: " + String(devicePeriod) + " s");
+  bt.println("K - Device Motor On Time: " + String(deviceOnTime) + " s");
+  bt.print("L - System Idle Mode: ");
+  idleMode ? bt.println("ON") : bt.println("OFF");
+  if (idleMode)
+    bt.println("M - System Idle Time: " + String(idleTime) + " s");
   //  bt.print("T - Toggle Test Mode: ");
   //  testMode ? bt.println("ON") : bt.println("OFF");
   bt.println("R - Reset to Factory Settings");

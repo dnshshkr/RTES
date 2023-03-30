@@ -370,6 +370,18 @@ void cmdParser() {
           goto modeError;
         else
         {
+          idleMode = !idleMode;
+          EEPROM.update(addr[11], idleMode);
+          printSettings();
+        }
+        return;
+      }
+    case 'M': case 'm':
+      {
+        if (!mode)
+          goto modeError;
+        else
+        {
           int val = valStr.toInt();
           if (val > 0 && val <= 255)
           {

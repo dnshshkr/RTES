@@ -24,13 +24,16 @@ void printData()
   //  Serial.print(P_f, 1);
   //  Serial.println("% fuel");
 
-  Serial.print(cycleCount), Serial.write((char)9);
-  Serial.print(totalFuelPulse), Serial.write((char)9);
-  Serial.print(fuelPulsePeriod), Serial.write((char)9);
-  Serial.print(fuelFlowRate), Serial.write((char)9);
-  totalWaterPulse != prevTotalWaterPulse ? Serial.print(totalWaterPulse) : Serial.print("idle"), Serial.write((char)9);
-  Serial.print(waterPercentage), Serial.write((char)9);
-  Serial.print(P_f), Serial.write((char)9); Serial.write((char)10);
+  Serial.print(String(cycleCount) + '\t');
+  Serial.print(String(totalFuelPulse) + '\t');
+  Serial.print(String(fuelPulsePeriod) + '\t');
+  Serial.print(String(fuelFlowRate) + '\t');
+  if (!idleMode)
+    Serial.print(String(totalWaterPulse) + '\t');
+  else if (idleMode && totalWaterPulse != prevTotalWaterPulse)
+    Serial.print("idle\t");
+  Serial.print(String(waterPercentage) + '\t');
+  Serial.println(P_f);
 
   //  bt.print(String(totalFuelPulse) + " total fuel pulse \t");
   //  bt.print(String(fuelPulsePeriod) + " s\t");
@@ -43,16 +46,18 @@ void printData()
   //  bt.print(P_f, 1);
   //  bt.println("% fuel");
 
-  bt.print(String(totalFuelPulse) + ',');
-  totalWaterPulse != prevTotalWaterPulse ? bt.print(String(totalWaterPulse)) : bt.print("idle"), bt.write((char)44);
-  bt.print(String(fuelPulsePeriod) + ',');
+  bt.print(String(totalFuelPulse) + '\t');
+  if (!idleMode)
+    bt.print(String(totalWaterPulse) + '\t');
+  else if (idleMode && totalWaterPulse != prevTotalWaterPulse)
+    bt.print("idle\t");
+  bt.print(String(fuelPulsePeriod) + '\t');
   bt.print(fuelFlowRate, 3);
-  bt.print(',');
-  bt.print(String(cycleCount) + ',');
+  bt.write('\t');
+  bt.print(String(cycleCount) + '\t');
   bt.print(waterPercentage, 1);
-  bt.print(',');
-  bt.print(P_f, 1);
-  bt.println();
+  bt.write('\t');
+  bt.println(P_f, 1);
   // pulseDataPrint = false;  //change to false after printing the data and wait for next fuel pulse
   prevTotalWaterPulse = totalWaterPulse;
 }

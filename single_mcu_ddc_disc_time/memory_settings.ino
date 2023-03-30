@@ -11,7 +11,8 @@ void factoryReset()  //factory reset
   EEPROM.update(addr[8], 13);       //22
   EEPROM.update(addr[9], 3);        //23
   EEPROM.update(addr[10], 5);       //24
-  byte usedLen = 25;
+  EEPROM.update(addr[11], 0);       //25
+  byte usedLen = 26;
   word remaining = EEPROM.length() - usedLen;
   Serial.println("\nResetting the rest " + String(remaining) + " bytes of unused memory cells");
   bt.println("\nResetting the rest " + String(remaining) + " bytes of unused memory cells");
@@ -47,6 +48,7 @@ void loadSettings()
   EEPROM.get(addr[8], devicePeriod);
   EEPROM.get(addr[9], deviceOnTime);
   EEPROM.get(addr[10], idleTime);
+  EEPROM.get(addr[11], idleMode);
   //  calculate_f2wPulseRatio();
   //  calculate_solOnTime();
   denominator = calculate_denominator(f2wPulseRatio, fuelPulseBias, waterPulseBias);

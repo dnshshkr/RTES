@@ -112,7 +112,7 @@ bool firstRowData = true;
 //bool toggleAllState = false;
 bool mode;  //0 - RTES, 1 - settings, 2 - admin
 bool dieselMode;
-bool deviceState;
+byte deviceState;
 byte engineOffTimeout;
 byte hour = 0;
 byte minute = 0;
