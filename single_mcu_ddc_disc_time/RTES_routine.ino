@@ -58,11 +58,11 @@ void RTES() {
   //solenoid control
   if (!sprayStarted && !sprayCompleted && cycleCount > f2wPulseRatio)
   {
-    if (idleMode && fuelPulsePeriodSum / f2wPulseRatio <= idleTime)
+    if ((idleMode && fuelPulsePeriodSum / f2wPulseRatio <= idleTime) || !idleMode)
       startEmulsion();
     solOnTimePrevMillis = millis();
-    //      if (!dieselMode)
-    //        totalWaterPulse++;
+    if (!dieselMode)
+      totalWaterPulse++;
     sprayStarted = true;
   }
   else if (sprayStarted && millis() - solOnTimePrevMillis > solOnTime)
