@@ -338,6 +338,7 @@ void cmdParser() {
           if (val >= 0 && val <= 255)
           {
             devicePeriod = val;
+            deviceOffTime = devicePeriod - deviceOnTime;
             EEPROM.update(addr[8], devicePeriod);
             printSettings();
           }
@@ -356,6 +357,7 @@ void cmdParser() {
           if (val >= 1 && val <= devicePeriod)
           {
             deviceOnTime = val;
+            deviceOffTime = devicePeriod - deviceOnTime;
             EEPROM.update(addr[9], deviceOnTime);
             printSettings();
           }

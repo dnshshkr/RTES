@@ -18,7 +18,7 @@ void printSettings()
   dieselMode ? Serial.println("ON") : Serial.println("OFF");
   Serial.println("J - Device Motor Period: " + String(devicePeriod) + " s");
   Serial.println("K - Device Motor On Time: " + String(deviceOnTime) + " s");
-  Serial.print("L - System Idle Mode: ");
+  Serial.print("L - System Idling Mode: ");
   idleMode ? Serial.println("ON") : Serial.println("OFF");
   if (idleMode)
     Serial.println("M - System Idle Time: " + String(idleTime) + " s");
@@ -68,7 +68,7 @@ void printSettings()
   bt.print("L - System Idle Mode: ");
   idleMode ? bt.println("ON") : bt.println("OFF");
   if (idleMode)
-    bt.println("M - System Idle Time: " + String(idleTime) + " s");
+    bt.println("M - System Idling Time: " + String(idleTime) + " s");
   //  bt.print("T - Toggle Test Mode: ");
   //  testMode ? bt.println("ON") : bt.println("OFF");
   bt.println("R - Reset to Factory Settings");
