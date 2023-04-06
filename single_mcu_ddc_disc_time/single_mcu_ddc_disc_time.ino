@@ -49,6 +49,7 @@
 */
 #include <EEPROM.h>
 #include <SoftwareSerial.h>
+#include <max6675.h>
 
 /*
    | EEPROM memory address
@@ -80,6 +81,11 @@ const byte btrx = 12;
 const byte bttx = 11;
 //const byte btState = 5;
 //const byte button = 4;
+const byte CS_env = 3;
+const byte CS_motor = 4;
+const byte CS_rtes = 5;
+const byte DO_thermo = 6;
+const byte SCK_thermo = 7;
 
 /*
    | current amperage - not in use
@@ -134,6 +140,9 @@ float waterPercentageDuringEmulsion;
 float fuelPulseBias;
 float waterPulseBias;
 float solConst;
+float envTemp;
+float motorTemp;
+float rtesTemp;
 unsigned long solOnTimePrevMillis;
 //unsigned long prevMillisRTESStopwatch;
 unsigned long totalWaterPulse = 0;
@@ -141,6 +150,7 @@ unsigned long devicePrevMillis;
 String cmd;
 
 SoftwareSerial bt(btrx, bttx);  //bluetooth module
+MAX6675 thermo_env(SCK_thermo, CS_env, DO_thermo), thermo_motor(SCK_thermo, CS_motor, DO_thermo), thermo_rtes(SCK_thermo, CS_rtes, DO_thermo);
 
 void setup()
 {
@@ -256,6 +266,7 @@ void loop() {
   if (!mode)
   {
     RTES();
+    measureTemperatures();
     //    if (pulseDataPrint)  //print data only on a fuel pulse detection
     //    {
     //      if (testMode && accumMinute - lastMinute >= checkpointPeriod || (testMode && firstRowData))
